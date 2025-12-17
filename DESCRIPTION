@@ -1,16 +1,19 @@
 Package: qretools
-Title: What the Package Does (One Line, Title Case)
+Title: Tools for Creating and Documenting Questionnaires
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"),
-           comment = c(ORCID = "YOUR-ORCID-ID"))
-Description: What the package does (one paragraph).
+    person("Michael", "Bader", email = "michaeldmbader@gmail.com", role = c("aut", "cre"),
+           comment = c(ORCID = "0000-0001-6292-7790"))
+Description: |
+  Provides tools for the lifecycle of survey research including questionnaire development,
+  documentation, survey wave management, and dissemination. 
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.2
 Imports: 
     purrr,
-    yaml
+    yaml,
+    digest
 URL: https://github.com/mikebader/qretools
 BugReports: https://github.com/mikebader/qretools/issues
