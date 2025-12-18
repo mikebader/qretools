@@ -32,6 +32,29 @@
   # 4. Validate variables
   .qt_validate_variables(result$items, value_labels, validate_value_labels)
 
+  # 4.5. Wrap each variable in appropriate class based on bank type
+  bank_type_map <- list(
+    "questions" = "qt_make_qvar",
+    "generated variables" = "qt_make_genvar",
+    "control parameters" = "qt_make_ctrlvar"
+  )
+
+  constructor_name <- bank_type_map[[item_type]]
+  if (is.null(constructor_name)) {
+    stop("Unknown item_type: ", item_type, call. = FALSE)
+  }
+
+  constructor_fn <- get(constructor_name)
+
+  vars_with_classes <- lapply(names(result$items), function(varname) {
+    var_data <- result$items[[varname]]
+    constructor_fn(var_data)
+  })
+  names(vars_with_classes) <- names(result$items)
+
+  # Use the typed variables for the rest of the function
+  result$items <- vars_with_classes
+
   # 5. Build structure with indices
   .qt_build_variable_structure(
     variables = result$items,
@@ -41,7 +64,6 @@
     class_name = class_name
   )
 }
-
 #' Read Variable Banks
 #'
 #' Read variables from the different variable banks (questions, generated, control).
