@@ -1,0 +1,14 @@
+dem_income:
+  varname: dem_income
+  title: Household Income
+  type: factor
+  vargroup: dem
+  variable_role: generated
+  question_text: "During 2024, in which of these groups did your total family income, from all sources, fall before taxes?"
+  value_labels_name: yesno
+  source: "constructed"
+  surveys_used: ["bas-2023", "bas-2024", "bas-2025"]
+  derived_from: ["dem_income_70k", "dem_income_lo", "dem_income_hi"]
+  derivation_method: "Combines low/high income based on 70k filter question"
+  derivation_script: "construct-data.Rmd"
+  note: "Constructed by combining responses from split income questions"

@@ -1,36 +1,6 @@
 # Package environment to track warnings shown this session
 .qretools_warned <- new.env(parent = emptyenv())
 
-#' Parse YAML File with User-Friendly Error Messages
-#'
-#' Internal helper to read YAML files and provide clear error messages
-#' for common YAML syntax issues.
-#'
-#' @param path Character string. Full path to YAML file.
-#' @param file_description Character string. Description for error messages
-#'   (e.g., "project-config.yml", "_qretools.yml")
-#'
-#' @return Parsed YAML as a list, or NULL if file doesn't exist
-#'
-#' @keywords internal
-#' @noRd
-.read_yaml_safe <- function(path, file_description = basename(path)) {
-  if (!file.exists(path)) {
-    return(NULL)
-  }
-
-  tryCatch(
-    yaml::yaml.load_file(path),
-    error = function(e) {
-      stop("Error reading ", file_description, ":\n",
-           "  File may have invalid YAML syntax.\n",
-           "  Common issues: incorrect indentation, missing colons, unmatched quotes\n",
-           "  Technical details: ", e$message,
-           call. = FALSE)
-    }
-  )
-}
-
 # Session cache manager (in-memory, per R session)
 .session_cache <- local({
   cache_env <- new.env(parent = emptyenv())
@@ -238,16 +208,16 @@
 .qt_defaults <- function() {
   list(
     paths = list(
-      project_config = "project-config.yml",  # Must be .yml file
-      question_bank = "question-bank",        # File or directory
-      value_labels = "value-labels",          # File or directory
-      parameters = "parameters",              # File or directory
-      modules = "modules",                    # File or directory
-      surveys = "surveys"                     # Typically directory
+      project_config = "project-config.yml",
+      question_bank = "banks/questions",
+      generated_bank = "banks/generated",
+      control_bank = "banks/control",
+      value_labels = "value-labels",
+      surveys = "surveys"
     ),
     dirnames = list(
       design = "design",
-      candidate = "candidate-questions",
+      candidates = "candidates",
       questionnaires = "questionnaires"
     ),
     settings = list(
@@ -335,9 +305,14 @@
          call. = FALSE)
   }
 
-  # Check required fields
+  # Check required fields (look under 'project' section)
+  if (is.null(config$project)) {
+    stop("project-config.yml must have a 'project:' section with required fields",
+         call. = FALSE)
+  }
+
   required_fields <- c("title", "organization", "principal_investigator")
-  missing_required <- setdiff(required_fields, names(config))
+  missing_required <- setdiff(required_fields, names(config$project))
 
   if (length(missing_required) > 0) {
     stop("project-config.yml missing required fields:\n  - ",
@@ -347,11 +322,11 @@
   }
 
   # Validate principal_investigator structure
-  pi_info <- config$principal_investigator
+  pi_info <- config$project$principal_investigator
 
   if (is.character(pi_info)) {
     # Simple string format - convert to structured format
-    config$principal_investigator <- list(
+    config$project$principal_investigator <- list(
       name = pi_info,
       affiliation = NULL,
       email = NULL
@@ -369,10 +344,10 @@
       }
       # Set defaults for optional fields
       if (is.null(pi_info$affiliation)) {
-        config$principal_investigator$affiliation <- NULL
+        config$project$principal_investigator$affiliation <- NULL
       }
       if (is.null(pi_info$email)) {
-        config$principal_investigator$email <- NULL
+        config$project$principal_investigator$email <- NULL
       }
 
     } else {
@@ -388,10 +363,10 @@
         }
         # Set defaults for optional fields
         if (is.null(pi_info[[i]]$affiliation)) {
-          config$principal_investigator[[i]]$affiliation <- NULL
+          config$project$principal_investigator[[i]]$affiliation <- NULL
         }
         if (is.null(pi_info[[i]]$email)) {
-          config$principal_investigator[[i]]$email <- NULL
+          config$project$principal_investigator[[i]]$email <- NULL
         }
       }
     }

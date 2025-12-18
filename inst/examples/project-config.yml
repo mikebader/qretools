@@ -1,0 +1,16 @@
+project:
+  name: "qretools Test Project"
+  short_name: "qretools-test"
+  title: "qretools Test Project"
+  organization: "Test Organization"
+  principal_investigator: "Test PI"
+
+paths:
+  question_bank: "banks/questions"
+  generated_bank: "banks/generated"
+  control_bank: "banks/control"
+  value_labels: "value-labels"
+
+irb:
+  institution: "Test Institution"
+  protocol_number: "TEST-001"

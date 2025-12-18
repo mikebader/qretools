@@ -1,0 +1,51 @@
+nhd_sat:
+  varname: nhd_sat
+  title: Neighborhood Satisfaction
+  type: factor
+  vargroup: nhd
+  question_text: "How satisfied are you with your neighborhood as a place to live?"
+  value_labels_name: satisfied5
+  source: "DCAS 2018 Q6"
+  surveys_used: ["bas-2023", "bas-2024", "bas-2025"]
+
+nhd_nyrs:
+  varname: nhd_nyrs
+  title: Years in Neighborhood
+  type: integer
+  vargroup: nhd
+  question_text: "How many years have you lived in your current neighborhood? Enter 0 if you have lived in your current neighborhood less than 1 year."
+  source: "DCAS 2018 Q4"
+  surveys_used: ["bas-2023", "bas-2024", "bas-2025"]
+  validation:
+    min: 0
+    max: 120
+
+nhd_cohes1:
+  varname: nhd_cohes1
+  title: Neighbors Willingness to Help
+  type: factor
+  vargroup: nhd
+  question_text: "People in your neighborhood are willing to help their neighbors."
+  value_labels_name: agree4
+  source: "PHDCN Q11.a"
+  surveys_used: ["bas-2023", "bas-2024", "bas-2025"]
+
+nhd_cohes2:
+  varname: nhd_cohes2
+  title: Close-knit Neighborhood
+  type: factor
+  vargroup: nhd
+  question_text: "This is a close-knit neighborhood."
+  value_labels_name: agree4
+  source: "PHDCN Q11.b"
+  surveys_used: ["bas-2023", "bas-2024", "bas-2025"]
+
+nhd_pbviol:
+  varname: nhd_pbviol
+  title: Violence in Neighborhood
+  type: factor
+  vargroup: nhd
+  question_text: "How much of a problem is violence in your neighborhood?"
+  value_labels_name: problem5
+  source: "Original"
+  surveys_used: ["bas-2023", "bas-2024", "bas-2025"]
