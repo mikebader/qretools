@@ -1,0 +1,95 @@
+# Baltimore Area Survey 2025 - Example Survey Configuration
+# This is a toy example for testing qretools infrastructure
+# Status: Draft example for development purposes
+
+survey:
+  year: 2025
+  name: "Baltimore Area Survey 2025"
+  short_name: "BAS2025"
+  status: draft
+  date_finalized: null
+
+# Parameters section - declares which parameters to load
+# Project parameters come from banks/control/project.yml (via project config)
+# Survey parameters come from parameters.yml in this survey directory (convention)
+parameters:
+  project_load: [JURISDICTION, CMONTHNM]
+  # survey_file: parameters.yml  # Optional - defaults to parameters.yml in survey directory
+
+# No rotation sets used in this example
+uses_rotation_sets: []
+
+# Survey sections and items
+sections:
+  - name: "Introduction"
+    items:
+      - type: statement
+        statement_type: transition
+        text: |
+          Welcome to the Baltimore Area Survey!
+
+          We're asking residents throughout {{JURISDICTION}} about their
+          experiences and opinions. Your participation helps us understand
+          life in our community.
+        with_next: false
+        position: 10
+
+  - name: "Neighborhood"
+    items:
+      - type: statement
+        statement_type: instruction
+        text: "First, we'd like to ask about your neighborhood here in {{JURISDICTION}}."
+        with_next: true
+        position: 20
+
+      - type: question
+        varname: nhd_sat
+        source: question_bank
+        position: 30
+
+      - type: question
+        varname: nhd_nyrs
+        source: question_bank
+        position: 40
+
+      - type: statement
+        statement_type: transition
+        text: "Now some questions about your relationship with neighbors."
+        with_next: false
+        position: 50
+
+      - type: question
+        varname: nhd_cohes1
+        source: question_bank
+        position: 60
+
+      - type: question
+        varname: nhd_cohes2
+        source: question_bank
+        position: 70
+
+  - name: "Neighborhood Problems"
+    items:
+      - type: statement
+        statement_type: transition
+        text: |
+          Next, we'd like to know about problems that may or may not
+          exist in your neighborhood.
+        with_next: false
+        position: 80
+
+      - type: question
+        varname: nhd_pbviol
+        source: question_bank
+        position: 90
+
+  - name: "Closing"
+    items:
+      - type: statement
+        statement_type: closing
+        text: |
+          Thank you for completing the Baltimore Area Survey!
+
+          Your responses will help inform decisions about our community.
+        with_next: false
+        position: 100
