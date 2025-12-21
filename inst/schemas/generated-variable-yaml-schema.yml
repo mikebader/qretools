@@ -1,0 +1,42 @@
+# SCHEMA FOR DEFINING GENERATED VARIABLES
+# Used for generated bank based on variables that are created after data
+# collection
+
+id: string                       # REQUIRED - Unique identifier
+    title: string                # REQUIRED - Short descriptive title
+    variable_type: enum          # REQUIRED - Data type:
+                                 #            One of: factor, character,
+                                 #            integer, number
+    description: string          # REQUIRED - Full description of the
+                                 #            variable contents
+    surveys_used: array[chr]     # REQUIRED - Surveys when question is fielded
+    restricted_access: enum      # REQUIRED - Exclude from public (default:
+                                 # true)
+                                 # (Set default options to "true" and "false",
+                                 # but allow user to override? see note)
+
+    # Conditionally required
+    value_label_id: string       # Required if type == factor
+
+    # Highly recommended
+    universe: string             # Who answers
+    vargroup: string             # Topic grouping
+    restricted_info: string      # Recommended if restricted_access !=
+                                 # "false"; text to explain reason or how to
+                                 # gain access
+
+    # Optional - Documentation
+    note: string                 # Implementation notes
+    programmer_note: string      # Note to survey programmer
+
+    # Optional - Inclusion and Survey flow
+    rotation_set: array[string]  # Rotation set membership
+
+    # Optional - Versions (for variables that change across surveys)
+    versions: array[object]
+        version_id: string       # REQUIRED - Unique version identifier
+        <any field above>        # Any field above (document changes)
+        surveys_used: array[chr] # REQUIRED - Surveys this version was used
+
+    # Optional - Content
+    media: file-path             # Any media (e.g., images)

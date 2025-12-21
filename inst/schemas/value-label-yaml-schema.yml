@@ -1,0 +1,10 @@
+# SCHEMA FOR DEFINING VALUE LABELS
+# Used for creating value labels to use for factor variables
+
+id: string                       # REQUIRED - Unique identifier
+    labels: object               # REQUIRED - Value-to-label mappings
+                                 #            Keys are values, values are
+                                 #            labels
+
+    # Optional - Organization
+    tags: array[chr]             # List of keywords for tag
