@@ -24,6 +24,8 @@ rotation_sets:
     include_sets: array[str]   # List of names for rotation_sets to confirm
                                #    variables in rotation set are included
     exclude_variables: array[str] # List of variable IDs to exclude
+candidates_path: string        # Path to file or directory storing candidate 
+                               #    question bank (defaults to "candidates")
 programmer_note: string         # Note to survey programmer
 note: string                    # Implementation notes
 ```
@@ -38,6 +40,7 @@ The following will be types of `item` elements. All elements are optional unless
 
 ```yaml
 item_type: statement
+id: string                      # REQUIRED: Unique identifier
 text: string                    # REQUIRED: Text of statement to print
 keep_with_next: boolean         # Should element be displayed on same screen/
                                 # text as next item?
@@ -81,13 +84,14 @@ if_condition: string            # Display logic (for this survey only)
 
 ```yaml
 item_type: logic
-condition: string              # REQUIRED - Condition to evaluate (R expression)
-then: array[object]           # REQUIRED - Items to execute if condition true
-  - item_type: ...            # Nested items 
-else: array[object]           # Items to execute if condition false
-  - item_type: ...            # Nested items
-note: string                  # Implementation notes
-programmer_note: string       # Note to survey programmer
+id: string                      # REQUIRED: Unique identifier
+condition: string               # REQUIRED - Condition to evaluate (R expression)
+then: array[object]             # REQUIRED - Items to execute if condition true
+  - item_type: ...              # Nested items 
+else: array[object]             # Items to execute if condition false
+  - item_type: ...              # Nested items
+note: string                    # Implementation notes
+programmer_note: string         # Note to survey programmer
 ```
 
 ### Compute Block (Internal)
@@ -96,13 +100,14 @@ programmer_note: string       # Note to survey programmer
 
 ```yaml
 item_type: compute
-description: string            # REQUIRED - What this computes/sets
-command: string                # REQUIRED - R expression to execute
-requires: array[string]        # Parameter names required in command
-provides: array[string]        # Parameter names created/set (required if
-                               # parameters used later in survey flow)
-note: string                   # Implementation notes
-programmer_note: string        # Note to survey programmer
+id: string                      # REQUIRED: Unique identifier
+description: string             # REQUIRED - What this computes/sets
+command: string                 # REQUIRED - R expression to execute
+requires: array[string]         # Parameter names required in command
+provides: array[string]         # Parameter names created/set (required if
+                                # parameters used later in survey flow)
+note: string                    # Implementation notes
+programmer_note: string         # Note to survey programmer
 ```
 
 ## Container Specifications

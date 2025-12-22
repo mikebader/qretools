@@ -85,7 +85,7 @@ id: string                        # REQUIRED - Unique identifier
     media: file-path              # Any media (e.g., images)
 
 # DEFAULTS
-# response_type defaults by response_type:
+# storage_type defaults by response_type:
 #   factor → factor
 #   character → character
 #   integer → integer
