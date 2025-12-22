@@ -35,21 +35,179 @@
   unique(fills)
 }
 
-# Internal helper: Read and expand a module
-#
-# @param module_id Character string - module identifier
-# @param section_name Character string - section containing module
-# @param start_position Integer - starting position for module items
-# @param config qt_config object
-# @param all_vars List - lookup structure with all banks
-# @return List of expanded items with module attribute set
-.read_and_expand_module <- function(module_id, section_name, start_position,
-                                    config, all_vars) {
-  # TODO: This is a placeholder for module reading functionality
-  # For now, return empty list and warning
-  warning("Module expansion not yet implemented. Module '", module_id,
-          "' skipped.", call. = FALSE)
-  return(list())
+#' Process a single question item
+#'
+#' Internal helper to resolve a question reference and create a qt_qitem object
+#'
+#' @param item List containing question reference (varname, source, etc.)
+#' @param section_name Character string, name of the section containing this question
+#' @param all_vars List of all variable banks
+#' @param survey_config_file Character string, path to survey config file (for error messages)
+#' @param module_id Character string or NULL, module_id if this question comes from a module
+#'
+#' @return List with three elements:
+#'   \item{q_item}{The constructed qt_qitem object}
+#'   \item{varname}{The question varname}
+#'   \item{source_info}{List with source and source_file for tracking}
+#'   \item{fills}{Character vector of fills extracted from question_text}
+#'
+#' @keywords internal
+.process_question <- function(item, section_name, all_vars, survey_config_file, module_id = NULL) {
+
+  varname <- item$varname
+  if (is.null(varname)) {
+    stop("Question item in section '", section_name,
+         "' missing 'varname' field",
+         "\nFile: ", survey_config_file, call. = FALSE)
+  }
+
+  source <- item$source
+  if (is.null(source)) source <- "question_bank"  # Default
+
+  # Look up question definition
+  if (source == "question_bank") {
+    if (!varname %in% names(all_vars$question_bank)) {
+      stop("Question '", varname, "' not found in question bank",
+           "\nSection: ", section_name,
+           "\nFile: ", survey_config_file, call. = FALSE)
+    }
+    q_def <- all_vars$question_bank[[varname]]
+    source_file <- attr(q_def, "source_file") %||% q_def$source_file %||% "unknown"
+
+  } else if (source == "survey") {
+    # Look in generated bank (candidates)
+    if (!varname %in% names(all_vars$generated)) {
+      stop("Question '", varname, "' not found in survey candidates",
+           "\nSection: ", section_name,
+           "\nFile: ", survey_config_file, call. = FALSE)
+    }
+    q_def <- all_vars$generated[[varname]]
+    source_file <- attr(q_def, "source_file") %||% q_def$source_file %||% "unknown"
+
+  } else {
+    stop("Unknown source '", source, "' for question '", varname, "'",
+         "\nSection: ", section_name,
+         "\nFile: ", survey_config_file, call. = FALSE)
+  }
+
+  # Create question item with embedded definition
+  q_item <- structure(
+    list(
+      type = "question",
+      varname = varname,
+      source = source,
+      position = item$position,
+      section = section_name,
+      module = module_id,  # NULL for direct questions, module_id for module questions
+      action_before = item$action_before,
+      action_after = item$action_after,
+      definition = q_def  # EMBED the full qt_qvar object
+    ),
+    class = c("qt_qitem", "qt_item")
+  )
+
+  # Extract fills from question_text
+  fills <- character(0)
+  if (!is.null(q_def$question_text)) {
+    fills <- .extract_fills(q_def$question_text)
+  }
+
+  # Return everything needed for tracking
+  list(
+    q_item = q_item,
+    varname = varname,
+    source_info = list(
+      source = source,
+      file = source_file
+    ),
+    fills = fills
+  )
+}
+
+#' Read and expand a module file
+#'
+#' Internal function to read a module YAML file and return its contents
+#' for splicing into survey configuration.
+#'
+#' @param module_ref List with 'name' element (module_id) from survey config
+#' @param banks List of question/variable banks (unused, for signature consistency)
+#' @param proj_root Character string, project root directory path
+#'
+#' @return List with three elements:
+#'   \item{questions}{List of question references from module}
+#'   \item{generated_variables}{List of generated variable references (may be empty)}
+#'   \item{control_variables}{List of control variable references (may be empty)}
+#'
+#' @keywords internal
+.read_and_expand_module <- function(module_ref, banks, config) {
+  module_name <- module_ref$name
+
+  # Resolve modules path from config
+  modules_path <- .qt_resolve_path("modules", path = NULL, config)
+
+  # Try modules.yml first, then modules/{module_name}.yml
+  modules_single <- paste0(modules_path, ".yml")
+  modules_dir <- file.path(modules_path, paste0(module_name, ".yml"))
+
+  module_path <- NULL
+  if (file.exists(modules_single)) {
+    module_path <- modules_single
+  } else if (file.exists(modules_dir)) {
+    module_path <- modules_dir
+  } else {
+    stop("Module '", module_name, "' not found. Looked in:\n  ",
+         modules_single, "\n  ", modules_dir,
+         call. = FALSE)
+  }
+
+  # Read and parse YAML
+  # Read and parse YAML
+  module_yaml <- tryCatch(
+    yaml::read_yaml(module_path),
+    error = function(e) {
+      stop("Failed to parse module file '", module_path, "':\n  ",
+           e$message, call. = FALSE)
+    }
+  )
+
+  # Should be a list of modules
+  if (!is.list(module_yaml) || is.null(module_yaml[[1]]$module_id)) {
+    stop("Module file must contain a list of modules. Each module should start with '-'",
+         "\nFile: ", module_path, call. = FALSE)
+  }
+
+  modules_list <- module_yaml
+
+  # Find the requested module
+  module_data <- NULL
+  for (mod in modules_list) {
+    if (!is.null(mod$module_id) && mod$module_id == module_name) {
+      module_data <- mod
+      break
+    }
+  }
+
+  if (is.null(module_data)) {
+    stop("Module '", module_name, "' not found in ", module_path, call. = FALSE)
+  }
+
+  # Validate required fields
+  if (is.null(module_data$module_id)) {
+    stop("Module in '", module_path, "' missing required field: module_id",
+         call. = FALSE)
+  }
+
+  if (is.null(module_data$questions) || length(module_data$questions) == 0) {
+    stop("Module '", module_name, "' must contain at least one question",
+         call. = FALSE)
+  }
+
+  # Return the three sections
+  list(
+    questions = module_data$questions,
+    generated_variables = if (is.null(module_data$generated_variables)) list() else module_data$generated_variables,
+    control_variables = if (is.null(module_data$control_variables)) list() else module_data$control_variables
+  )
 }
 
 #' Read Survey Configuration
@@ -126,6 +284,7 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
 
   # Step 1: Read and validate survey config YAML ----
   survey_yaml <- .read_yaml_safe(survey_config_file, "survey config")
+  proj_root <- config$meta$project_root
 
   # Validate required top-level fields
   required_fields <- c("survey", "sections")
@@ -251,79 +410,59 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
 
         all_items <- c(all_items, list(stmt_item))
 
+        # In qt_read_survey_config(), replace the question processing with:
+
       } else if (item_type == "question") {
-        # Resolve question
-        varname <- item$varname
-        if (is.null(varname)) {
-          stop("Question item in section '", section_name,
-               "' missing 'varname' field",
-               "\nFile: ", survey_config_file, call. = FALSE)
-        }
-
-        source <- item$source
-        if (is.null(source)) source <- "question_bank"  # Default
-
-        # Look up question definition
-        if (source == "question_bank") {
-          if (!varname %in% names(all_vars$question_bank)) {
-            stop("Question '", varname, "' not found in question bank",
-                 "\nSection: ", section_name,
-                 "\nFile: ", survey_config_file, call. = FALSE)
-          }
-          q_def <- all_vars$question_bank[[varname]]
-          source_file <- attr(q_def, "source_file") %||% q_def$source_file %||% "unknown"
-
-        } else if (source == "survey") {
-          # Look in generated bank (candidates)
-          if (!varname %in% names(all_vars$generated)) {
-            stop("Question '", varname, "' not found in survey candidates",
-                 "\nSection: ", section_name,
-                 "\nFile: ", survey_config_file, call. = FALSE)
-          }
-          q_def <- all_vars$generated[[varname]]
-          source_file <- attr(q_def, "source_file") %||% q_def$source_file %||% "unknown"
-
-        } else {
-          stop("Unknown source '", source, "' for question '", varname, "'",
-               "\nSection: ", section_name,
-               "\nFile: ", survey_config_file, call. = FALSE)
-        }
-
-        # Create question item with embedded definition
-        q_item <- structure(
-          list(
-            type = "question",
-            varname = varname,
-            source = source,
-            position = item$position,
-            section = section_name,
-            module = NULL,
-            action_before = item$action_before,
-            action_after = item$action_after,
-            definition = q_def  # EMBED the full qt_qvar object
-          ),
-          class = c("qt_qitem", "qt_item")
-        )
+        # Process question using helper
+        result <- .process_question(item, section_name, all_vars, survey_config_file)
 
         # Track
-        questions_referenced <- c(questions_referenced, varname)
+        questions_referenced <- c(questions_referenced, result$varname)
         question_source_map <- rbind(
           question_source_map,
           data.frame(
-            varname = varname,
-            source = source,
-            file = source_file,
+            varname = result$varname,
+            source = result$source_info$source,
+            file = result$source_info$file,
             stringsAsFactors = FALSE
           )
         )
+        fills_found <- c(fills_found, result$fills)
+        all_items <- c(all_items, list(result$q_item))
 
-        # Extract fills from question_text
-        if (!is.null(q_def$question_text)) {
-          fills <- .extract_fills(q_def$question_text)
-          fills_found <- c(fills_found, fills)
+      } else if (item_type == "module") {
+        # Expand module and process each question
+        module_name <- item$name
+        if (is.null(module_name)) {
+          stop("Module item in section '", section_name,
+               "' missing 'name' field",
+               "\nFile: ", survey_config_file, call. = FALSE)
         }
 
-        all_items <- c(all_items, list(q_item))
+        # Read and expand the module
+        expanded <- .read_and_expand_module(item, banks = NULL, config)
+
+        # Process each question in the module
+        for (mod_question in expanded$questions) {
+          result <- .process_question(mod_question, section_name, all_vars,
+                                      survey_config_file, module_id = module_name)
+
+          # Track same as regular questions
+          questions_referenced <- c(questions_referenced, result$varname)
+          question_source_map <- rbind(
+            question_source_map,
+            data.frame(
+              varname = result$varname,
+              source = result$source_info$source,
+              file = result$source_info$file,
+              stringsAsFactors = FALSE
+            )
+          )
+          fills_found <- c(fills_found, result$fills)
+          all_items <- c(all_items, list(result$q_item))
+        }
+
+        # TODO: Handle expanded$generated_variables and expanded$control_variables
 
       } else if (item_type == "control_assignment") {
         # Create control assignment item
