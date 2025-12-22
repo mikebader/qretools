@@ -80,19 +80,22 @@
   all_items <- list()
   source_files <- character()
 
+  # Helper to add metadata to items
+  .add_metadata <- function(content, file_path) {
+    for (i in seq_along(content)) {
+      content[[i]]$source_file <- file_path
+      content[[i]]$file_position <- i
+    }
+    content
+  }
+
   if (is_file) {
     # Single file
     file_path <- paste0(source_path, ".yml")
     content <- .read_yaml_safe(file_path, basename(file_path))
 
     if (!is.null(content) && length(content) > 0) {
-      # Add source_file and file_position to each item
-      for (i in seq_along(content)) {
-        name <- names(content)[i]
-        content[[name]]$source_file <- file_path
-        content[[name]]$file_position <- i
-      }
-      all_items <- content
+      all_items <- .add_metadata(content, file_path)
     }
     source_files <- file_path
     source_type <- "file"
@@ -100,7 +103,7 @@
   } else {
     # Directory - read all .yml files in alphabetical order
     yml_files <- list.files(source_path, pattern = "\\.yml$", full.names = TRUE)
-    yml_files <- sort(yml_files)  # Alphabetical order
+    yml_files <- sort(yml_files)
 
     if (length(yml_files) == 0) {
       stop("No .yml files found in directory: ", source_path, call. = FALSE)
@@ -110,12 +113,7 @@
       content <- .read_yaml_safe(file_path, basename(file_path))
 
       if (!is.null(content) && length(content) > 0) {
-        # Add source_file and file_position to each item
-        for (i in seq_along(content)) {
-          name <- names(content)[i]
-          content[[name]]$source_file <- file_path
-          content[[name]]$file_position <- i
-        }
+        content <- .add_metadata(content, file_path)
         all_items <- c(all_items, content)
       }
     }
