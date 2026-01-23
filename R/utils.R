@@ -147,52 +147,52 @@
   errors <- character()
 
   # 1. Check required fields
-  required_fields <- c("varname", "title", "type", "vargroup", "question_text", "surveys_used")
+  required_fields <- c("variable_id", "title", "storage_type", "vargroup", "question_text", "surveys_used")
 
-  for (varname in names(variables)) {
-    var <- variables[[varname]]
+  for (variable_id in names(variables)) {
+    var <- variables[[variable_id]]
     missing <- setdiff(required_fields, names(var))
 
     if (length(missing) > 0) {
       errors <- c(errors,
                   sprintf("Variable '%s': Missing required fields: %s",
-                          varname, paste(missing, collapse = ", ")))
+                          variable_id, paste(missing, collapse = ", ")))
     }
   }
 
   # 2. Check valid types
   valid_types <- c("integer", "numeric", "factor", "character", "composite", "multiple_response")
 
-  for (varname in names(variables)) {
-    var <- variables[[varname]]
-    if (!is.null(var$type) && !var$type %in% valid_types) {
+  for (variable_id in names(variables)) {
+    var <- variables[[variable_id]]
+    if (!is.null(var$storage_type) && !var$storage_type %in% valid_types) {
       errors <- c(errors,
                   sprintf("Variable '%s': Invalid type '%s'. Must be one of: %s",
-                          varname, var$type, paste(valid_types, collapse = ", ")))
+                          variable_id, var$storage_type, paste(valid_types, collapse = ", ")))
     }
   }
 
   # 3. Conditional requirements
-  for (varname in names(variables)) {
-    var <- variables[[varname]]
+  for (variable_id in names(variables)) {
+    var <- variables[[variable_id]]
 
     # Factor must have value_labels_name
-    if (!is.null(var$type) && var$type == "factor" && is.null(var$value_labels_name)) {
+    if (!is.null(var$storage_type) && var$storage_type == "factor" && is.null(var$value_labels_name)) {
       errors <- c(errors,
-                  sprintf("Variable '%s': type='factor' requires value_labels_name", varname))
+                  sprintf("Variable '%s': storage_type='factor' requires value_labels_name", variable_id))
     }
 
     # Restricted must have reason
     if (isTRUE(var$restricted_access) && is.null(var$restriction_reason)) {
       errors <- c(errors,
-                  sprintf("Variable '%s': restricted_access=true requires restriction_reason", varname))
+                  sprintf("Variable '%s': restricted_access=true requires restriction_reason", variable_id))
     }
 
     # creates_variables requires variable_parts
     if (!is.null(var$creates_variables)) {
       if (is.null(var$variable_parts)) {
         errors <- c(errors,
-                    sprintf("Variable '%s': creates_variables specified but variable_parts missing", varname))
+                    sprintf("Variable '%s': creates_variables specified but variable_parts missing", variable_id))
       } else {
         # Check all created variables are defined
         created <- var$creates_variables
@@ -202,13 +202,13 @@
         if (length(missing) > 0) {
           errors <- c(errors,
                       sprintf("Variable '%s': Variables in creates_variables not defined in variable_parts: %s",
-                              varname, paste(missing, collapse = ", ")))
+                              variable_id, paste(missing, collapse = ", ")))
         }
       }
     }
   }
 
-  # 4. Check for duplicate varnames (should already be caught, but double-check)
+  # 4. Check for duplicate variable_ids (should already be caught, but double-check)
   if (any(duplicated(names(variables)))) {
     dups <- names(variables)[duplicated(names(variables))]
     errors <- c(errors,
@@ -216,8 +216,8 @@
   }
 
   # 5. Version consistency (if versions present)
-  for (varname in names(variables)) {
-    var <- variables[[varname]]
+  for (variable_id in names(variables)) {
+    var <- variables[[variable_id]]
 
     if (!is.null(var$versions)) {
       version_years <- unlist(lapply(var$versions, function(v) v$years))
@@ -225,19 +225,19 @@
       # Check for overlapping years
       if (any(duplicated(version_years))) {
         errors <- c(errors,
-                    sprintf("Variable '%s': Overlapping years in versions", varname))
+                    sprintf("Variable '%s': Overlapping years in versions", variable_id))
       }
 
       # Check version years are subset of years_used
       if (!all(version_years %in% var$years_used)) {
         errors <- c(errors,
-                    sprintf("Variable '%s': Version years must be subset of years_used", varname))
+                    sprintf("Variable '%s': Version years must be subset of years_used", variable_id))
       }
 
       # Check all years_used are covered by versions
       if (!all(var$years_used %in% version_years)) {
         errors <- c(errors,
-                    sprintf("Variable '%s': Not all years_used are covered by versions", varname))
+                    sprintf("Variable '%s': Not all years_used are covered by versions", variable_id))
       }
     }
   }
@@ -246,15 +246,15 @@
   if (validate_value_labels && !is.null(value_labels)) {
     missing_labels <- character()
 
-    for (varname in names(variables)) {
-      var <- variables[[varname]]
+    for (variable_id in names(variables)) {
+      var <- variables[[variable_id]]
 
       if (!is.null(var$value_labels_name)) {
         label_name <- var$value_labels_name
 
         if (!label_name %in% names(value_labels$labels)) {
           missing_labels <- c(missing_labels,
-                              sprintf("  Variable '%s' references '%s'", varname, label_name))
+                              sprintf("  Variable '%s' references '%s'", variable_id, label_name))
         }
       }
     }
@@ -293,19 +293,19 @@
   }
 
   # Build indices
-  varnames <- names(variables)
+  variable_ids <- names(variables)
 
-  # by_varname: alphabetical
-  by_varname <- sort(varnames)
+  # by_variable_id: alphabetical
+  by_variable_id <- sort(variable_ids)
 
   # by_file: group by source file
   by_file <- list()
-  for (varname in varnames) {
-    file <- basename(variables[[varname]]$source_file)
+  for (variable_id in variable_ids) {
+    file <- basename(variables[[variable_id]]$source_file)
     if (is.null(by_file[[file]])) {
       by_file[[file]] <- character()
     }
-    by_file[[file]] <- c(by_file[[file]], varname)
+    by_file[[file]] <- c(by_file[[file]], variable_id)
   }
 
   # by_file_position: sort by file order, then by position within file
@@ -332,7 +332,7 @@
         n_variables = length(variables),
         read_time = Sys.time(),
         indices = list(
-          by_varname = by_varname,
+          by_variable_id = by_variable_id,
           by_file = by_file,
           by_file_position = by_file_position
         )

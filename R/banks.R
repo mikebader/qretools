@@ -16,11 +16,17 @@
                                    item_type = "variables",
                                    class_name = c("qt_bank"),
                                    validate_value_labels = TRUE) {
+
   # 1. Resolve path
   source_path <- .qt_resolve_path(config_path_name, path, config)
 
   # 2. Read YAML file(s)
   result <- .qt_read_yaml_files(source_path, item_type)
+
+  # 2.5 Add varname from dictionary key to each item
+  for (variable_id in names(result$items)) {
+    result$items[[variable_id]]$variable_id <- variable_id
+  }
 
   # 3. Load value labels for validation (if needed)
   value_labels <- if (validate_value_labels) {
@@ -46,11 +52,10 @@
 
   constructor_fn <- get(constructor_name)
 
-  vars_with_classes <- lapply(names(result$items), function(varname) {
-    var_data <- result$items[[varname]]
+  vars_with_classes <- lapply(result$items, function(var_data) {
     constructor_fn(var_data)
   })
-  names(vars_with_classes) <- names(result$items)
+  names(vars_with_classes) <- sapply(result$items, function(x) x$variable_id)
 
   # Use the typed variables for the rest of the function
   result$items <- vars_with_classes
@@ -77,7 +82,7 @@
 #' @return An S3 object of class \code{qt_qbank}, \code{qt_genbank}, or
 #'   \code{qt_ctrlbank} (all inherit from \code{qt_bank}). Contains:
 #'   \describe{
-#'     \item{variables}{Named list of variables, indexed by varname}
+#'     \item{variables}{Named list of variables, indexed by variable_id}
 #'     \item{meta}{Metadata including source files, read time, and indices}
 #'   }
 #'
@@ -105,7 +110,7 @@
 #' }
 #'
 #' **Returned Structure:**
-#' Variables are returned in a named list indexed by \code{varname}, with metadata
+#' Variables are returned in a named list indexed by \code{variable_id}, with metadata
 #' providing multiple access patterns:
 #' \itemize{
 #'   \item{\code{$meta$indices$by_varname}: Alphabetical order}
@@ -130,7 +135,7 @@
 #' qbank$variables$nhd_sat
 #'
 #' # List all questions alphabetically
-#' qbank$meta$indices$by_varname
+#' qbank$meta$indices$by_variable_id
 #'
 #' # Read generated variables
 #' genbank <- qt_genbank()

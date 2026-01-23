@@ -105,7 +105,7 @@ description: string             # REQUIRED - What this computes/sets
 command: string                 # REQUIRED - R expression to execute
 requires: array[string]         # Parameter names required in command
 provides: array[string]         # Parameter names created/set (required if
-                                # parameters used later in survey flow)
+                                #    parameters used later in survey flow)
 note: string                    # Implementation notes
 programmer_note: string         # Note to survey programmer
 ```

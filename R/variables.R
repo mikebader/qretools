@@ -19,9 +19,9 @@
 #' @section Required Fields:
 #'
 #' **All variable types require:**
-#' - `varname`: Variable name (string)
+#' - `variable_id`: Variable identifier (string)
 #' - `title`: Short descriptive title (string)
-#' - `type`: Data type (factor, integer, numeric, character, composite, multiple_response)
+#' - `storage_type`: Data type (factor, integer, numeric, character, composite, multiple_response)
 #' - `vargroup`: Topic grouping (string)
 #' - `question_text`: Full question text as asked (string)
 #' - `surveys_used`: Survey instances where fielded (string vector, e.g., c("bas-2023", "bas-2024"))
@@ -31,15 +31,15 @@
 #' - Control variables: `variable_role` must be "parameter"
 #' - Generated variables: `variable_role` must be "generated", requires `derivation_method`
 #' - Restricted variables: `restriction_reason` required if `restricted_access = TRUE`
-#' - Multi-part questions: `creates_variables` and `variable_parts` required if type is "composite" or "multiple_response"
+#' - Multi-part questions: `creates_variables` and `variable_parts` required if storage_type is "composite" or "multiple_response"
 #'
 #' @examples
 #' \dontrun{
 #' # Create a question variable
 #' q_data <- list(
-#'   varname = "nhd_sat",
+#'   variable_id = "nhd_sat",
 #'   title = "Neighborhood Satisfaction",
-#'   type = "factor",
+#'   storage_type = "factor",
 #'   vargroup = "nhd",
 #'   question_text = "How satisfied are you with your neighborhood?",
 #'   value_labels_name = "satisfied5",
@@ -49,9 +49,9 @@
 #'
 #' # Create a control parameter
 #' ctrl_data <- list(
-#'   varname = "JURISDICTION",
+#'   variable_id = "JURISDICTION",
 #'   title = "Survey Jurisdiction",
-#'   type = "character",
+#'   storage_type = "character",
 #'   vargroup = "svy",
 #'   question_text = "Baltimore City or Baltimore County",
 #'   variable_role = "parameter",
@@ -61,9 +61,9 @@
 #'
 #' # Create a generated variable
 #' gen_data <- list(
-#'   varname = "dem_income",
+#'   variable_id = "dem_income",
 #'   title = "Household Income",
-#'   type = "factor",
+#'   storage_type = "factor",
 #'   vargroup = "dem",
 #'   question_text = "Household income (combined)",
 #'   value_labels_name = "comb_income",
@@ -80,31 +80,31 @@ NULL
 #' @export
 qt_make_qvar <- function(var_data) {
   # Validate required fields
-  required_fields <- c("varname", "title", "type", "vargroup", "question_text", "surveys_used")
+  required_fields <- c("variable_id", "title", "storage_type", "vargroup", "question_text", "surveys_used")
   missing <- setdiff(required_fields, names(var_data))
 
   if (length(missing) > 0) {
     stop(sprintf(
       "Missing required fields for question variable '%s': %s",
-      var_data$varname %||% "[unknown]",
+      var_data$variable_id %||% "[unknown]",
       paste(missing, collapse = ", ")
     ), call. = FALSE)
   }
 
   # Validate type
   valid_types <- c("integer", "numeric", "factor", "character", "composite", "multiple_response")
-  if (!var_data$type %in% valid_types) {
+  if (!var_data$storage_type %in% valid_types) {
     stop(sprintf(
-      "Invalid type '%s' for variable '%s'. Must be one of: %s",
-      var_data$type, var_data$varname, paste(valid_types, collapse = ", ")
+      "Invalid storage_type '%s' for variable '%s'. Must be one of: %s",
+      var_data$storage_type, var_data$variable_id, paste(valid_types, collapse = ", ")
     ), call. = FALSE)
   }
 
   # Conditional validation: factor variables must have value_labels_name
-  if (var_data$type == "factor" && is.null(var_data$value_labels_name)) {
+  if (var_data$storage_type == "factor" && is.null(var_data$value_labels_name)) {
     stop(sprintf(
       "Factor variable '%s' must specify 'value_labels_name'",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
@@ -112,22 +112,22 @@ qt_make_qvar <- function(var_data) {
   if (isTRUE(var_data$restricted_access) && is.null(var_data$restriction_reason)) {
     stop(sprintf(
       "Variable '%s' has restricted_access=TRUE but missing 'restriction_reason'",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
   # Conditional validation: multi-part questions
-  if (var_data$type %in% c("composite", "multiple_response")) {
+  if (var_data$storage_type %in% c("composite", "multiple_response")) {
     if (is.null(var_data$creates_variables)) {
       stop(sprintf(
-        "Multi-part variable '%s' (type='%s') must specify 'creates_variables'",
-        var_data$varname, var_data$type
+        "Multi-part variable '%s' (storage_type='%s') must specify 'creates_variables'",
+        var_data$variable_id, var_data$storage_type
       ), call. = FALSE)
     }
     if (is.null(var_data$variable_parts)) {
       stop(sprintf(
         "Multi-part variable '%s' must specify 'variable_parts'",
-        var_data$varname
+        var_data$variable_id
       ), call. = FALSE)
     }
   }
@@ -136,7 +136,7 @@ qt_make_qvar <- function(var_data) {
   if (!is.character(var_data$surveys_used)) {
     stop(sprintf(
       "Field 'surveys_used' for variable '%s' must be a character vector",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
@@ -156,23 +156,23 @@ qt_make_qvar <- function(var_data) {
 #' @export
 qt_make_ctrlvar <- function(var_data) {
   # Validate required fields (same as qvar)
-  required_fields <- c("varname", "title", "type", "vargroup", "question_text", "surveys_used")
+  required_fields <- c("variable_id", "title", "storage_type", "vargroup", "question_text", "surveys_used")
   missing <- setdiff(required_fields, names(var_data))
 
   if (length(missing) > 0) {
     stop(sprintf(
       "Missing required fields for control parameter '%s': %s",
-      var_data$varname %||% "[unknown]",
+      var_data$variable_id %||% "[unknown]",
       paste(missing, collapse = ", ")
     ), call. = FALSE)
   }
 
   # Validate type
   valid_types <- c("integer", "numeric", "factor", "character", "composite", "multiple_response")
-  if (!var_data$type %in% valid_types) {
+  if (!var_data$storage_type %in% valid_types) {
     stop(sprintf(
-      "Invalid type '%s' for parameter '%s'. Must be one of: %s",
-      var_data$type, var_data$varname, paste(valid_types, collapse = ", ")
+      "Invalid storage_type '%s' for parameter '%s'. Must be one of: %s",
+      var_data$storage_type, var_data$variable_id, paste(valid_types, collapse = ", ")
     ), call. = FALSE)
   }
 
@@ -180,15 +180,15 @@ qt_make_ctrlvar <- function(var_data) {
   if (is.null(var_data$variable_role) || var_data$variable_role != "parameter") {
     stop(sprintf(
       "Control parameter '%s' must have variable_role='parameter'",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
   # Conditional validation: factor variables must have value_labels_name
-  if (var_data$type == "factor" && is.null(var_data$value_labels_name)) {
+  if (var_data$storage_type == "factor" && is.null(var_data$value_labels_name)) {
     stop(sprintf(
       "Factor parameter '%s' must specify 'value_labels_name'",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
@@ -196,7 +196,7 @@ qt_make_ctrlvar <- function(var_data) {
   if (isTRUE(var_data$restricted_access) && is.null(var_data$restriction_reason)) {
     stop(sprintf(
       "Parameter '%s' has restricted_access=TRUE but missing 'restriction_reason'",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
@@ -204,7 +204,7 @@ qt_make_ctrlvar <- function(var_data) {
   if (!is.character(var_data$surveys_used)) {
     stop(sprintf(
       "Field 'surveys_used' for parameter '%s' must be a character vector",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
@@ -219,23 +219,23 @@ qt_make_ctrlvar <- function(var_data) {
 #' @export
 qt_make_genvar <- function(var_data) {
   # Validate required fields (same as qvar)
-  required_fields <- c("varname", "title", "type", "vargroup", "question_text", "surveys_used")
+  required_fields <- c("variable_id", "title", "storage_type", "vargroup", "question_text", "surveys_used")
   missing <- setdiff(required_fields, names(var_data))
 
   if (length(missing) > 0) {
     stop(sprintf(
       "Missing required fields for generated variable '%s': %s",
-      var_data$varname %||% "[unknown]",
+      var_data$variable_id %||% "[unknown]",
       paste(missing, collapse = ", ")
     ), call. = FALSE)
   }
 
   # Validate type
   valid_types <- c("integer", "numeric", "factor", "character", "composite", "multiple_response")
-  if (!var_data$type %in% valid_types) {
+  if (!var_data$storage_type %in% valid_types) {
     stop(sprintf(
-      "Invalid type '%s' for generated variable '%s'. Must be one of: %s",
-      var_data$type, var_data$varname, paste(valid_types, collapse = ", ")
+      "Invalid storage_type '%s' for generated variable '%s'. Must be one of: %s",
+      var_data$storage_type, var_data$variable_id, paste(valid_types, collapse = ", ")
     ), call. = FALSE)
   }
 
@@ -243,7 +243,7 @@ qt_make_genvar <- function(var_data) {
   if (is.null(var_data$variable_role) || var_data$variable_role != "generated") {
     stop(sprintf(
       "Generated variable '%s' must have variable_role='generated'",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
@@ -251,15 +251,15 @@ qt_make_genvar <- function(var_data) {
   if (is.null(var_data$derivation_method)) {
     stop(sprintf(
       "Generated variable '%s' must specify 'derivation_method'",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
   # Conditional validation: factor variables must have value_labels_name
-  if (var_data$type == "factor" && is.null(var_data$value_labels_name)) {
+  if (var_data$storage_type == "factor" && is.null(var_data$value_labels_name)) {
     stop(sprintf(
       "Factor variable '%s' must specify 'value_labels_name'",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
@@ -267,7 +267,7 @@ qt_make_genvar <- function(var_data) {
   if (isTRUE(var_data$restricted_access) && is.null(var_data$restriction_reason)) {
     stop(sprintf(
       "Generated variable '%s' has restricted_access=TRUE but missing 'restriction_reason'",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 
@@ -275,7 +275,7 @@ qt_make_genvar <- function(var_data) {
   if (!is.character(var_data$surveys_used)) {
     stop(sprintf(
       "Field 'surveys_used' for generated variable '%s' must be a character vector",
-      var_data$varname
+      var_data$variable_id
     ), call. = FALSE)
   }
 

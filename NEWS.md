@@ -1,3 +1,3 @@
-3# qretools (development version)
+# qretools (development version)
 
 * Initial CRAN submission.

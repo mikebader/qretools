@@ -523,12 +523,12 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   )
 
   # Process 'else' branch if present
-  else_items <- if (!is.null(item$else)) {
+  else_items <- if (!is.null(item[["else"]])) {
     else_context <- container_context
     else_context$logic_condition <- item$condition
     else_context$logic_branch <- "else"
     .process_items_recursive(
-      item$else,
+      item[["else"]],
       section_id = section_id,
       qbank = qbank,
       candidates = candidates,
