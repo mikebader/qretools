@@ -3,6 +3,12 @@
 # These are helper functions used across multiple qretools functions.
 # They are not exported and are prefixed with . to indicate internal use.
 
+# Null-coalescing operator: return lhs if not NULL, otherwise rhs
+#
+# @keywords internal
+# @noRd
+`%||%` <- function(lhs, rhs) if (!is.null(lhs)) lhs else rhs
+
 #' Parse YAML File with User-Friendly Error Messages
 #'
 #' Internal helper to read YAML files and provide clear error messages
@@ -142,16 +148,35 @@
 # @param variables Named list of variables (from YAML)
 # @param value_labels qt_vlabs object or NULL - for validating label references
 # @param validate_value_labels Logical - whether to check value label references exist
+# @param bank_type Character string - type of bank being validated; one of
+#   "questions", "generated variables", "control parameters"
 # @return Invisible TRUE on success, stops with error on validation failure
-.qt_validate_variables <- function(variables, value_labels = NULL, validate_value_labels = TRUE) {
+.qt_validate_variables <- function(variables, value_labels = NULL, validate_value_labels = TRUE,
+                                   bank_type = "questions") {
   errors <- character()
 
-  # 1. Check required fields
-  required_fields <- c("variable_id", "title", "storage_type", "vargroup", "question_text", "surveys_used")
+  # 1. Check required fields (common to all bank types)
+  required_fields <- c("variable_id", "title", "surveys_used")
+
+  # Determine the required text field by bank type
+  requires_question_text <- bank_type == "questions"
 
   for (variable_id in names(variables)) {
     var <- variables[[variable_id]]
     missing <- setdiff(required_fields, names(var))
+
+    # Check for required text field
+    if (requires_question_text) {
+      if (is.null(var$question_text)) {
+        missing <- c(missing, "question_text")
+      }
+    } else {
+      # Generated variables and control parameters use 'description'
+      # (but also accept 'question_text' for backward compatibility)
+      if (is.null(var$description) && is.null(var$question_text)) {
+        missing <- c(missing, "description")
+      }
+    }
 
     if (length(missing) > 0) {
       errors <- c(errors,
@@ -160,15 +185,18 @@
     }
   }
 
-  # 2. Check valid types
-  valid_types <- c("integer", "numeric", "factor", "character", "composite", "multiple_response")
+  # 2. Check valid types (storage_type, variable_type, or response_type)
+  valid_types <- c("integer", "numeric", "factor", "character", "composite",
+                   "multiple_response", "logical", "boolean")
 
   for (variable_id in names(variables)) {
     var <- variables[[variable_id]]
-    if (!is.null(var$storage_type) && !var$storage_type %in% valid_types) {
+    # Accept storage_type or variable_type (schema alias for gen/ctrl banks)
+    type_val <- var$storage_type %||% var$variable_type
+    if (!is.null(type_val) && !type_val %in% valid_types) {
       errors <- c(errors,
                   sprintf("Variable '%s': Invalid type '%s'. Must be one of: %s",
-                          variable_id, var$storage_type, paste(valid_types, collapse = ", ")))
+                          variable_id, type_val, paste(valid_types, collapse = ", ")))
     }
   }
 
@@ -176,10 +204,13 @@
   for (variable_id in names(variables)) {
     var <- variables[[variable_id]]
 
-    # Factor must have value_labels_name
-    if (!is.null(var$storage_type) && var$storage_type == "factor" && is.null(var$value_labels_name)) {
+    # Factor must have value_labels_name OR value_label_id
+    type_val <- var$storage_type %||% var$variable_type
+    has_value_labels <- !is.null(var$value_labels_name) || !is.null(var$value_label_id)
+    if (!is.null(type_val) && type_val == "factor" && !has_value_labels) {
       errors <- c(errors,
-                  sprintf("Variable '%s': storage_type='factor' requires value_labels_name", variable_id))
+                  sprintf("Variable '%s': type='factor' requires value_labels_name or value_label_id",
+                          variable_id))
     }
 
     # Restricted must have reason
@@ -249,9 +280,9 @@
     for (variable_id in names(variables)) {
       var <- variables[[variable_id]]
 
-      if (!is.null(var$value_labels_name)) {
-        label_name <- var$value_labels_name
-
+      # Accept value_labels_name or value_label_id (schema alias)
+      label_name <- var$value_labels_name %||% var$value_label_id
+      if (!is.null(label_name)) {
         if (!label_name %in% names(value_labels$labels)) {
           missing_labels <- c(missing_labels,
                               sprintf("  Variable '%s' references '%s'", variable_id, label_name))
@@ -320,6 +351,18 @@
     }
   }
 
+  # by_survey: group variable IDs by survey wave
+  by_survey <- list()
+  for (var_id in variable_ids) {
+    surveys <- variables[[var_id]]$surveys_used
+    if (!is.null(surveys)) {
+      for (s in surveys) {
+        if (is.null(by_survey[[s]])) by_survey[[s]] <- character(0)
+        by_survey[[s]] <- c(by_survey[[s]], var_id)
+      }
+    }
+  }
+
   # Build final structure
   structure(
     list(
@@ -334,7 +377,8 @@
         indices = list(
           by_variable_id = by_variable_id,
           by_file = by_file,
-          by_file_position = by_file_position
+          by_file_position = by_file_position,
+          by_survey = by_survey
         )
       )
     ),

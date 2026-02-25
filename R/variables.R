@@ -3,6 +3,35 @@
 # These functions create typed variable objects from YAML data.
 # All constructors are strict - they fail on missing required fields.
 
+# Internal helper: Map response_type to storage_type
+#
+# @param response_type Character string - response type from schema
+# @return Character string - corresponding storage type
+# @keywords internal
+# @noRd
+.qt_response_to_storage <- function(response_type) {
+  mapping <- c(
+    factor        = "factor",
+    character     = "character",
+    integer       = "integer",
+    number        = "numeric",
+    ranking       = "integer",
+    select_all    = "multiple_response",
+    loop          = NA_character_
+  )
+  if (!response_type %in% names(mapping)) {
+    stop(sprintf(
+      "Unknown response_type '%s'. Must be one of: %s",
+      response_type, paste(names(mapping), collapse = ", ")
+    ), call. = FALSE)
+  }
+  result <- mapping[[response_type]]
+  if (is.na(result)) {
+    stop("response_type='loop' requires an explicit storage_type to be specified", call. = FALSE)
+  }
+  result
+}
+
 #' Create Variable Objects
 #'
 #' Constructor functions for creating typed variable objects from YAML data.
@@ -79,6 +108,11 @@ NULL
 #' @rdname variable-constructors
 #' @export
 qt_make_qvar <- function(var_data) {
+  # Handle response_type → storage_type mapping
+  if (!is.null(var_data$response_type) && is.null(var_data$storage_type)) {
+    var_data$storage_type <- .qt_response_to_storage(var_data$response_type)
+  }
+
   # Validate required fields
   required_fields <- c("variable_id", "title", "storage_type", "vargroup", "question_text", "surveys_used")
   missing <- setdiff(required_fields, names(var_data))
@@ -92,7 +126,8 @@ qt_make_qvar <- function(var_data) {
   }
 
   # Validate type
-  valid_types <- c("integer", "numeric", "factor", "character", "composite", "multiple_response")
+  valid_types <- c("integer", "numeric", "factor", "character", "composite",
+                   "multiple_response", "logical", "boolean")
   if (!var_data$storage_type %in% valid_types) {
     stop(sprintf(
       "Invalid storage_type '%s' for variable '%s'. Must be one of: %s",
@@ -100,12 +135,18 @@ qt_make_qvar <- function(var_data) {
     ), call. = FALSE)
   }
 
-  # Conditional validation: factor variables must have value_labels_name
-  if (var_data$storage_type == "factor" && is.null(var_data$value_labels_name)) {
+  # Conditional validation: factor variables must have value_labels_name or value_label_id
+  is_factor <- var_data$storage_type == "factor"
+  has_value_labels <- !is.null(var_data$value_labels_name) || !is.null(var_data$value_label_id)
+  if (is_factor && !has_value_labels) {
     stop(sprintf(
-      "Factor variable '%s' must specify 'value_labels_name'",
+      "Factor variable '%s' must specify 'value_labels_name' or 'value_label_id'",
       var_data$variable_id
     ), call. = FALSE)
+  }
+  # Normalize value_label_id → value_labels_name for internal consistency
+  if (is.null(var_data$value_labels_name) && !is.null(var_data$value_label_id)) {
+    var_data$value_labels_name <- var_data$value_label_id
   }
 
   # Conditional validation: restricted access requires restriction_reason
@@ -155,9 +196,27 @@ qt_make_qvar <- function(var_data) {
 #' @rdname variable-constructors
 #' @export
 qt_make_ctrlvar <- function(var_data) {
-  # Validate required fields (same as qvar)
-  required_fields <- c("variable_id", "title", "storage_type", "vargroup", "question_text", "surveys_used")
+  # Handle variable_type → storage_type alias (per schema for control/generated banks)
+  if (!is.null(var_data$variable_type) && is.null(var_data$storage_type)) {
+    var_data$storage_type <- var_data$variable_type
+  }
+
+  # Handle response_type → storage_type mapping
+  if (!is.null(var_data$response_type) && is.null(var_data$storage_type)) {
+    var_data$storage_type <- .qt_response_to_storage(var_data$response_type)
+  }
+
+  # Handle description → question_text alias (per schema for control/generated banks)
+  if (!is.null(var_data$description) && is.null(var_data$question_text)) {
+    var_data$question_text <- var_data$description
+  }
+
+  # Validate required fields
+  required_fields <- c("variable_id", "title", "storage_type", "surveys_used")
   missing <- setdiff(required_fields, names(var_data))
+  if (is.null(var_data$question_text)) {
+    missing <- c(missing, "description (or question_text)")
+  }
 
   if (length(missing) > 0) {
     stop(sprintf(
@@ -168,7 +227,8 @@ qt_make_ctrlvar <- function(var_data) {
   }
 
   # Validate type
-  valid_types <- c("integer", "numeric", "factor", "character", "composite", "multiple_response")
+  valid_types <- c("integer", "numeric", "factor", "character", "composite",
+                   "multiple_response", "logical", "boolean")
   if (!var_data$storage_type %in% valid_types) {
     stop(sprintf(
       "Invalid storage_type '%s' for parameter '%s'. Must be one of: %s",
@@ -176,20 +236,22 @@ qt_make_ctrlvar <- function(var_data) {
     ), call. = FALSE)
   }
 
-  # Control-specific validation: must have variable_role = "parameter"
-  if (is.null(var_data$variable_role) || var_data$variable_role != "parameter") {
+  # Set default variable_role if not specified
+  if (is.null(var_data$variable_role)) {
+    var_data$variable_role <- "parameter"
+  }
+
+  # Conditional validation: factor variables must have value_labels_name or value_label_id
+  is_factor <- var_data$storage_type == "factor"
+  has_value_labels <- !is.null(var_data$value_labels_name) || !is.null(var_data$value_label_id)
+  if (is_factor && !has_value_labels) {
     stop(sprintf(
-      "Control parameter '%s' must have variable_role='parameter'",
+      "Factor parameter '%s' must specify 'value_labels_name' or 'value_label_id'",
       var_data$variable_id
     ), call. = FALSE)
   }
-
-  # Conditional validation: factor variables must have value_labels_name
-  if (var_data$storage_type == "factor" && is.null(var_data$value_labels_name)) {
-    stop(sprintf(
-      "Factor parameter '%s' must specify 'value_labels_name'",
-      var_data$variable_id
-    ), call. = FALSE)
+  if (is.null(var_data$value_labels_name) && !is.null(var_data$value_label_id)) {
+    var_data$value_labels_name <- var_data$value_label_id
   }
 
   # Conditional validation: restricted access requires restriction_reason
@@ -218,9 +280,27 @@ qt_make_ctrlvar <- function(var_data) {
 #' @rdname variable-constructors
 #' @export
 qt_make_genvar <- function(var_data) {
-  # Validate required fields (same as qvar)
-  required_fields <- c("variable_id", "title", "storage_type", "vargroup", "question_text", "surveys_used")
+  # Handle variable_type → storage_type alias (per schema for control/generated banks)
+  if (!is.null(var_data$variable_type) && is.null(var_data$storage_type)) {
+    var_data$storage_type <- var_data$variable_type
+  }
+
+  # Handle response_type → storage_type mapping
+  if (!is.null(var_data$response_type) && is.null(var_data$storage_type)) {
+    var_data$storage_type <- .qt_response_to_storage(var_data$response_type)
+  }
+
+  # Handle description → question_text alias (per schema for control/generated banks)
+  if (!is.null(var_data$description) && is.null(var_data$question_text)) {
+    var_data$question_text <- var_data$description
+  }
+
+  # Validate required fields
+  required_fields <- c("variable_id", "title", "storage_type", "surveys_used")
   missing <- setdiff(required_fields, names(var_data))
+  if (is.null(var_data$question_text)) {
+    missing <- c(missing, "description (or question_text)")
+  }
 
   if (length(missing) > 0) {
     stop(sprintf(
@@ -231,7 +311,8 @@ qt_make_genvar <- function(var_data) {
   }
 
   # Validate type
-  valid_types <- c("integer", "numeric", "factor", "character", "composite", "multiple_response")
+  valid_types <- c("integer", "numeric", "factor", "character", "composite",
+                   "multiple_response", "logical", "boolean")
   if (!var_data$storage_type %in% valid_types) {
     stop(sprintf(
       "Invalid storage_type '%s' for generated variable '%s'. Must be one of: %s",
@@ -239,28 +320,22 @@ qt_make_genvar <- function(var_data) {
     ), call. = FALSE)
   }
 
-  # Generated-specific validation: must have variable_role = "generated"
-  if (is.null(var_data$variable_role) || var_data$variable_role != "generated") {
+  # Set default variable_role if not specified
+  if (is.null(var_data$variable_role)) {
+    var_data$variable_role <- "generated"
+  }
+
+  # Conditional validation: factor variables must have value_labels_name or value_label_id
+  is_factor <- var_data$storage_type == "factor"
+  has_value_labels <- !is.null(var_data$value_labels_name) || !is.null(var_data$value_label_id)
+  if (is_factor && !has_value_labels) {
     stop(sprintf(
-      "Generated variable '%s' must have variable_role='generated'",
+      "Factor variable '%s' must specify 'value_labels_name' or 'value_label_id'",
       var_data$variable_id
     ), call. = FALSE)
   }
-
-  # Generated-specific validation: must have derivation_method
-  if (is.null(var_data$derivation_method)) {
-    stop(sprintf(
-      "Generated variable '%s' must specify 'derivation_method'",
-      var_data$variable_id
-    ), call. = FALSE)
-  }
-
-  # Conditional validation: factor variables must have value_labels_name
-  if (var_data$storage_type == "factor" && is.null(var_data$value_labels_name)) {
-    stop(sprintf(
-      "Factor variable '%s' must specify 'value_labels_name'",
-      var_data$variable_id
-    ), call. = FALSE)
+  if (is.null(var_data$value_labels_name) && !is.null(var_data$value_label_id)) {
+    var_data$value_labels_name <- var_data$value_label_id
   }
 
   # Conditional validation: restricted access requires restriction_reason

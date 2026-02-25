@@ -1,0 +1,90 @@
+---
+title: "`r params$title`"
+date: "`r format(Sys.Date(), '%B %d, %Y')`"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    toc_depth: 2
+    theme: flatly
+  pdf_document:
+    toc: true
+    toc_depth: 2
+    latex_engine: xelatex
+params:
+  entries: NULL
+  title: "Codebook"
+  survey: NULL
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+```{r preamble, results='asis'}
+if (!is.null(params$survey)) {
+  cat("> **Survey wave:** ", params$survey, "\n\n", sep = "")
+}
+cat("**Total variables:** ", length(params$entries), "\n\n", sep = "")
+```
+
+---
+
+```{r variables, results='asis'}
+for (entry in params$entries) {
+
+  # --- Heading ---
+  cat("## `", entry$variable_id, "` \u2014 ", entry$title,
+      " {#", entry$variable_id, "}\n\n", sep = "")
+
+  # --- Type badge ---
+  cat("**Type:** `", entry$storage_type, "`", sep = "")
+  if (!is.null(entry$vargroup)) {
+    cat(" &nbsp;&nbsp; **Variable group:** `", entry$vargroup, "`", sep = "")
+  }
+  if (!is.null(entry$universe)) {
+    cat(" &nbsp;&nbsp; **Universe:** ", entry$universe, sep = "")
+  }
+  cat("\n\n")
+
+  # --- Question / Description text ---
+  if (!is.null(entry$text) && nchar(trimws(entry$text)) > 0) {
+    cat(entry$text, "\n\n", sep = "")
+  }
+
+  # --- Value labels ---
+  if (!is.null(entry$value_labels) && length(entry$value_labels) > 0) {
+    vl <- entry$value_labels
+    cat("**Value labels**")
+    if (!is.null(entry$value_labels_name)) {
+      cat(" (`", entry$value_labels_name, "`)", sep = "")
+    }
+    cat(":\n\n")
+    cat("| Value | Label |\n")
+    cat("|-------|-------|\n")
+    for (i in seq_along(vl$values)) {
+      cat("| ", vl$values[i], " | ", vl$labels[i], " |\n", sep = "")
+    }
+    cat("\n")
+  }
+
+  # --- Surveys used ---
+  if (!is.null(params$survey)) {
+    # Single-survey mode: no need to repeat
+  } else if (!is.null(entry$surveys_used) && length(entry$surveys_used) > 0) {
+    cat("**Surveys used:** ", paste(entry$surveys_used, collapse = ", "), "\n\n", sep = "")
+  }
+
+  # --- Source / citation ---
+  if (!is.null(entry$cite) && nchar(trimws(entry$cite)) > 0) {
+    cat("**Source:** ", entry$cite, "\n\n", sep = "")
+  }
+
+  # --- Notes ---
+  if (!is.null(entry$note) && nchar(trimws(entry$note)) > 0) {
+    cat("> **Note:** ", entry$note, "\n\n", sep = "")
+  }
+
+  cat("---\n\n")
+}
+```
