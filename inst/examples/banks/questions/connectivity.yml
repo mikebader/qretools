@@ -1,0 +1,386 @@
+con_gentrust:
+  title: General trust
+  storage_type: factor
+  question_text: Before we move onto the next set of questions, we want to know, generally  speaking,
+    how often do you feel people can be trusted?
+  surveys_used:
+  - bas-2023
+  - bas-2025
+  vargroup: con
+  source: GSS cantrust
+  value_labels_name: always4
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: Before we move onto the next set of questions, we want to know,
+      generally     speaking, how often do you feel people can be trusted?
+    title: General Trust
+    value_labels_name: gentrust
+tsp_appt:
+  title: 'Transportation Insecurity: Reschedule Appointment'
+  storage_type: factor
+  question_text: In the past 30 days, how often did you have to reschedule an appointment
+    because of a problem with transportation?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: con
+  value_labels_name: often3
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the past 30 days, how often did you have to reschedule  an appointment
+      because of a problem with transportation?
+    title: 'Transportation insecurity: reschedule appointment'
+    value_labels_name: tspfrequency3
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: In the past 30 days, how often did you have to reschedule an appointment     because
+      of a problem with transportation?
+    title: 'Transportation Insecurity: Reschedule Appointment'
+tsp_skipgo:
+  title: 'Transportation insecurity: skip going'
+  storage_type: factor
+  question_text: In the past 30 days, how often did you skip going somewhere because
+    of a problem with transportation?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: con
+  value_labels_name: often3
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the past 30 days, how often did you skip going somewhere  because
+      of a problem with transportation?
+    value_labels_name: tspfrequency3
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: In the past 30 days, how often did you skip going somewhere because
+      of a     problem with transportation?
+    title: 'Transportation Insecurity: Skip Going'
+tsp_noleave:
+  title: 'Transportation Insecurity: Not Leave House'
+  storage_type: factor
+  question_text: In the past 30 days, how often were you not able to leave the house
+    when you  wanted to because of a problem with transportation?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: con
+  value_labels_name: often3
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the past 30 days, how often were you not able to leave the house
+      when you wanted to because of a problem with transportation?
+    title: 'Transportation insecurity: not leave house'
+    value_labels_name: tspfrequency3
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: In the past 30 days, how often were you not able to leave the house
+      when     you wanted to because of a problem with transportation?
+    title: 'Transportation Insecurity: Not Leave House'
+tsp_feeldown:
+  title: 'Transportation insecurity: feeling down'
+  storage_type: factor
+  question_text: In the past 30 days, how often did you feel down because you did
+    not have the  transportation you needed?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: con
+  value_labels_name: often3
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the past 30 days, how often did you feel down  because you did
+      not have the transportation you needed?
+    value_labels_name: tspfrequency3
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: In the past 30 days, how often did you feel down because you did
+      not have     the transportation you needed?
+    title: 'Transportation Insecurity: Feeling Down'
+tsp_inconv:
+  title: 'Transportation insecurity: inconvenience others'
+  storage_type: factor
+  question_text: In the past 30 days, how often did you worry about inconveniencing
+    your friends, family, or neighbors because you needed help with transportation?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: con
+  value_labels_name: often3
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the past 30 days, how often did you worry about  inconveniencing
+      your friends, family, or neighbors because you  needed help with transportation?
+    value_labels_name: tspfrequency3
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: In the past 30 days, how often did you worry about inconveniencing
+      your     friends, family, or neighbors because you needed help with transportation?
+    title: 'Transportation Insecurity: Inconvenience Others'
+tsp_affrel:
+  title: 'Transportation insecurity: relationships affected'
+  storage_type: factor
+  question_text: In the past 30 days, how often did problems with transportation affect
+    your  relationships with others?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: con
+  value_labels_name: often3
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the past 30 days, how often did problems with  transportation
+      affect your relationships with others?
+    value_labels_name: tspfrequency3
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: In the past 30 days, how often did problems with transportation
+      affect     your relationships with others?
+    title: 'Transportation Insecurity: Relationships Affected'
+tsp_afford:
+  title: Afford transportation
+  storage_type: factor
+  question_text: Can you usually afford the transportation you need?
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: tsp
+  source: DMACS Wave 18 transport_afford_d18
+  value_labels_name: yesno2
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Afford Transportation
+con_dggthnk:
+  title: 'Thought of by Government: Addressing Overdoses'
+  storage_type: factor
+  question_text: How often do you expect that people in [JURISDICTION] government
+    think about     what residents of [JURISDICTION] want when they make decisions
+    about how to     address the overdose crisis?
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: gthink
+con_dgtreat:
+  title: Find Care to Overcome Drug Problem
+  storage_type: factor
+  question_text: If you knew someone who needed treatment to help them overcome a
+    drug      problem, how easy or hard do you think it would be for them to find     high-quality
+    help in [JURISDICTION]?
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: dgtreat
+con_dgtrqual:
+  title: Quality of Drug Treatment Facilities
+  storage_type: factor
+  question_text: What do you think is the quality of most drug treatment centers in      [JURISDICTION]
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: dgtrqual
+con_use988md:
+  title: 'Use 988: Telemedicine Treatment'
+  storage_type: factor
+  question_text: 988 is a number you can call tollfree to get help. If you encountered
+    any     of the following scenarios, would you call for help using 988? Please     select
+    all of the reasons you would call. [SELECT ALL]           If I or someone I know
+    was looking for a direct connection to telemedicine     treatment for a drug problem
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: yesno01
+con_use988mh:
+  title: 'Use 988: Mental Health Crisis'
+  storage_type: factor
+  question_text: 988 is a number you can call tollfree to get help. If you encountered
+    any     of the following scenarios, would you call for help using 988? Please     select
+    all of the reasons you would call. [SELECT ALL]           If I or someone I know
+    was experiencing a mental health crisis
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: yesno01
+con_use988dp:
+  title: 'Use 988: Help for a Drug Problem'
+  storage_type: factor
+  question_text: 988 is a number you can call tollfree to get help. If you encountered
+    any     of the following scenarios, would you call for help using 988? Please     select
+    all of the reasons you would call. [SELECT ALL]           If I or someone I know
+    needed help for a drug problem
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: yesno01
+con_use988ht:
+  title: 'Use 988: Feeling Down or Depressed'
+  storage_type: factor
+  question_text: 988 is a number you can call tollfree to get help. If you encountered
+    any     of the following scenarios, would you call for help using 988? Please     select
+    all of the reasons you would call. [SELECT ALL]           If I or someone I know
+    was feeling down, depressed, or like they might     hurt themselves
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: yesno01
+con_use988sl:
+  title: 'Use 988: Sleeping Outside'
+  storage_type: factor
+  question_text: 988 is a number you can call tollfree to get help. If you encountered
+    any     of the following scenarios, would you call for help using 988? Please     select
+    all of the reasons you would call. [SELECT ALL]           If I saw someone sleeping
+    outside in unsafe conditions
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: yesno01
+con_use988od:
+  title: 'Use 988: Drug Overdose'
+  storage_type: factor
+  question_text: 988 is a number you can call tollfree to get help. If you encountered
+    any     of the following scenarios, would you call for help using 988? Please     select
+    all of the reasons you would call. [SELECT ALL]           If I saw someone who
+    I believed might be experiencing a drug overdose
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: yesno01
+con_use988tk:
+  title: 'Use 988: Talking or Yelling to Themselves'
+  storage_type: factor
+  question_text: 988 is a number you can call tollfree to get help. If you encountered
+    any     of the following scenarios, would you call for help using 988? Please     select
+    all of the reasons you would call. [SELECT ALL]           If I saw someone talking
+    to themselves or yelling at someone that wasn't     there
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: yesno01
+con_use988no:
+  title: 'Use 988: Have not Heard of 988'
+  storage_type: factor
+  question_text: 988 is a number you can call tollfree to get help. If you encountered
+    any     of the following scenarios, would you call for help using 988? Please     select
+    all of the reasons you would call. [SELECT ALL]           I have not heard of
+    988
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: yesno01
+con_pbycrime:
+  title: Young People Committing Crime in Jurisdiction
+  storage_type: factor
+  question_text: 'How much of a problem is it in [JURISDICTION] that young people
+    are     committing crime? Would you say it is:'
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: problem5
+con_pbvbld:
+  title: Vacant Buildings in Jurisdiction
+  storage_type: factor
+  question_text: How much of a problem are vacant buildings in [JURISDICTION]?
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: problem5
+con_pbnoplc:
+  title: Police Non-response in Jurisdiction
+  storage_type: factor
+  question_text: How much of a problem is it that police do not respond to     crime
+    in [JURISDICTION]?
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: problem5
+con_pbdrugs:
+  title: Drug Use in Jurisdiction
+  storage_type: factor
+  question_text: How much of a problem is the use of  illicit drugs in     [JURISDICTION]?
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: problem5
+con_pbod:
+  title: Drug Overdoses in Jurisdiction
+  storage_type: factor
+  question_text: How much of a problem are drug overdoses in [JURISDICTION]?
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: problem5
+con_pbdsale:
+  title: Drug Sales in Neighborhood
+  storage_type: factor
+  question_text: How much of a problem is the sale of illicit drugs in [JURISDICTION]?
+  surveys_used:
+  - bas-2025
+  vargroup: con
+  value_labels_name: problem5
+con_kbdate1:
+  title: Anticipated time to rebuild Key Bridge
+  storage_type: factor
+  question_text: How long do you think it will take to rebuild the bridge?
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: con
+  value_labels_name: kbdate1
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: As you may know, the Francis Scott Key Bridge was hit by a container
+      ship     and collapsed in March 2024. The next couple of questions ask you about
+      the     impact and your expectations about rebuilding the bridge.            How
+      long do you think it will take to rebuild the bridge?
+    title: Anticipated Time to Rebuild Key Bridge
+con_kbdate2:
+  title: Anticipated time to rebuild Key Bridge (primed)
+  storage_type: factor
+  question_text: "In May, 2024, the State of Maryland announced that it would take\
+    \ just over 4  years to rebuild the Key Bridge. \n\nHow long do you think it will\
+    \ take to rebuild the bridge?"
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: con
+  value_labels_name: kbdate2
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: As you may know, the Francis Scott Key Bridge was hit by a container
+      ship      and collapsed in March 2024. The next couple of questions ask you
+      about the     impact and your expectations about rebuilding the bridge.            In
+      May, 2024, the State of Maryland announced that it would take just over     4
+      years to rebuild the Key Bridge. How long do you think it will take to     rebuild
+      the bridge?
+    title: Anticipated Time to Rebuild Key Bridge (Primed)

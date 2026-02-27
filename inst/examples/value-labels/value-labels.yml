@@ -1,3 +1,178 @@
+a_lot:
+  labels:
+    '1': A lot
+    '2': Some
+    '3': A little
+    '4': None
+a_lot4:
+  labels:
+    '1': A lot
+    '2': Some
+    '3': A little
+    '4': None
+agree4:
+  labels:
+    '1': Strongly agree
+    '2': Agree
+    '3': Disagree
+    '4': Strongly disagree
+agree5:
+  labels:
+    '1': Agree strongly
+    '2': Agree somewhat
+    '3': Neither agree nor disagree
+    '4': Disagree somewhat
+    '5': Disagree strongly
+almost_always:
+  labels:
+    '1': Almost always
+    '2': Usually
+    '3': Not very often
+    '4': Never
+almost_always_business:
+  labels:
+    '1': Almost always
+    '2': Most of the time
+    '3': Some of the time
+    '4': Almost never
+    '5': There are no businesses in or near my neighborhood
+almost_always_npo:
+  labels:
+    '1': Almost always
+    '2': Most of the time
+    '3': Some of the time
+    '4': Almost never
+    '5': There are no nonprofit organizations in or near my neighborhood
+almost_never:
+  labels:
+    '1': Almost always
+    '2': Most of the time
+    '3': Some of the time
+    '4': Almost never
+always:
+  labels:
+    '1': Always
+    '2': Most of the time
+    '3': Some of the time
+    '4': Hardly ever
+    '5': Never
+always4:
+  labels:
+    '1': Almost always
+    '2': Usually
+    '3': Not very often
+    '4': Never
+always5:
+  labels:
+    '1': Always
+    '2': Most of the time
+    '3': Some of the time
+    '4': Hardly ever
+    '5': Never
+amount:
+  labels:
+    '1': None
+    '2': One or two
+    '3': Three or more
+anaage:
+  labels:
+    '1': Under 25
+    '2': 25-34
+    '3': 35-49
+    '4': 50-65
+    '5': 65+
+anaeduc:
+  labels:
+    '1': Less than high school
+    '2': High school or GED
+    '3': Some college
+    '4': Bachelor's degree or higher
+anagender:
+  labels:
+    '1': Female
+    '2': Male
+anainc4:
+  labels:
+    '1': Under $30,000
+    '2': $30,000 to $69,999
+    '3': $70,000 to $109,999
+    '4': $110,000 or more
+anarace:
+  labels:
+    '1': Non-Latinx Black
+    '2': Non-Latinx White
+    '3': Other
+aqburn:
+  labels:
+    '1': Do not have a fireplace
+    '2': Never use a fireplace
+    '3': Once a month
+    '4': A couple of times a month
+    '5': Once a week
+    '6': Several times a week
+    '7': Almost every day
+aqcomp:
+  labels:
+    '1': Among the best
+    '2': Better than most neighborhoods
+    '3': About the same as other neighborhoods
+    '4': Worse than most neighborhoods
+    '5': Among the worst
+aqfreq:
+  labels:
+    '1': Never
+    '2': One or two days
+    '3': About once a week
+    '4': A few times a week
+    '5': Almost every day
+attend_religion:
+  labels:
+    '1': Never
+    '2': Less than once a year
+    '3': About once or twice a year
+    '4': Several times a year
+    '5': About once a year
+    '6': 2-3 times a month
+    '7': Nearly every week
+    '8': Every week
+    '9': Several times a week
+attrel:
+  labels:
+    '1': Never
+    '2': Less than once a year
+    '3': About once or twice a year
+    '4': Several times a year
+    '5': About once a month
+    '6': 2-3 times a month
+    '7': Nearly every week
+    '8': Every week
+    '9': Several times a week
+beforeafter:
+  labels:
+    '1': Before
+    '2': After
+better2:
+  labels:
+    '1': Better
+    '2': Worse
+better3:
+  labels:
+    '1': Better
+    '2': About the same
+    '3': Worse
+better5:
+  labels:
+    '1': Gotten much better
+    '2': Gotten somewhat better
+    '3': Stayed about the same
+    '4': Gotten somewhat worse,
+    '5': Gotten much worse
+bills:
+  labels:
+    '1': Not at all difficult to pay bills
+    '2': Somewhat difficult to pay bills
+    '3': Very difficult to pay bills
+    '4': I'm still not able to pay all bills
 blocks:
   labels:
     '1': Smaller than 1 block
@@ -6,68 +181,6 @@ blocks:
     '4': 10 to 24 blocks
     '5': 25 to 50 blocks
     '6': More than 50 blocks
-satisfied4:
-  labels:
-    '1': Very satisfied
-    '2': Somewhat satisfied
-    '3': Somewhat dissatisfied
-    '4': Very dissatisfied
-satisfied5:
-  labels:
-    '1': Very satisfied
-    '2': Somewhat satisfied
-    '3': Neither satisfied nor dissatisfied
-    '4': Somewhat dissatisfied
-    '5': Very dissatisfied
-agree4:
-  labels:
-    '1': Strongly agree
-    '2': Agree
-    '3': Disagree
-    '4': Strongly disagree
-welcome5:
-  labels:
-    '1': Extremely welcoming
-    '2': Very welcoming
-    '3': Somewhat welcoming
-    '4': A little welcoming
-    '5': Not at all welcoming
-walksafe:
-  labels:
-    '1': Completely safe
-    '2': Mostly safe
-    '3': Fairly safe
-    '4': Not very safe
-    '5': Not at all safe
-kbdate1:
-  labels:
-    '1': Less than four years
-    '2': Four years
-    '3': Five years
-    '4': Six or more years
-    '5': Not sure the bridge will be rebuilt
-kbdate2:
-  labels:
-    '1': Less than four years
-    '2': Four years
-    '3': Five years
-    '4': Six or more years
-    '5': Not sure the bridge will be rebuilt
-sidewlkq:
-  labels:
-    '1': Very good
-    '2': Good
-    '3': Fair
-    '4': Poor
-    '5': Very poor
-    '6': I do not have any sidewalks in my neighborhood
-nhdchange:
-  labels:
-    '1': Become a much better place to live
-    '2': Become a somewhat better place to live
-    '3': Stayed about the same
-    '4': Become a somewhat worse place to live
-    '5': Become a much worse place to live
 change5:
   labels:
     '1': Gotten much better
@@ -75,220 +188,53 @@ change5:
     '3': Stayed about the same
     '4': Gotten somewhat worse
     '5': Gotten much worse
-nbknow:
+clmselflove:
   labels:
-    '1': All
-    '2': Most
-    '3': Some
-    '4': A few
-    '5': None
-    '6': I do not have any neighbors on my street
-problem4:
+    '1': Personal
+    '2': Loved ones
+clmworry:
   labels:
-    '1': Not a problem at all
-    '2': Not much of a problem
-    '3': Somewhat of a problem
-    '4': A big problem
-mvlkly:
+    '1': Almost never
+    '2': Once in a while
+    '3': Sometimes
+    '4': Pretty often
+    '5': Almost all of the time
+comb_income:
   labels:
-    '1': Not at all likely
-    '2': Slightly likely
-    '3': Somewhat likely
-    '4': Pretty likely
-    '5': Very likely
-    '6': Extremely likely
-stayworr:
+    '1': Under $15,000
+    '10': $200,000 or more
+    '2': $15,000 to $29,999
+    '3': $30,000 to $39,999
+    '4': $40,000 to $54,999
+    '5': $55,000 to $69,999
+    '6': $70,000 to $89,999
+    '7': $90,000 to $109,999
+    '8': $110,000 to $139,999
+    '9': $140,000 to $199,999
+compstsplit:
   labels:
-    '1': Not at all
-    '2': A little bit
-    '3': Some
-    '4': Quite a bit
-    '5': A lot
-difficult5:
+    '1': Named
+    '2': Not named
+concern4:
   labels:
-    '1': Very easy
-    '2': Fairly easy
-    '3': Neither easy nor difficult
-    '4': Fairly difficult
-    '5': Very difficult
-schqual:
+    '1': Very concerned
+    '2': Somewhat concerned
+    '3': Not too concerned
+    '4': Not at all concerned
+concern5:
   labels:
-    '1': Excellent
-    '2': Very good
-    '3': Good
-    '4': Fair
-    '5': Poor
-jobsector:
+    '1': Not at all concerned
+    '2': A little concerned
+    '3': Somewhat concerned
+    '4': Very concerned
+    '5': Extremely concerned
+costs:
   labels:
-    '1': A private, for-profit company
-    '2': A nonprofit, tax exempt, or charitable organization
-    '3': A government organization
-    '4': You are self-employed
-jobsector25:
-  labels:
-    '1': A private, for-profit company
-    '2': A nonprofit, tax exempt, or chartiable organization
-    '3': A state or local government organization
-    '4': A federal government organization
-    '5': You are self-employed
-worryjob:
-  labels:
-    '1': I worry a great deal
-    '2': I worry to some extent
-    '3': I worry a little
-    '4': I don't worry at all
-tspnew:
-  labels:
-    '1': Not at all
-    '2': A little bit
-    '3': Somewhat
-    '4': Quite a lot
-    '5': Would not be able to find a new job
-edattain:
-  labels:
-    '1': Did not finish eighth grade
-    '2': Did not finish twelfth grade
-    '3': High school or GED
-    '4': Some college, but no degree
-    '5': Associate's degree
-    '6': Bachelor's degree
-    '7': Master's, Doctorate, or Professional degree (e.g., MD, JD)
-inths:
-  labels:
-    '1': All or almost all the same race as you
-    '2': Mostly the same race as you
-    '3': About evenly split between students the same race as you and other races
-    '4': Mostly a different race than you
-    '5': Almost all a different race than you
-yesno2:
-  labels:
-    '1': 'Yes'
-    '2': 'No'
-govtrust:
-  labels:
-    '1': Almost always
-    '2': Most of the time
-    '3': Some of the time
-    '4': Almost never
-spending3:
-  labels:
-    '1': Spend less
-    '2': Spend the same amount as now
-    '3': Spend more
-spendless:
-  labels:
-    '1': A little less
-    '2': Somewhat less
-    '3': Much less
-spendmore:
-  labels:
-    '1': A little more
-    '2': Somewhat more
-    '3': Much more
-gentrust:
-  labels:
-    '1': Almost always
-    '2': Usually
-    '3': Not very often
-    '4': Never
-mvlklywh:
-  labels:
-    '1': A different home in the same neighborhood
-    '2': A different neighborhood within respondent's jurisdiction
-    '3': In Maryland but outside of respondent's jurisdiction
-    '4': Another state altogether
-mvprefwh:
-  labels:
-    '1': Stay in your current home
-    '2': A different home in the same neighborhood
-    '3': A different neighborhood within respondent's jurisdiction
-    '4': In Maryland but outside of respondent's jurisdiction
-    '5': Another state altogether
-gthink:
-  labels:
-    '1': Always
-    '2': Most of the time
-    '3': Some of the time
-    '4': Hardly ever
-    '5': Never
-gsrv:
-  labels:
-    '1': Very well
-    '2': Somewhat well
-    '3': Not too well
-    '4': Not well at all
-trust4:
-  labels:
-    '1': Almost always
-    '2': Most of the time
-    '3': Some of the time
-    '4': Almost never
-frequency7:
-  labels:
-    '1': None of the time
-    '2': A little bit of the time
-    '3': Some of the time
-    '4': About half of the time
-    '5': Most of the time
-    '6': Almost all of the time
-    '7': All of the time
-grocery:
-  labels:
-    '1': Agree strongly
-    '2': Agree somewhat
-    '3': Neither agree nor disagree
-    '4': Disagree somewhat
-    '5': Disagree strongly
-kbimpact4:
-  labels:
-    '1': Not at all
-    '2': A little
-    '3': Some
-    '4': A great deal
-kbconf5:
-  labels:
-    '1': None
-    '2': A little
-    '3': Some
-    '4': Quite a bit
-    '5': A great deal
-kbhelp6:
-  labels:
-    '1': Very poor
-    '2': Poor
-    '3': Fair
-    '4': Moderate
-    '5': Good
-    '6': Very good
-tspvehcat:
-  labels:
-    '0': '0'
-    '1': '1'
-    '2': '2'
-    '3': '3'
-    '4': 4 or more
-tspfrequency4:
-  labels:
-    '1': Daily
-    '2': A few times a week
-    '3': A few times this month
-    '4': Never
-tspfrequency3:
-  labels:
-    '1': Often
-    '2': Sometimes
-    '3': Never
-tspjurisdiction4:
-  labels:
-    '1': Not at all
-    '2': A little
-    '3': Somewhat
-    '4': Quite a lot
-cstknow:
-  labels:
-    '1': 'Yes'
-    '2': 'No'
-    '3': Do not know
+    '1': Pay much higher costs
+    '2': Pay somewhat higher costs
+    '3': Neither pay higher costs nor save money
+    '4': Save somewhat more money
+    '5': Save much more money
 cstfo:
   labels:
     '1': Favor
@@ -299,6 +245,11 @@ cstfoa:
     '1': A great deal
     '2': Moderately
     '3': A little
+cstknow:
+  labels:
+    '1': 'Yes'
+    '2': 'No'
+    '3': Do not know
 cstop:
   labels:
     '1': Favor a great deal
@@ -308,72 +259,228 @@ cstop:
     '5': Oppose a little
     '6': Oppose moderately
     '7': Oppose a great deal
-sch4:
+cutsizea:
   labels:
-    '1': Not at all important
-    '2': A little important
-    '3': Somewhat important
-    '4': Very important
-clmworry:
+    '1': Almost every month
+    '2': Some months but not every month
+    '3': Only 1 or 2 months
+    '4': 'No'
+days:
   labels:
-    '1': Almost never
-    '2': Once in a while
-    '3': Sometimes
-    '4': Pretty often
-    '5': Almost all of the time
-lmtgov:
+    '1': Not at all
+    '2': Several days
+    '3': More than half the days
+    '4': Nearly every day
+denom:
   labels:
-    '1': Much more
-    '2': Somewhat more
-    '3': A little more
-    '4': About the same amount
-    '5': A little less
-    '6': Somewhat less
-    '7': Much less
-agree5:
+    '1': Baptist
+    '2': Methodist
+    '3': Lutheran
+    '4': Presbyterian
+    '5': Episcopal church
+    '6': No denomination or non-denominational church
+    '7': Other (Please specify)
+dgtreat:
+  labels:
+    '1': Very easy
+    '2': Somewhat easy
+    '3': Somewhat hard
+    '4': Very hard
+    '5': Almost impossible
+dgtrqual:
+  labels:
+    '1': Excellent
+    '2': Very good
+    '3': Fair
+    '4': Poor
+    '5': Very poor
+difficult5:
+  labels:
+    '1': Very easy
+    '2': Fairly easy
+    '3': Neither easy nor difficult
+    '4': Fairly difficult
+    '5': Very difficult
+earned_money:
+  labels:
+    '1': I have earned money in the past 30 days this way
+    '2': I have earned money this way, but not in the past 30 days
+    '3': I have never earned money in this way
+easy:
+  labels:
+    '1': Very easy
+    '2': Fairly easy
+    '3': Neither easy nor difficult
+    '4': Fairly difficult
+    '5': Very difficult
+easy5:
+  labels:
+    '1': Very easy
+    '2': Fairly easy
+    '3': Neither easy nor difficult
+    '4': Fairly difficult
+    '5': Very difficult
+econ4:
+  labels:
+    '1': Excellent
+    '2': Good
+    '3': Fair
+    '4': Poor
+econord:
+  labels:
+    '1': Baltimore area
+    '2': US
+edattain:
+  labels:
+    '1': Did not finish eighth grade
+    '2': Did not finish twelfth grade
+    '3': High school or GED
+    '4': Some college, but no degree
+    '5': Associate's degree
+    '6': Bachelor's degree
+    '7': Master's, Doctorate, or Professional degree (e.g., MD, JD)
+effective:
+  labels:
+    '1': Very effective
+    '2': Somewhat effective
+    '3': Neither effective nor ineffective
+    '4': Somewhat ineffective
+    '5': Very ineffective
+efut5:
+  labels:
+    '1': Getting a lot better
+    '2': Getting a little better
+    '3': Staying about the same
+    '4': Getting a little worse
+    '5': Getting a lot worse
+employed:
+  labels:
+    '1': Working full time
+    '2': Working part time
+    '3': With a job, but not at work because of temporary illness, vacation, strike
+    '4': Unemployed, laid off, looking for work
+    '5': Retired
+    '6': In school
+    '7': Keeping house
+    '8': Disabled and unable to work
+    '9': Other (Please specify)
+employment:
+  labels:
+    '1': Working full time
+    '2': Working part time
+    '3': With a job, but not at work because of temporary illness, vacation, strike
+    '4': Unemployed, laid off, looking for work
+    '5': Retired
+    '6': In school
+    '7': Keeping house
+    '8': Disabled (volunteered)
+    '9': Other
+entrepreneur:
+  labels:
+    '1': Being an entrepreneur
+    '2': Working for an established business
+    '3': They are equally good paths to success
+excellent:
+  labels:
+    '1': Excellent
+    '2': Very Good
+    '3': Good
+    '4': Fair
+    '5': Poor
+excellent5:
+  labels:
+    '1': Excellent
+    '2': Very Good
+    '3': Good
+    '4': Fair
+    '5': Poor
+fair:
+  labels:
+    '1': Very fairly
+    '2': Somewhat fairly
+    '3': Neither fairly or unfairly
+    '4': Somewhat unfairly
+    '5': Very unfairly
+finfut5:
+  labels:
+    '1': Not at all
+    '2': A little
+    '3': Some
+    '4': Quite a bit
+    '5': A great deal
+fips:
+  labels:
+    '24005': '24005'
+    '24510': '24510'
+frequency7:
+  labels:
+    '1': None of the time
+    '2': A little bit of the time
+    '3': Some of the time
+    '4': About half of the time
+    '5': Most of the time
+    '6': Almost all of the time
+    '7': All of the time
+fsifrequency3:
+  labels:
+    '1': Often true
+    '2': Sometimes true
+    '3': Never true
+gender:
+  labels:
+    '1': Female
+    '2': Male
+    '3': Transgender
+    '4': I use a different term (Please specify)
+gentrust:
+  labels:
+    '1': Almost always
+    '2': Usually
+    '3': Not very often
+    '4': Never
+govtrust:
+  labels:
+    '1': Almost always
+    '2': Most of the time
+    '3': Some of the time
+    '4': Almost never
+great_deal:
+  labels:
+    '1': A great deal
+    '2': A moderate amount
+    '3': A little
+    '4': None at all
+great_deal4:
+  labels:
+    '1': A great deal
+    '2': A moderate amount
+    '3': A little
+    '4': None at all
+grocery:
   labels:
     '1': Agree strongly
     '2': Agree somewhat
     '3': Neither agree nor disagree
     '4': Disagree somewhat
     '5': Disagree strongly
-racerel:
+gsrv:
   labels:
-    '1': Never
-    '2': Rarely
-    '3': Sometimes
-    '4': Often
-racelink4:
+    '1': Very well
+    '2': Somewhat well
+    '3': Not too well
+    '4': Not well at all
+gthink:
   labels:
-    '1': Nothing
-    '2': Not very much
-    '3': Some
-    '4': A lot
-influence5:
+    '1': Always
+    '2': Most of the time
+    '3': Some of the time
+    '4': Hardly ever
+    '5': Never
+gun3:
   labels:
-    '1': Not at all
-    '2': A little bit
-    '3': Some
-    '4': Quite a bit
-    '5': A great deal
-votereg:
-  labels:
-    '1': You are absolutely certain you are registered to vote
-    '2': You are unsure if you are registered to vote
-    '3': You are absolutely certain you are not registered to vote
-voteupc:
-  labels:
-    '1': Not at all likely
-    '2': Somewhat likely
-    '3': Very likely
-    '4': Definitely will vote
-voter:
-  labels:
-    '1': I definitely voted in the November general election
-    '2': I attempted to vote but did not or could not
-    '3': I usually vote, but not this time
-    '4': I thought about voting this time - but didn't
-    '5': I did not vote in the election
+    '1': All
+    '2': Some
+    '3': None
 healthrate5:
   labels:
     '1': Excellent
@@ -381,18 +488,35 @@ healthrate5:
     '3': Good
     '4': Fair
     '5': Poor
+heatslp5:
+  labels:
+    '1': Never
+    '2': One or two days
+    '3': About once a week
+    '4': A few times a week
+    '5': Almost every day
+high_income:
+  labels:
+    '1': $70,000 to $89,999
+    '2': $90,000 to $109,999
+    '3': $110,000 to $139,999
+    '4': $140,000 to $199,999
+    '5': $200,000 or more
+highest_degree:
+  labels:
+    '1': Did not finish eighth grade
+    '2': Did not finish twelfth grade
+    '3': High school or GED
+    '4': Some college, but no degree
+    '5': Associate's degree
+    '6': Bachelor's degree
+    '7': Master's, Doctorate, or Professional degree (e.g., MD, JD)
 hltappt:
   labels:
     '1': Never
     '2': A few times
     '3': Several times
     '4': Many times
-rested:
-  labels:
-    '1': Never
-    '2': Some days
-    '3': Most days
-    '4': Every day
 hltfrequency5:
   labels:
     '1': No days
@@ -400,28 +524,6 @@ hltfrequency5:
     '3': Most days
     '4': Every day
     '5': More than once a day
-phq4:
-  labels:
-    '1': Not at all
-    '2': Several days
-    '3': More than half the days
-    '4': Nearly every day
-fsifrequency3:
-  labels:
-    '1': Often true
-    '2': Sometimes true
-    '3': Never true
-cutsizea:
-  labels:
-    '1': Almost every month
-    '2': Some months but not every month
-    '3': Only 1 or 2 months
-    '4': 'No'
-own:
-  labels:
-    '1': Rent
-    '2': Own
-    '3': Some other arrangement
 hmnettyp:
   labels:
     '1': Dial-up (over a landline phone connection)
@@ -437,69 +539,84 @@ hmnettyp25:
     '3': Yes, something else
     '4': No, not subscribed to internet service at home
     '5': Not sure
-married:
+housdiff5:
   labels:
-    '1': Married or in a married-style arrangement
-    '2': Widowed
-    '3': Divorced
-    '4': Separated
-    '5': Never married
-sexlty:
-  labels:
-    '1': Gay or lesbian
-    '2': Straight, that is not gay
-    '3': Bisexual
-    '4': Asexual
-    '5': Something else (please specify)
-religion:
-  labels:
-    '1': Protestant
-    '2': Catholic
-    '3': Eastern Orthodox, such as Greek or Russian Orthodox
-    '4': Jewish
-    '5': Buddhist
-    '6': Hindu
-    '7': Muslim, Islam, Sufi, Sunni, or Shia
-    '8': Some other religion
-    '9': No religion
-denom:
-  labels:
-    '1': Baptist
-    '2': Methodist
-    '3': Lutheran
-    '4': Presbyterian
-    '5': Episcopal church
-    '6': No denomination or non-denominational church
-    '7': Other (Please specify)
-jewtrad:
-  labels:
-    '1': Orthodox
-    '2': Conservative
-    '3': Reform
-    '4': None of these
-    '5': Other (Please specify)
-attrel:
+    '1': Not at all difficult
+    '2': A little difficult
+    '3': Moderately difficult
+    '4': Very difficult
+    '5': Extremely difficult
+housing_payment:
   labels:
     '1': Never
-    '2': Less than once a year
-    '3': About once or twice a year
-    '4': Several times a year
-    '5': About once a month
-    '6': 2-3 times a month
-    '7': Nearly every week
-    '8': Every week
-    '9': Several times a week
-income_70k:
+    '2': Once or twice
+    '3': More than twice
+    '4': My household does not make housing payments
+houslate:
   labels:
-    '1': Under $70,000
-    '2': $70,000 or more
-income_lo:
+    '1': Never
+    '2': Once or twice
+    '3': More than twice
+    '4': My household does not make any housing payments
+housworr5:
+  labels:
+    '1': Never
+    '2': Rarely
+    '3': Sometimes
+    '4': Often
+    '5': Always
+hsloc:
+  labels:
+    '1': The last high school I attended was in a different country
+ideo:
+  labels:
+    '1': Very conservative
+    '2': Conservative
+    '3': Moderate
+    '4': Liberal
+    '5': Very liberal
+ideology:
+  labels:
+    '1': Very conservative
+    '2': Conservative
+    '3': Moderate
+    '4': Liberal
+    '5': Very liberal
+income:
   labels:
     '1': Under $15,000
+    '10': $200,000 or more
     '2': $15,000 to $29,999
     '3': $30,000 to $39,999
     '4': $40,000 to $54,999
     '5': $55,000 to $69,999
+    '6': $70,000 to $89,999
+    '7': $90,000 to $109,999
+    '8': $110,000 to $139,999
+    '9': $140,000 to $199,999
+income25:
+  labels:
+    '1': Under $15,000
+    '10': $200,000 to $249,999
+    '11': $250,000 or more
+    '2': $15,000 to $29,999
+    '3': $30,000 to $39,999
+    '4': $40,000 to $54,999
+    '5': $55,000 to $69,999
+    '6': $70,000 to $89,999
+    '7': $90,000 to $109,999
+    '8': $110,000 to $139,999
+    '9': $140,000 to $199,999
+income_70k:
+  labels:
+    '1': Under $70,000
+    '2': $70,000 or more
+income_amount:
+  labels:
+    '1': Less than half of my income
+    '2': About half of my income
+    '3': Most of my income
+    '4': All of my income
 income_hi:
   labels:
     '1': $70,000 to $89,999
@@ -515,82 +632,301 @@ income_hi25:
     '4': $140,000 to $199,999
     '5': $200,000 to $249,999
     '6': $250,000 or more
-income:
+income_lo:
   labels:
     '1': Under $15,000
     '2': $15,000 to $29,999
     '3': $30,000 to $39,999
     '4': $40,000 to $54,999
     '5': $55,000 to $69,999
-    '6': $70,000 to $89,999
-    '7': $90,000 to $109,999
-    '8': $110,000 to $139,999
-    '9': $140,000 to $199,999
-    '10': $200,000 or more
-income25:
+influence5:
   labels:
-    '1': Under $15,000
-    '2': $15,000 to $29,999
-    '3': $30,000 to $39,999
-    '4': $40,000 to $54,999
-    '5': $55,000 to $69,999
-    '6': $70,000 to $89,999
-    '7': $90,000 to $109,999
-    '8': $110,000 to $139,999
-    '9': $140,000 to $199,999
-    '10': $200,000 to $249,999
-    '11': $250,000 or more
-houslate:
+    '1': Not at all
+    '2': A little bit
+    '3': Some
+    '4': Quite a bit
+    '5': A great deal
+inths:
   labels:
-    '1': Never
-    '2': Once or twice
-    '3': More than twice
-    '4': My household does not make any housing payments
-ideo:
+    '1': All or almost all the same race as you
+    '2': Mostly the same race as you
+    '3': About evenly split between students the same race as you and other races
+    '4': Mostly a different race than you
+    '5': Almost all a different race than you
+jewtrad:
   labels:
-    '1': Very conservative
+    '1': Orthodox
     '2': Conservative
-    '3': Moderate
-    '4': Liberal
-    '5': Very liberal
+    '3': Reform
+    '4': None of these
+    '5': Other (Please specify)
+job:
+  labels:
+    '1': A very good job
+    '2': A somewhat good job
+    '3': Neither a good job nor a bad job
+    '4': A somewhat bad job
+    '5': A very bad job
+jobsector:
+  labels:
+    '1': A private, for-profit company
+    '2': A nonprofit, tax exempt, or charitable organization
+    '3': A government organization
+    '4': You are self-employed
+jobsector25:
+  labels:
+    '1': A private, for-profit company
+    '2': A nonprofit, tax exempt, or chartiable organization
+    '3': A state or local government organization
+    '4': A federal government organization
+    '5': You are self-employed
+jurisdiction:
+  labels:
+    '1': City
+    '2': County
+kbconf5:
+  labels:
+    '1': None
+    '2': A little
+    '3': Some
+    '4': Quite a bit
+    '5': A great deal
+kbdate1:
+  labels:
+    '1': Less than four years
+    '2': Four years
+    '3': Five years
+    '4': Six or more years
+    '5': Not sure the bridge will be rebuilt
+kbdate2:
+  labels:
+    '1': Less than four years
+    '2': Four years
+    '3': Five years
+    '4': Six or more years
+    '5': Not sure the bridge will be rebuilt
+kbdatesplit:
+  labels:
+    '1': No date primed
+    '2': Date primed
+kbhelp6:
+  labels:
+    '1': Very poor
+    '2': Poor
+    '3': Fair
+    '4': Moderate
+    '5': Good
+    '6': Very good
+kbimpact4:
+  labels:
+    '1': Not at all
+    '2': A little
+    '3': Some
+    '4': A great deal
+kbsplit:
+  labels:
+    '1': Rebuild
+    '2': Help
+lmtgov:
+  labels:
+    '1': Much more
+    '2': Somewhat more
+    '3': A little more
+    '4': About the same amount
+    '5': A little less
+    '6': Somewhat less
+    '7': Much less
+lmtgovo:
+  labels:
+    '1': '''Much more'' first'
+    '2': '''Much less'' first'
+logoincent:
+  labels:
+    '2': BAS
+    '4': JHU
+low_income:
+  labels:
+    '1': Under $15,000
+    '2': $15,000 to $29,999
+    '3': $30,000 to $39,999
+    '4': $40,000 to $54,999
+    '5': $55,000 to $69,999
+marital_status:
+  labels:
+    '1': Married or in a married-style arrangement
+    '2': Widowed
+    '3': Divorced
+    '4': Separated
+    '5': Never married
+married:
+  labels:
+    '1': Married or in a married-style arrangement
+    '2': Widowed
+    '3': Divorced
+    '4': Separated
+    '5': Never married
+med4:
+  labels:
+    '1': Very easy
+    '2': Somewhat easy
+    '3': somewhat difficult
+    '4': Very difficult
+month:
+  labels:
+    '1': Almost every month
+    '2': Some months but not every month
+    '3': Only 1 or 2 months
+month_amount:
+  labels:
+    '1': Almost every month
+    '2': Some months but not every month
+    '3': Only 1 or 2 months
+much_better:
+  labels:
+    '1': Gotten much better
+    '2': Gotten somewhat better
+    '3': Stayed about the same
+    '4': Gotten somewhat worse
+    '5': Gotten much worse
+mvlkly:
+  labels:
+    '1': Not at all likely
+    '2': Slightly likely
+    '3': Somewhat likely
+    '4': Pretty likely
+    '5': Very likely
+    '6': Extremely likely
+mvlklywh:
+  labels:
+    '1': A different home in the same neighborhood
+    '2': A different neighborhood within respondent's jurisdiction
+    '3': In Maryland but outside of respondent's jurisdiction
+    '4': Another state altogether
+mvprefwh:
+  labels:
+    '1': Stay in your current home
+    '2': A different home in the same neighborhood
+    '3': A different neighborhood within respondent's jurisdiction
+    '4': In Maryland but outside of respondent's jurisdiction
+    '5': Another state altogether
+nativity3:
+  labels:
+    '1': United States
+    '2': Puerto Rico
+    '3': Another country
+nbknow:
+  labels:
+    '1': All
+    '2': Most
+    '3': Some
+    '4': A few
+    '5': None
+    '6': I do not have any neighbors on my street
+never4:
+  labels:
+    '1': Almost always
+    '2': Most of the time
+    '3': Some of the time
+    '4': Almost never
+nhdchange:
+  labels:
+    '1': Become a much better place to live
+    '2': Become a somewhat better place to live
+    '3': Stayed about the same
+    '4': Become a somewhat worse place to live
+    '5': Become a much worse place to live
+often:
+  labels:
+    '1': Often
+    '2': Sometimes
+    '3': Never
+often3:
+  labels:
+    '1': Often
+    '2': Sometimes
+    '3': Never
+often_true:
+  labels:
+    '1': Often true
+    '2': Sometimes true
+    '3': Never true
+own:
+  labels:
+    '1': Rent
+    '2': Own
+    '3': Some other arrangement
+pandemic:
+  labels:
+    '1': Mostly as the result of the pandemic
+    '2': Somewhat as a result of the pandemic
+    '3': Not as a result of the pandemic
+phq4:
+  labels:
+    '1': Not at all
+    '2': Several days
+    '3': More than half the days
+    '4': Nearly every day
+pkasat:
+  labels:
+    '1': Very satisfied
+    '2': Somewhat satisfied
+    '3': Neither satisfied nor dissatisfied
+    '4': Somewhat dissatisfied
+    '5': Very dissatisfied
+    '6': There are no parks or public recreation facilities in my neighborhood
+place_to_live:
+  labels:
+    '1': Become a much better place to live
+    '2': Become a somewhat better place to live
+    '3': Stayed about the same
+    '4': Become a somewhat worse place to live
+    '5': Become a much worse place to live
+place_to_live_future:
+  labels:
+    '1': Become a much better place to live
+    '2': Become a somewhat better place to live
+    '3': Stay about the same
+    '4': Become a somewhat worse place to live
+    '5': Become a much worse place to live
+political_party:
+  labels:
+    '1': Republican
+    '2': Democrat
+    '3': Independent
+    '4': Something else
 pparty:
   labels:
     '1': Republican
     '2': Democrat
     '3': Independent
     '4': Something else
-schre:
+problem4:
   labels:
-    '1': Safety of students
-    '2': Classes or programs offered
-    '3': School buildings and grounds
-    '4': Quality of the teachers, administrators, and other staff
-    '5': Racial equity
-    '6': Other (Please specify)
-employed:
+    '1': Not a problem at all
+    '2': Not much of a problem
+    '3': Somewhat of a problem
+    '4': A big problem
+problem5:
   labels:
-    '1': Working full time
-    '2': Working part time
-    '3': With a job, but not at work because of temporary illness, vacation, strike
-    '4': Unemployed, laid off, looking for work
-    '5': Retired
-    '6': In school
-    '7': Keeping house
-    '8': Disabled and unable to work
-    '9': Other (Please specify)
-gender:
+    '1': Not a problem at all
+    '2': A small problem
+    '3': Somewhat of a problem
+    '4': A big problem
+    '5': A major problem
+puma10:
   labels:
-    '1': Female
-    '2': Male
-    '3': Transgender
-    '4': I use a different term (Please specify)
-hsloc:
-  labels:
-    '1': The last high school I attended was in a different country
-yesno01:
-  labels:
-    '0': 'No'
-    '1': 'Yes'
+    '2400501': '2400501'
+    '2400502': '2400502'
+    '2400503': '2400503'
+    '2400504': '2400504'
+    '2400505': '2400505'
+    '2400506': '2400506'
+    '2400507': '2400507'
+    '2400801': '2400801'
+    '2400802': '2400802'
+    '2400803': '2400803'
+    '2400804': '2400804'
+    '2400805': '2400805'
 race3:
   labels:
     '1': Black
@@ -618,30 +954,74 @@ raceeth6:
     '5': Other race only
     '6': Multiracial
     '7': Latinx
-jurisdiction:
+racelink4:
   labels:
-    '1': City
-    '2': County
+    '1': Nothing
+    '2': Not very much
+    '3': Some
+    '4': A lot
+racerel:
+  labels:
+    '1': Never
+    '2': Rarely
+    '3': Sometimes
+    '4': Often
 redline:
   labels:
     '0': Tract not in Red Line corridor
     '1': Tract in Red Line corridor
-compstsplit:
+religion:
   labels:
-    '1': Named
-    '2': Not named
-clmselflove:
+    '1': Protestant
+    '2': Catholic
+    '3': Eastern Orthodox, such as Greek or Russian Orthodox
+    '4': Jewish
+    '5': Buddhist
+    '6': Hindu
+    '7': Muslim, Islam, Sufi, Sunni, or Shia
+    '8': Some other religion
+    '9': No religion
+rent:
   labels:
-    '1': Personal
-    '2': Loved ones
-kbsplit:
+    '1': Rent
+    '2': Own
+    '3': Some other arrangement
+respect:
   labels:
-    '1': Rebuild
-    '2': Help
-logoincent:
+    '1': Very respectfully
+    '2': Somewhat respectfully
+    '3': Neither respectfully nor disrespectfully
+    '4': Somewhat disrespectfully
+    '5': Very disrespectfully
+rested:
   labels:
-    '2': BAS
-    '4': JHU
+    '1': Never
+    '2': Some days
+    '3': Most days
+    '4': Every day
+rpord:
+  labels:
+    '1': '"Rich" first'
+    '2': '"Poor" first'
+satisfied4:
+  labels:
+    '1': Very satisfied
+    '2': Somewhat satisfied
+    '3': Somewhat dissatisfied
+    '4': Very dissatisfied
+satisfied5:
+  labels:
+    '1': Very satisfied
+    '2': Somewhat satisfied
+    '3': Neither satisfied nor dissatisfied
+    '4': Somewhat dissatisfied
+    '5': Very dissatisfied
+sch4:
+  labels:
+    '1': Not at all important
+    '2': A little important
+    '3': Somewhat important
+    '4': Very important
 schinto:
   labels:
     '1': Black first
@@ -650,73 +1030,78 @@ schpolo:
   labels:
     '1': Spend on schools
     '2': Spend to help move
-lmtgovo:
+schqual:
   labels:
-    '1': '''Much more'' first'
-    '2': '''Much less'' first'
-worry5:
+    '1': Excellent
+    '2': Very good
+    '3': Good
+    '4': Fair
+    '5': Poor
+schre:
   labels:
-    '1': Not at all worried
-    '2': A little worried
-    '3': Somewhat worried
-    '4': Very worried
-    '5': Extremely worried
-problem5:
+    '1': Safety of students
+    '2': Classes or programs offered
+    '3': School buildings and grounds
+    '4': Quality of the teachers, administrators, and other staff
+    '5': Racial equity
+    '6': Other (Please specify)
+sector:
   labels:
-    '1': Not a problem at all
-    '2': A small problem
-    '3': Somewhat of a problem
-    '4': A big problem
-    '5': A major problem
-pkasat:
+    '1': A private, for-profit company
+    '2': A nonprofit, tax exempt, or charitable organization
+    '3': A government organization
+    '4': You are self-employed
+secure:
   labels:
-    '1': Very satisfied
-    '2': Somewhat satisfied
-    '3': Neither satisfied nor dissatisfied
-    '4': Somewhat dissatisfied
-    '5': There are no parks or public recreation facilities in my neighborhood
-concern5:
+    '1': Very secure
+    '2': Fairly secure
+    '3': Neither secure nor insecure
+    '4': Somewhat insecure
+    '5': Very insecure
+sexlty:
   labels:
-    '1': Not at all concerned
-    '2': A little concerned
-    '3': Somewhat concerned
-    '4': Very concerned
-    '5': Extremely concerned
-yesnodk:
+    '1': Gay or lesbian
+    '2': Straight, that is not gay
+    '3': Bisexual
+    '4': Asexual
+    '5': Something else (please specify)
+sexuality:
   labels:
-    '1': 'Yes'
-    '2': 'No'
-    '3': Don't know
-aqcomp:
+    '1': Gay or lesbian
+    '2': Straight, that is not gay
+    '3': Bisexual
+    '4': Asexual
+    '5': Something else
+sidewlkq:
   labels:
-    '1': Among the best
-    '2': Better than most neighborhoods
-    '3': About the same as other neighborhoods
-    '4': Worse than most neighborhoods
-    '5': Among the worst
-aqfreq:
+    '1': Very good
+    '2': Good
+    '3': Fair
+    '4': Poor
+    '5': Very poor
+    '6': I do not have any sidewalks in my neighborhood
+spending3:
   labels:
-    '1': Never
-    '2': One or two days
-    '3': About once a week
-    '4': A few times a week
-    '5': Almost every day
-heatslp5:
+    '1': Spend less
+    '2': Spend the same amount as now
+    '3': Spend more
+spendless:
   labels:
-    '1': Never
-    '2': One or two days
-    '3': About once a week
-    '4': A few times a week
-    '5': Almost every day
-aqburn:
+    '1': A little less
+    '2': Somewhat less
+    '3': Much less
+spendmore:
   labels:
-    '1': Do not have a fireplace
-    '2': Never use a fireplace
-    '3': Once a month
-    '4': A couple of times a month
-    '5': Once a week
-    '6': Several times a week
-    '7': Almost every day
+    '1': A little more
+    '2': Somewhat more
+    '3': Much more
+stayworr:
+  labels:
+    '1': Not at all
+    '2': A little bit
+    '3': Some
+    '4': Quite a bit
+    '5': A lot
 stree:
   labels:
     '1': 'Yes'
@@ -728,131 +1113,18 @@ streea:
     '2': Somewhat
     '3': Quite a bit
     '4': A lot
-dgtreat:
+strongly_agree:
   labels:
-    '1': Very easy
-    '2': Somewhat easy
-    '3': Somewhat hard
-    '4': Very hard
-    '5': Almost impossible
-dgtrqual:
-  labels:
-    '1': Excellent
-    '2': Very good
-    '3': Fair
-    '4': Poor
-    '5': Very poor
-econ4:
-  labels:
-    '1': Excellent
-    '2': Good
-    '3': Fair
-    '4': Poor
-efut5:
-  labels:
-    '1': Getting a lot better
-    '2': Getting a little better
-    '3': Staying about the same
-    '4': Getting a little worse
-    '5': Getting a lot worse
-med4:
-  labels:
-    '1': Very easy
-    '2': Somewhat easy
-    '3': somewhat difficult
-    '4': Very difficult
-vacc5:
-  labels:
-    '1': Strongly disagree
-    '2': Somewhat disagree
-    '3': Neighter agree nor disagree
-    '4': Somewhat agree
-    '5': Strongly agree
-finfut5:
-  labels:
-    '1': Not at all
-    '2': A little
-    '3': Some
-    '4': Quite a bit
-    '5': A great deal
-housworr5:
-  labels:
-    '1': Never
-    '2': Rarely
-    '3': Sometimes
-    '4': Often
-    '5': Always
-housdiff5:
-  labels:
-    '1': Not at all difficult
-    '2': A little difficult
-    '3': Moderately difficult
-    '4': Very difficult
-    '5': Extremely difficult
-utillate4:
-  labels:
-    '1': Never
-    '2': Once or twice
-    '3': More than twice
-    '4': My household does not make payments for gas or electricity
-gun3:
-  labels:
-    '1': All
-    '2': Some
-    '3': None
-nativity3:
-  labels:
-    '1': United States
-    '2': Puerto Rico
-    '3': Another country
-econord:
-  labels:
-    '1': Baltimore area
-    '2': US
-rpord:
-  labels:
-    '1': '"Rich" first'
-    '2': '"Poor" first'
-kbdatesplit:
-  labels:
-    '1': No date primed
-    '2': Date primed
-anarace:
-  labels:
-    '1': Non-Latinx Black
-    '2': Non-Latinx White
-    '3': Other
-anainc4:
-  labels:
-    '1': Under $30,000
-    '2': $30,000 to $69,999
-    '3': $70,000 to $109,999
-    '4': $110,000 or more
-anaeduc:
-  labels:
-    '1': Less than high school
-    '2': High school or GED
-    '3': Some college
-    '4': Bachelor's degree or higher
-anagender:
-  labels:
-    '1': Female
-    '2': Male
-anaage:
-  labels:
-    '1': Under 25
-    '2': 25-34
-    '3': 35-49
-    '4': 50-65
-    '5': 65+
-tsi6:
-  labels:
-    '1': No insecurity/secure
-    '2': Marginal/low insecurity
-    '3': Moderate/high insecurity
+    '1': Strongly agree
+    '2': Agree
+    '3': Disagree
+    '4': Strongly disagree
 svymonth:
   labels:
     '1': January
+    '10': October
+    '11': November
+    '12': December
     '2': February
     '3': March
     '4': April
@@ -861,6 +1133,167 @@ svymonth:
     '7': July
     '8': August
     '9': September
-    '10': October
-    '11': November
-    '12': December
+true3:
+  labels:
+    '1': Often true
+    '2': Sometimes true
+    '3': Never true
+trust:
+  labels:
+    '1': Trust completely
+    '2': Somewhat trust
+    '3': Neither trust nor distrust
+    '4': Somewhat distrust
+    '5': Distrust completely
+trust4:
+  labels:
+    '1': Almost always
+    '2': Most of the time
+    '3': Some of the time
+    '4': Almost never
+tsi6:
+  labels:
+    '1': No insecurity/secure
+    '2': Marginal/low insecurity
+    '3': Moderate/high insecurity
+tspfrequency3:
+  labels:
+    '1': Often
+    '2': Sometimes
+    '3': Never
+tspfrequency4:
+  labels:
+    '1': Daily
+    '2': A few times a week
+    '3': A few times this month
+    '4': Never
+tspjurisdiction4:
+  labels:
+    '1': Not at all
+    '2': A little
+    '3': Somewhat
+    '4': Quite a lot
+tspnew:
+  labels:
+    '1': Not at all
+    '2': A little bit
+    '3': Somewhat
+    '4': Quite a lot
+    '5': Would not be able to find a new job
+tspvehcat:
+  labels:
+    '0': '0'
+    '1': '1'
+    '2': '2'
+    '3': '3'
+    '4': 4 or more
+utillate4:
+  labels:
+    '1': Never
+    '2': Once or twice
+    '3': More than twice
+    '4': My household does not make payments for gas or electricity
+vacc5:
+  labels:
+    '1': Strongly disagree
+    '2': Somewhat disagree
+    '3': Neighter agree nor disagree
+    '4': Somewhat agree
+    '5': Strongly agree
+very_well:
+  labels:
+    '1': Very well
+    '2': Somewhat well
+    '3': Not too well
+    '4': Not well at all
+voted:
+  labels:
+    '1': I definitely voted in the November General Election
+    '2': I attempted to vote but did not or could not
+    '3': I usually vote, but not this time
+    '4': I thought about voting this time-but didn't
+    '5': I did not vote in the election
+voter:
+  labels:
+    '1': I definitely voted in the November general election
+    '2': I attempted to vote but did not or could not
+    '3': I usually vote, but not this time
+    '4': I thought about voting this time - but didn't
+    '5': I did not vote in the election
+votereg:
+  labels:
+    '1': You are absolutely certain you are registered to vote
+    '2': You are unsure if you are registered to vote
+    '3': You are absolutely certain you are not registered to vote
+voteupc:
+  labels:
+    '1': Not at all likely
+    '2': Somewhat likely
+    '3': Very likely
+    '4': Definitely will vote
+walksafe:
+  labels:
+    '1': Completely safe
+    '2': Mostly safe
+    '3': Fairly safe
+    '4': Not very safe
+    '5': Not at all safe
+welcome5:
+  labels:
+    '1': Extremely welcoming
+    '2': Very welcoming
+    '3': Somewhat welcoming
+    '4': A little welcoming
+    '5': Not at all welcoming
+well4:
+  labels:
+    '1': Very well
+    '2': Somewhat well
+    '3': Not too well
+    '4': Not well at all
+worry:
+  labels:
+    '1': I worry a great deal
+    '2': I worry to some extent
+    '3': I worry a little
+    '4': I don't worry at all
+worry5:
+  labels:
+    '1': Not at all worried
+    '2': A little worried
+    '3': Somewhat worried
+    '4': Very worried
+    '5': Extremely worried
+worryjob:
+  labels:
+    '1': I worry a great deal
+    '2': I worry to some extent
+    '3': I worry a little
+    '4': I don't worry at all
+years_check:
+  labels:
+    '-9': Nhd_yrs or dem_yearborn is not seen due to breakoff
+    '0': Nhd_yrs and dem_yearborn seen but not answered
+    '1': Years in Baltimore is less than or equal to age
+    '2': Years is baltimore is greater than age
+'yes':
+  labels:
+    '1': 'Yes'
+    '2': 'No'
+yes01:
+  labels:
+    '0': 'No'
+    '1': 'Yes'
+yesno01:
+  labels:
+    '0': 'No'
+    '1': 'Yes'
+yesno2:
+  labels:
+    '1': 'Yes'
+    '2': 'No'
+yesnodk:
+  labels:
+    '1': 'Yes'
+    '2': 'No'
+    '3': Don't know

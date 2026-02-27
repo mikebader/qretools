@@ -1,0 +1,765 @@
+nhd_fut:
+  title: Future of neighborhood
+  storage_type: factor
+  question_text: Looking forward to the next five years, do you think that your neighborhood
+    will generally become a better place to live, stay about the same, or become a
+    worse place to live?
+  surveys_used:
+  - bas-2023
+  vargroup: nhd
+  value_labels_name: place_to_live
+env_clmharm:
+  title: Concern over climate change causing harm
+  storage_type: factor
+  question_text: How concerned are you, if at all, that global climate change will
+    harm you  personally at some point in your lifetime? Are you very concerned, somewhat  concerned,
+    not too concerned or not at all concerned?
+  surveys_used:
+  - bas-2023
+  vargroup: env
+  value_labels_name: concern4
+env_clmcost:
+  title: Financial effect of climate change in Baltimore
+  storage_type: factor
+  question_text: Some people believe that dealing with climate change will make people
+    and businesses pay higher costs while others think that dealing with climate change
+    will help people and businesses save money. Overall, in the next five years, do
+    you think that dealing with climate change will lead people and businesses in
+    the Baltimore area to…
+  surveys_used:
+  - bas-2023
+  vargroup: env
+  value_labels_name: costs
+con_btrust:
+  title: Trust in nearby businesses
+  storage_type: factor
+  question_text: How much of the time do you think you can trust the businesses in
+    or near your  neighborhood to do what is right?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: almost_always_business
+con_ntrust:
+  title: Trust in non-profit organizations
+  storage_type: factor
+  question_text: How much of the time do you think you can trust the nonprofit organizations
+    in  or near your neighborhood to do what is right?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: almost_always_npo
+con_bthnk:
+  title: Thought about by nearby businesses
+  storage_type: factor
+  question_text: How often do you expect that businesses in or near your neighborhood
+    think about people like you when they make business decisions?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: always5
+org_gthnk?:
+  title: Thought about by Local Government
+  storage_type: factor
+  question_text: How often do you expect that the local government thinks about people
+    like you  when they consider the programs they offer?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: always5
+con_bsrv:
+  title: Businesses serve needs
+  storage_type: factor
+  question_text: How well do businesses in or near your neighborhood serve your family’s
+    needs?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: well4
+con_nsrv:
+  title: Nonprofits serve needs
+  storage_type: factor
+  question_text: How well do nonprofit organizations in or near your neighborhood
+    serve your  family’s needs?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: well4
+org_gsrv:
+  title: Local government serves needs
+  storage_type: factor
+  question_text: How well do local government services in or near your neighborhood
+    serve your  family’s needs?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: well4
+con_plcfear:
+  title: Fear of police
+  storage_type: factor
+  question_text: How much fear do you have that you or your loved ones will be targeted
+    by the  police for questioning or arrest?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  source: DCAS 2018 Q37
+  value_labels_name: a_lot4
+con_plcfeara:
+  title: Fear of police affecting everyday life
+  storage_type: factor
+  question_text: How much does that fear affect your everyday life?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  source: DCAS 2018 Q37
+  value_labels_name: a_lot4
+con_plcrespect:
+  title: Police respect
+  storage_type: factor
+  question_text: How respectfully do you think the police in your area treat people?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  source: NCVS-R PQ3a
+  value_labels_name: respect
+con_plcfair:
+  title: Police fairness
+  storage_type: factor
+  question_text: In your opinion, how fairly do the police in your area treat people?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  source: NCVS-R PQ3c
+  value_labels_name: fair
+con_plcprvcrime:
+  title: Police effectiveness
+  storage_type: factor
+  question_text: How effective are the police at preventing crime in your area?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  source: NCVS-R PQ3d
+  value_labels_name: effective
+con_plctrust:
+  title: Police trust
+  storage_type: factor
+  question_text: How much do you trust the police in your area?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  source: NCVS-R PQ3e
+  value_labels_name: trust
+con_plcrating:
+  title: Police overall effectiveness
+  storage_type: factor
+  question_text: Taking everything into account, how would you rate the job the police
+    are doing?
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  source: NCVS-R PQ3f
+  value_labels_name: job
+tsp_daily:
+  title: 'Transportation insecurity: daily living affected'
+  storage_type: factor
+  question_text: In the past 30 days, has a lack of reliable  transportation kept
+    you from medical appointments, meetings,  work or from getting things needed for
+    daily living?
+  surveys_used:
+  - bas-2024
+  vargroup: tsp
+  value_labels_name: tspfrequency3
+con_kbraff:
+  title: Key Bridge collapse overall impact
+  storage_type: factor
+  question_text: "As you may know, the Francis Scott Key Bridge was hit by a container\
+    \ ship and  collapsed in March. The next couple of questions ask you about the\
+    \ impact and  your experiences based on the collapse of the bridge.  \n\nTo what\
+    \ extent has the loss of the Key Bridge directly impacted you and your  family’s\
+    \ daily lives?"
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  source: Goucher Poll (April 2024); Modified to be past tense
+  value_labels_name: kbimpact4
+con_kbwork:
+  title: Key Bridge collapse affected work commute
+  storage_type: factor
+  question_text: How much has the collapse of the Key Bridge affected your ability
+    to get to  work or school?
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  value_labels_name: kbimpact4
+con_kbfrnd:
+  title: Key Bridge collapse affected seeing people
+  storage_type: factor
+  question_text: How much has the collapse of the Key Bridge affected your ability
+    to see friends  or family?
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  value_labels_name: kbimpact4
+con_kberrd:
+  title: Key Bridge collapse affected errands
+  storage_type: factor
+  question_text: How much has the collapse of the Key Bridge affected your ability
+    to run errands like going to the store?
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  value_labels_name: kbimpact4
+con_kbmedi:
+  title: Key Bridge collapse affected medical care
+  storage_type: factor
+  question_text: How much has the collapse of the Key Bridge affected your ability  to
+    get to doctor’s appointments or other medical care?
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  value_labels_name: kbimpact4
+con_kbconfl:
+  title: Confidence in local govt to rebuild Key Bridge
+  storage_type: factor
+  question_text: How much confidence do you have that __local governments in the area__
+    will do  what is necessary to get the Key Bridge rebuilt quickly?
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  value_labels_name: kbconf5
+  note: "\nRespondent was asked this question if they were randomized into this condition\
+    \ \nif in KBSPLIT condition #1 (`svy_kbsplit == 1`).\n"
+con_kbconfs:
+  title: Confidence in state govt to rebuild Key Bridge
+  storage_type: factor
+  question_text: How much confidence do you have that the __government of the State  of
+    Maryland__ will do what is necessary to get the Key Bridge rebuilt quickly?
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  value_labels_name: kbconf5
+con_kbconff:
+  title: Confidence in federal govt to rebuild Key Bridge
+  storage_type: factor
+  question_text: How much confidence do you have that the __federal government__ will
+    do what  is necessary to get the Key Bridge rebuilt quickly?
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  value_labels_name: kbconf5
+con_kbhelpl:
+  title: Local government rating of Key Bridge response
+  storage_type: factor
+  question_text: 'How would you rate the job done by __local governments in the area__
+    to help  people affected by the Key Bridge collapse? Would you say that the job
+    they  have done is:'
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  value_labels_name: kbhelp6
+con_kbhelps:
+  title: State government rating of Key Bridge response
+  storage_type: factor
+  question_text: 'ow would you rate the job done by the __government of the State
+    of Maryland__ to help people affected by the Key Bridge collapse? Would you say
+    that the job they have done is:'
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  value_labels_name: kbhelp6
+con_kbhelpf:
+  title: Federal government rating of Key Bridge response
+  storage_type: factor
+  question_text: 'How would you rate the job done by the __federal government__ to
+    help people  affected by the Key Bridge collapse? Would you say that the job they
+    have done  is:'
+  surveys_used:
+  - bas-2024
+  vargroup: con
+  value_labels_name: kbhelp6
+con_invblood:
+  title: Donated blood
+  storage_type: factor
+  question_text: Now we have some questions about ways that people sometimes do things
+    in their  communities. Which of the following have you done in the past 12 months,  that
+    is since {{CURRENT MONTH}} 2022?  Donated blood
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: 'yes'
+con_invvolnp:
+  title: Volunteer nonprofit or religious work
+  storage_type: factor
+  question_text: Now we have some questions about ways that people  sometimes do things
+    in their communities. Which of the following have you done  in the past 12 months,
+    that is since {{CURRENT MONTH}} 2022? Volunteered for a nonprofit or religious
+    organization
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: 'yes'
+con_invvolpol:
+  title: Political work or volunteering
+  storage_type: factor
+  question_text: Now we have some questions about ways that people sometimes do things
+    in their communities. Which of the following have you done in the past 12 months,
+    that is since {{CURRENT MONTH}} 2022? Volunteered for a nonprofit or religious
+    organization
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: 'yes'
+con_invcontpub:
+  title: Contacted a public official
+  storage_type: factor
+  question_text: Now we have some questions about ways that people sometimes do things
+    in their  communities. Which of the following have you done in the past 12 months,  that
+    is since {{CURRENT MONTH}} 2022? Contacted a public official
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: 'yes'
+con_invdonnp:
+  title: Charitable contributions
+  storage_type: factor
+  question_text: Now we have some questions about ways that people sometimes do things
+    in their  communities. Which of the following have you done in the past 12 months,
+    that is since {{CURRENT MONTH}} 2022? Donated money to a nonprofit or religious
+    organization
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: 'yes'
+con_invdonpol:
+  title: Political Donation
+  storage_type: factor
+  question_text: Now we have some questions about ways that people sometimes do things
+    in their  communities. Which of the following have you done in the past 12 months,
+    that is since {{CURRENT MONTH}} 2022? Donated money to a candidate, campaign,
+    or political organization
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: 'yes'
+con_invattevent:
+  title: Cultural event attendance
+  storage_type: factor
+  question_text: Now we have some questions about ways that people sometimes do things
+    in their  communities. Which of the following have you done in the past 12 months,
+    that is since {{CURRENT MONTH}} 2022? Attended a cultural event like a concert,
+    exhibit, or parade
+  surveys_used:
+  - bas-2023
+  vargroup: con
+  value_labels_name: 'yes'
+fin_jobrsec:
+  title: Job security
+  storage_type: factor
+  question_text: How secure is your job?
+  surveys_used:
+  - bas-2023
+  vargroup: fin
+  source: ISSP 2015 Q12 and GSS rsecjob
+  value_labels_name: secure
+  note: "\nThis question was presented to respondent if theier answer to the employment\
+    \ \nstatus question (before recoding) was one of: \"Working full-time\", \"Working\
+    \ \npart-time\", or \"With a job but not at work because of temporary illness,\
+    \ \nvacation or strike.\"\n\n"
+fin_entself:
+  title: Entrepreneur
+  storage_type: factor
+  question_text: There are many ways people define the term “entrepreneur.” For the
+    following  questions about entrepreneurs, we are referring to people who own,
+    manage, or  invest in a business of any size, including informal businesses that
+    may be  temporary or may not be licensed (such as providing lawn care for neighbors
+    for  cash). An entrepreneur can also be a person who is addressing challenges
+    within  their communities. By this definition, do you think of yourself as an
+    entrepreneur?
+  surveys_used:
+  - bas-2023
+  vargroup: fin
+  source: DMACS 2015 entrep_ourdef_d15
+  value_labels_name: 'yes'
+fin_entopp:
+  title: Opportunity to be an entrepreneur
+  storage_type: factor
+  question_text: If you or someone you know wants to become an entrepreneur in the
+    Baltimore  area, how much opportunity do you think there is?
+  surveys_used:
+  - bas-2023
+  vargroup: fin
+  source: DMACS 2015 entrep_opp_d15
+  value_labels_name: great_deal4
+fin_entbetter:
+  title: Best path to financial success
+  storage_type: factor
+  question_text: 'Which do you think is a better path to financial success: being
+    an entrepreneur  or working for an established business?'
+  surveys_used:
+  - bas-2023
+  vargroup: fin
+  source: DMACS 2015 entrep_or_estab_d15
+  value_labels_name: entrepreneur
+fin_gigjob:
+  title: Gig job
+  storage_type: factor
+  question_text: Sometimes people take on-demand jobs, sometimes called “gig” jobs.
+    Have you ever earned money by taking on an “on-demand” or “gig” job? For example,
+    have you  ever earned money through online or mobile apps such as Uber, DoorDash,  Instacart,
+    or TaskRabbit?
+  surveys_used:
+  - bas-2023
+  vargroup: fin
+  value_labels_name: earned_money
+  note: "\nIf a respondent reports having earned money through a gig job in the past\
+    \ 30 \ndays, they will be taken to a question about the proportion of their income\
+    \ from\ngig jobs. Otherwise, the survey skips to a question about the respondent's\
+    \ food\nsecurity.\n"
+fin_gigprop:
+  title: Proportion of income from gig jobs
+  storage_type: factor
+  question_text: In the last 30 days, how much of your income came from all of your
+    gig jobs  combined?
+  surveys_used:
+  - bas-2023
+  vargroup: fin
+  value_labels_name: income_amount
+  note: "\nThis question was skipped for respondents who reported \"I have never earned\
+    \ \nmoney this way\" in response to question `bas23_fin_gigjob`\n"
+fin_gigneed:
+  title: Pay bills without gig job
+  storage_type: factor
+  question_text: Thinking about the last 30 days, how difficult would it have been
+    to pay all of  your bills if you did not have any gig jobs?
+  surveys_used:
+  - bas-2023
+  vargroup: fin
+  value_labels_name: bills
+hlt_srphfut:
+  title: Overall self-rated future health
+  storage_type: factor
+  question_text: Next year, would you predict that your overall health will be better,
+    about the  same, or worse?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  source: https://doi.org/10.1093/gerona/62.12.1428
+  value_labels_name: better3
+hlt_srmhfut:
+  title: Self-rated future mental health
+  storage_type: factor
+  question_text: Next year, would you predict that your mental health will be better,
+    about the  same, or worse?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: better3
+hlt_gad21:
+  title: Feeling nervous/anxious within last two weeks
+  storage_type: factor
+  question_text: Over the last two weeks, how often have you been bothered by feeling
+    nervous,  anxious, or on edge?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  source: GAD-2 Q1
+  value_labels_name: days
+  note: "\nIf the respondent answered 'more than half the days' or 'nearly every day',\
+    \ the \nfollowing message was displayed on their screen: \n\n> If you are experiencing\
+    \ emotional distress and wish to talk to a trained \nprofessional, you may call\
+    \ 988. You can call 24 hours a day, 7 days a week. \n\n"
+hlt_gad22:
+  title: Uncontrollable worrying within last two weeks
+  storage_type: factor
+  question_text: Over the last two weeks, how often have you been bothered by not
+    being able to  stop or control worrying?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  source: GAD-2 Q2
+  value_labels_name: days
+  note: "\nIf the respondent answered 'more than half the days' or 'nearly every day',\
+    \ the \nfollowing message was displayed on their screen: \n\n> If you are experiencing\
+    \ emotional distress and wish to talk to a trained \nprofessional, you may call\
+    \ 988. You can call 24 hours a day, 7 days a week. \n\n"
+hlt_ch4sat:
+  title: Change in quality of life
+  storage_type: factor
+  question_text: For the next set of questions, we would like you to consider how
+    you think that  your life has changed over the past four years, that is how has
+    your life  changed since {{FULL NAME OF CURRENT MONTH}} 2019. For each area of
+    your life  below, please tell us how your life has changed. Overall, do you feel
+    that your life has gotten better, gotten worse or stayed  about the same compared
+    to four years ago?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: better5
+  description: Better if hlt_ch4sat (1,2). Worse if hlt_ch4sat (4,5)
+hlt_ch4satcv:
+  title: Change in quality of life due to pandemic
+  storage_type: factor
+  question_text: Do you think that your life got {{CHGSATDESC}} as a result of the
+    coronavirus  pandemic?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: pandemic
+  note: "\nOnly respondents who did not answer \"Stayed about the same\" on question\
+    \ \n`bas23_hlt_ch4sat` were asked this question. The text {{CHGSATDESC}} was filled\
+    \ \nwith either \"better\" or \"worse\" based on their response to question\n\
+    `bas23_hlt_ch4sat`.\n"
+hlt_ch4wrkcv:
+  title: Change in work situation due to pandemic
+  storage_type: factor
+  question_text: Do you think that your work situation got {{CHGWRKDESC}} as a result
+    of the  coronavirus pandemic?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: pandemic
+  note: "\nOnly respondents who did not answer \"Stayed about the same\" on question\
+    \ \n`bas23_hlt_ch4wrk` were asked this question. The text {{CHGWRKDESC}} was filled\
+    \ \nwith either \"better\" or \"worse\" based on their response to question\n\
+    `bas23_hlt_ch4wrk`.\n"
+hlt_ch4rel:
+  title: Change in relationships with friends
+  storage_type: factor
+  question_text: How have your relationships with friends changed in the past four
+    years?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: better5
+hlt_ch4relcv:
+  title: Relationships with friends due to pandemic
+  storage_type: factor
+  question_text: Do you think that your relationships with friends got {{CHGRELDESC}}
+    as a result of the coronavirus pandemic?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: pandemic
+  note: "\nOnly respondents who did not answer \"Stayed about the same\" on question\
+    \ \n`bas23_hlt_ch4rel` were asked this question. The text {{CHGRELDESC}} was filled\
+    \ \nwith either \"better\" or \"worse\" based on their response to question\n\
+    `bas23_hlt_ch4rel`.\n"
+hlt_ch4fam:
+  title: Change in relationships with family
+  storage_type: factor
+  question_text: How have your relationships with family changed in the past four
+    years?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: better5
+hlt_ch4famcv:
+  title: Relationships with family due to pandemic
+  storage_type: factor
+  question_text: Do you think that your relationships with your family got {{CHGFAMDESC}}
+    as a  result of the coronavirus pandemic?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: pandemic
+  note: "\nOnly respondents who did not answer \"Stayed about the same\" on question\
+    \ \n`bas23_hlt_ch4fam` were asked this question. The text {{CHGFAMDESC}} was filled\
+    \ \nwith either \"better\" or \"worse\" based on their response to question\n\
+    `bas23_hlt_ch4fam`.\n"
+hlt_ch4deathcv:
+  title: Experienced death of loved one due to pandemic
+  storage_type: factor
+  question_text: Did you experience the death or loss of a loved one as a result of
+    the pandemic?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: 'yes'
+  note: "\nIf the respondent answered yes, the following message was displayed on\
+    \ their \nscreen: \n\n> If you are experiencing emotional distress and wish to\
+    \ talk to a trained \nprofessional, you may call 988. You can call 24 hours a\
+    \ day, 7 days a week.\n\n"
+hlt_knaddict:
+  title: Know people who are addicted to illegal drugs
+  storage_type: factor
+  question_text: 'Drug use in the United States is more common than most people think.
+    We want to  know about how drug use has affected you.
+
+
+    How many people do you personally know who are addicted to illegal drugs such
+    as non-prescription painkillers, heroin, or other opioids?'
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: amount
+hlt_oddeath:
+  title: Death of loved one due to drug overdose
+  storage_type: factor
+  question_text: Have you ever experienced the death or loss of a loved one as the
+    result of a  drug overdose?
+  surveys_used:
+  - bas-2023
+  vargroup: hlt
+  value_labels_name: 'yes'
+  note: "\nIf the respondent answered yes, the following message was displayedon their\
+    \ \nscreen: \n\n> If you are experiencing emotional distress and wish to talk\
+    \ to a trained \nprofessional, you may call 988. You can call 24 hours a day,\
+    \ 7 days a week.\n\n"
+hlt_heatefot_os:
+  title: 'Heat Effect: Other Effects -- Specify'
+  storage_type: character
+  question_text: In the past two weeks, have you experienced any of the following
+    due to the  heat?  __Experienced other effects (please specify)__
+  surveys_used:
+  - bas-2025
+  vargroup: hlt
+  note: "\nRespondents offered a text box with a field length of 50 characters. Variable\
+    \ \nvalues stored as a character string containing respondent's exact typed answer.\n"
+dem_race3:
+  title: Race (Black, White, Other Race)
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  vargroup: dem
+  value_labels_name: race3
+  description: "\nA mutually exclusive set of three racial categories that identifies\
+    \ each\nrespondent as Black alone or in combination with another race, White alone,\
+    \ or \nanother race alone or in combination based on their responses to the racial\
+    \ \nidentity question. \n"
+dem_race5:
+  title: Race (Multiracial and race alone)
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  vargroup: dem
+  value_labels_name: race5
+  description: "\nA mutually exclusive set of five racial categories that identifies\
+    \ each \nrespondent as multiracial, Black alone, White alone, American \nIndian\
+    \ alone, or Asian alone  based on their response to the racial identity \nquestion.\n"
+dem_raceeth4:
+  title: Race/ethnicity
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  vargroup: dem
+  value_labels_name: raceeth4
+  description: "\nA mutually exclusive set of four race/ethnicity categories that\
+    \ identifies each \nrespondent as Latinx (of any race), non-Latinx Black alone\
+    \ or in combination\nwith any other race, non-Latinx White alone, non-Latinx other\
+    \ race alone or\nin combination. Any respondent who identified as being of 'Hisanpic,\
+    \ Latino, or \nSpanish origin' was assigned to the Latinx category.\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    title: Race/ethnicity (four category)
+dem_raceeth6:
+  title: Race/ethnicity (multiracial, race alone, and Latinx)
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  vargroup: dem
+  value_labels_name: raceeth6
+  description: "\nA mutually exclusive set of six race/ethnicity categories that identifies\
+    \ each \nrespondent as non-Latinx multiracial, non-Latinx Black alone, non-Latinx\
+    \ White \nalone, non-Latinx Asian alone, non-Latinx American Indian alone, or\
+    \ Latinx alone\nbased on their responses to the racial identity and ethnic identity\
+    \ questions. \nAny respondent who identified as being of 'Hisanpic, Latino, or\
+    \ Spanish origin'\nwas assigned to the Hispanic category.\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    title: Race/ethnicity (six category)
+dem_multi:
+  title: 'Race/ethnicity indicator: Multiracial'
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  vargroup: dem
+  value_labels_name: 'yes'
+  description: "\nA binary indicator for any respondent who identified as more than\
+    \ one racial\ncategory on the survey or specified 'some other race' that was then\
+    \ recoded \ninto this category.\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    value_labels_name: yesno01
+dem_nchild:
+  title: Total number of children in household
+  storage_type: integer
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  vargroup: dem
+  note: "\nNote that 9 respondents reported having children in the household \n(i.e.,\
+    \ `dem_child==1`), but reported having zero children in each of the \n`dem_childyng`,\
+    \ `dem_childmid`, and `dem_childold` variables. Since respondents \nreported zero\
+    \ children and the values were not missing, these repondents were \ncoded as having\
+    \ zero children in the household.\n"
+  description: "\nTotal number of children in household constructed as the sum of\n\
+    `bas23_dem_childyng`, `bas23_dem_childmid`, and `bas23_dem_childold`. \n\nConstructed\
+    \ using the following logic:\n\n* `-9`: the respondent broke off the interview\
+    \ at or before `dem_child` or if \n  the respondent broke off the interview during\
+    \ one of the questions \n  `dem_childyng`, `dem_childmid`, or `dem_childold`,\
+    \ then we code the count \n  variable as an interview break-off\n* `-8`: respondent\
+    \ reported that they had children in the household (i.e., \n  `dem_child==1`),\
+    \ but did not answer all of `dem_childyng`, `dem_childmid`, or \n  `dem_childold`\n\
+    * `0`: if respondent reported that they did not have any children in the \n  \
+    \ household (i.e., `dem_child==2`)\n* Otherwise, the sum of non-missing values\
+    \ in `dem_childyng`, `dem_childmid`, \n  `dem_childold`\n\n"
+dem_age:
+  title: Age
+  storage_type: integer
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  vargroup: dem
+  description: "\nRespondent's age at the time of survey constructed as the difference\
+    \ between the\nsurvey year (2023) and the respondent's birth year.\n\nThe age\
+    \ variable equals the difference between the respondent's\nbirth year and the\
+    \ year of the survey (2023). Thus, the age variable records \na respondent's age\
+    \ on December 31, 2023. \n\n* One respondent reported a birth year of 2094 and\
+    \ was re-coded to 1994\n* One respondent reported a birth year of 1900 and was\
+    \ re-coded to be \nitem-missing (`-8`)\n\n"
+dem_income:
+  title: Income
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  vargroup: dem
+  value_labels_name: comb_income
+  note: '
+
+    If a respondent broke off the interview at either the `bas23_dem_income_lo` or
+
+    `bas23_dem_income_hi` variable, they were recorded as having broken off the
+
+    interview for this question.
+
+    '
+  description: "\nTotal family income, from all sources, before taxes constructed\
+    \ by combining \nresponses to `bas23_dem_income_lo` and `bas23_dem_income_hi`\
+    \ into a single \nvariable. Respondents were skipped into one of those two questions\
+    \ based on \ntheir response to the question `bas23_income_70k` that filtered respondents\n\
+    to see response options with a range below $70,000 or with a range of options\n\
+    that were $70,000 or more. \n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: During 2023, in which of these groups did your total family income,
+      from all sources, fall before taxes?
+    value_labels_name: income

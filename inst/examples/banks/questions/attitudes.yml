@@ -1,0 +1,294 @@
+clm_inflpol:
+  title: Climate Change Influences Support of Local Leaders
+  storage_type: factor
+  question_text: How much do concerns about climate change affect the __local leaders__
+    that you choose to support?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: influence5
+clm_infleat:
+  title: Climate Change Influences Diet Choices
+  storage_type: factor
+  question_text: How much do concerns about climate change affect what you __eat__?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: influence5
+clm_infltsp:
+  title: Climate Change Influences Transportation
+  storage_type: factor
+  question_text: How much do concerns about climate change affect the  __types of
+    transportation__ that you use?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: influence5
+att_schrspnd:
+  title: State Spending on Predominantly Black Schools
+  storage_type: factor
+  question_text: 'Some people say that the schools most Black students attend are
+    worse than other schools, and the state of Maryland should do more to help Black
+    families.
+
+
+    How much should the state of Maryland spend on schools with mostly Black students?'
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: spending3
+  note: "\nThe order of att_schrspnd and att_schrmv was randomized by respondent (see\
+    \ \n`svy_schpolo`).\n"
+att_schrspndl:
+  title: Less Spending on Predominantly Black Schools
+  storage_type: factor
+  question_text: How much _less_ should the state of Maryland spend?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: spendless
+  note: '
+
+    If att_schrspnd = 1, the respondent is asked att_schrspndl. If att_schrspnd
+
+    = 3, the respondent is asked att_schrspndm. Otherwise, the survey skips
+
+    att_schrspndl and att_schrspndm.
+
+    '
+att_schrspndm:
+  title: More Spending on Predominantly Black Schools
+  storage_type: factor
+  question_text: How much _more_ should the state of Maryland spend?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: spendmore
+  note: '
+
+    If att_schrspnd = 1, the respondent is asked att_schrspndl. If att_schrspnd
+
+    = 3, the respondent is asked att_schrspndm. Otherwise, the survey skips
+
+    att_schrspndl and att_schrspndm.
+
+    '
+att_schrmv:
+  title: State Spending on Black Family Mobility
+  storage_type: factor
+  question_text: 'Some people say that the schools most Black students attend are
+    worse than other schools, and the state of Maryland should do more to help Black
+    families.
+
+
+    How much should the state of Maryland spend to help Black families move to  neighborhoods
+    with better schools?'
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: spending3
+  note: "\nThe order of att_schrspnd and att_schrmv was randomized by respondent (see\
+    \ \n`svy_schpolo`).\n"
+att_schrmvl:
+  title: Less Spending on Black Family Mobility
+  storage_type: factor
+  question_text: How much _less_ should the state of Maryland spend?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: spendless
+  note: '
+
+    If att_schrmvl = 1, the respondent is asked att_schrmvl. If att_schrmvl
+
+    = 3, the respondent is asked att_schrmvm. Otherwise, the survey skips
+
+    att_schrmvl and att_schrmvm.
+
+    '
+att_schrmvm:
+  title: More Spending on Black Family Mobility
+  storage_type: factor
+  question_text: How much _more_ should the state of Maryland spend?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: spendmore
+  note: '
+
+    If att_schrmvl = 1, the respondent is asked att_schrmvl. If att_schrmvl
+
+    = 3, the respondent is asked att_schrmvm. Otherwise, the survey skips
+
+    att_schrmvl and att_schrmvm.
+
+    '
+att_scheqop:
+  title: Importance of Equal Opportunities in Schools
+  storage_type: factor
+  question_text: How important is it to you that students of all races receive equal
+    access to  opportunities in schools?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: sch4
+att_schatto:
+  title: Importance of Racially Integrated Schools
+  storage_type: factor
+  question_text: How important is it to you that children attend schools with classmates
+    of  other races?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: sch4
+att_lmtgov:
+  title: More or Less Government
+  storage_type: factor
+  question_text: Would it be good for society to have more government regulation as
+    there is now, or less government regulation?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  source: ANES limitgov_regulate
+  value_labels_name: lmtgov
+  note: '
+
+    The answer options of att_lmtgov were asked randomly by respondent in either
+
+    forward or backwards order.
+
+    '
+att_schintb:
+  title: Integration Improved Education for Black Students
+  storage_type: factor
+  question_text: 'The Supreme Court in its 1954 Brown vs. Board of Education decision
+    outlawed  racial segregation in public schools in the United States.
+
+
+    Do you think that school racial integration has improved the quality of  education
+    for __Black students__?'
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: yesno2
+  note: "\nThe order of att_schintb and att_schintw was randomized by respondent (see\
+    \ \n`svy_schinto`).\n"
+att_schintw:
+  title: Integration Improved Education for White Students
+  storage_type: factor
+  question_text: 'The Supreme Court in its 1954 Brown vs. Board of Education decision
+    outlawed  racial segregation in public schools in the United States.
+
+
+    Do you think that school racial integration has improved the quality of  education
+    for __White students__?'
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  value_labels_name: yesno2
+  note: "\nThe order of att_schintb and att_schintw was randomized by respondent (see\
+    \ \n`svy_schinto`). \n"
+att_donecess:
+  title: Ensure Equal Opportunity
+  storage_type: factor
+  question_text: "Please tell us how much you agree or disagree with the following\
+    \ statements. \n\nOur society should do whatever is necessary to make sure that\
+    \ everyone has an equal opportunity to succeed."
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  source: ANES egal_donecess
+  value_labels_name: agree5
+att_wryless:
+  title: Worry Less About Equality
+  storage_type: factor
+  question_text: "Please tell us how much you agree or disagree with the following\
+    \ statements. \n\nThis country would be better off if we worried less about how\
+    \ equal people are."
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  source: ANES egal_worryless
+  value_labels_name: agree5
+att_rnobus:
+  title: Concern For Unfair Treatment of Others
+  storage_type: factor
+  question_text: "Please tell us how much you agree or disagree with the following\
+    \ statements. \n\nMaybe some minority groups do get unfair treatment, but that’s\
+    \ no business of mine."
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  source: Question wording from MTF (2002) V5255
+  value_labels_name: agree5
+att_toofar:
+  title: Push Less for Equal Rights
+  storage_type: factor
+  question_text: "Please tell us how much you agree or disagree with the following\
+    \ statements. \n\nWe have gone too far in pushing equal rights in this country."
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  source: ANES egal_worryless
+  value_labels_name: agree5
+att_racerel:
+  title: Worry About Race Relations
+  storage_type: factor
+  question_text: Of all the problems facing the nation today, how often do you worry
+    about race relations?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  source: 'MTF (2000) V5215, GSS racdif3
+
+    '
+  value_labels_name: racerel
+att_racedif1:
+  title: Racial Differences Due to Discrimination
+  storage_type: factor
+  question_text: On average, Black people have worse jobs, income, and housing than
+    White  people. Do you think that this is mainly due to discrimination?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  source: 'GSS racdif1
+
+    '
+  value_labels_name: yesno2
+att_racedif3:
+  title: Racial Differences Due to Lack of Education
+  storage_type: factor
+  question_text: On average, Black people have worse jobs, income, and housing than
+    White people. Do you think that this is because most Black people don't have the
+    chance for the education that it takes to rise out of poverty?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  source: 'GSS racdif3
+
+    '
+  value_labels_name: yesno2
+att_linkblk:
+  title: Life Affected By What Happens to Black People
+  storage_type: factor
+  question_text: How much do you think that what happens generally to Black people
+    in the Baltimore area will have something to do with what happens in your life?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  source: 'ANES link_black/link_blackamt (Combined into one question)
+
+    '
+  value_labels_name: racelink4
+att_linkwht:
+  title: Life Affected By What Happens to White People
+  storage_type: factor
+  question_text: How much do you think that what happens generally to White people
+    in the Baltimore area will have something to do with what happens in your life?
+  surveys_used:
+  - bas-2024
+  vargroup: att
+  source: 'ANES link_white/link_whiteamt (Combined into one question)
+
+    '
+  value_labels_name: racelink4

@@ -1,0 +1,979 @@
+dem_own:
+  title: Home owner or renter
+  storage_type: factor
+  question_text: Do you rent your home, own it, or do you have some other arrangment?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: rent
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: Do you rent your home, own it, or do you have some other arrangement?
+    value_labels_name: own
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Home Owner or Renter
+dem_houslate:
+  title: Housing payments
+  storage_type: factor
+  question_text: In the past 12 months, how often has your household been late on
+    monthly  housing payments (mortgage or rent) or has only made a partial housing
+    payment?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  source: Adapted from DMACS freq_late_housing_d15
+  value_labels_name: housing_payment
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the __past 12 months__, that is since {{CMONTHNM}} 2023 how
+      often has your household been late on monthly housing payments (mortgage or
+      rent) or has only made a partial housing payment?
+    value_labels_name: houslate
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: In the __past 12 months__, that is since {{CMONTHNM}} 2024, how
+      often has your household been late on monthly housing payments (mortgage or
+      rent) or has only made a partial housing payment?
+dem_hmacc:
+  title: 'Type air conditioning: central air'
+  storage_type: factor
+  question_text: Which types of air conditioning, if any, do you have in your home?  __Please
+    select all of the types of units you have.__
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: yesno01
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: 'Type Air Conditioning: Central Air'
+dem_hmacw:
+  title: 'Type air conditioning: window unit'
+  storage_type: factor
+  question_text: Which types of air conditioning, if any, do you have in your home?  __Please
+    select all of the types of units you have.__
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: yesno01
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: 'Type Air Conditioning: Window Unit'
+dem_hmaco:
+  title: 'Type air conditioning: other type'
+  storage_type: factor
+  question_text: Which types of air conditioning, if any, do you have in your home?  __Please
+    select all of the types of units you have.__
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: yesno01
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: 'Type Air Conditioning: Other Type'
+dem_hmacn:
+  title: 'Type air conditioning: no air conditioning'
+  storage_type: factor
+  question_text: Which types of air conditioning, if any, do you have in your home?  __Please
+    select all of the types of units you have.__
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: yesno01
+  note: '
+
+    If this option is selected, clear responses to other questions regarding home
+
+    air conditioning
+
+    '
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: 'Type Air Conditioning: No Air Conditioning'
+dem_openwin:
+  title: Open windows in last 24 hours
+  storage_type: factor
+  question_text: In the __past 24 hours__, were any of the windows open in your home
+    for any time
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: yesno2
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Open Windows in Last 24 Hours
+dem_hmnet:
+  title: Internet service present
+  storage_type: factor
+  question_text: Do you currently subscribe to internet service installed at your
+    __home__ (other than data plans on mobile devices)?
+  surveys_used:
+  - bas-2024
+  vargroup: dem
+  source: Pew Research Center NPORS (2023) HOME4NW2
+  value_labels_name: yesno2
+  note: '
+
+    If respondent answers ''Yes'' to this question, they are prompted to a question
+
+    about the type of home internet they have. If they answer no or leave the
+
+    question blank, they are prompted to a question on gun ownership.
+
+    '
+dem_hmnettyp:
+  title: Type of internet service
+  storage_type: factor
+  question_text: Is the home internet service you subscribe to…
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: hmnettyp
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: Do you currently subscribe to internet service installed at your
+      __home__ (other than data plans on mobile devices)?
+    title: Type of Interner Service
+    value_labels_name: hmnettyp25
+dem_hmgun:
+  title: Gun in home
+  storage_type: factor
+  question_text: Do you or someone in your household have a gun in your home?
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: yesno2
+dem_hmgunsf:
+  title: Gun in Storage
+  storage_type: factor
+  question_text: '[IF DEM_HMGUN=1] Thinking about the guns in your home, are all,
+    some, or none kept in a locked location such as a gun safe or cabinet, gun case,
+    gun rack?'
+  surveys_used:
+  - bas-2025
+  vargroup: dem
+  value_labels_name: gun3
+dem_hmgunlk:
+  title: Gun Lock
+  storage_type: factor
+  question_text: '[IF DEM_HMGUNSF <> 1] Thinking of guns not in a locked location,
+    how many of those guns have a trigger lock or other lock?'
+  surveys_used:
+  - bas-2025
+  vargroup: dem
+  value_labels_name: gun3
+dem_adults:
+  title: Number of adults in household
+  storage_type: integer
+  question_text: In the past 30 days, how many adults lived in your household at least
+    half of  the time, including yourself?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  note: "\nRespondents were restricted to entering a number between 1 and 99; respondents\n\
+    who tried to submit a number outside of this range were prompted with the \nmessage\
+    \ 'Please enter a number between 1 and 99.'\n\nNote several extreme values in\
+    \ this response. These extreme values were kept\nin the dataset but analysts should\
+    \ be aware of them and may wish to set them\nequal to missing before analyzing\
+    \ data. \n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the past 30 days, how many adults lived in your household at
+      least half of the time, including yourself?
+dem_hhemp:
+  title: Other household adults employed
+  storage_type: factor
+  question_text: Other than yourself, are any of the other adults who lived here currently
+    employed either full or part time?
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: yesno2
+  note: '
+
+    Question only asked if more than one adult lived in household
+
+    '
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Other Household Adults Employed
+dem_child:
+  title: Children in household
+  storage_type: factor
+  question_text: In the past 30 days, have you had any children under the age of 18
+    living in  your home for at lesat some of the time?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: 'yes'
+  note: "\nIf a respondent left his question blank or answered 'no', the survey skipped\
+    \ the\nfollowing questions about childrens' age, going straight to the question\
+    \ asking \nabout the respondent's birthyear.\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the __past 30 days__, have you had any children under the age
+      of 18 living in your home for at least some of the time?
+    value_labels_name: yesno2
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Children in Household
+dem_childyng:
+  title: Number of children in household, under age 5
+  storage_type: integer
+  question_text: In the past 30 days, how many children ages 0-4 lived in your household
+    at least  some of the time?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  note: "\nRespondents were restricted to entering a number between 0 and 99; respondents\n\
+    who tried to submit a number outside of this range were prompted with the \nmessage:\
+    \ 'Please enter a number between 0 and 99.'\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the __past 30 days__, how many children ages 0-4 lived in your
+      household at least some of the time?
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Number of Children in Household, Under Age 5
+dem_childmid:
+  title: Number of children in household, ages 5-11
+  storage_type: integer
+  question_text: In the past 30 days, how many children ages 5-11 lived in your household
+    at  least some of the time?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  note: "\nRespondents were restricted to entering a number between 0 and 99; respondents\n\
+    who tried to submit a number outside of this range were prompted with the \nmessage:\
+    \ 'Please enter a number between 0 and 99.'\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the __past 30 days__, how many children ages 5-11 lived in your
+      household at least some of the time?
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Number of Children in Household, ages 5-11
+dem_childold:
+  title: Number of children in household, ages 12-17
+  storage_type: integer
+  question_text: In the past 30 days, how many children ages 12-17 lived in your household
+    at  least some of the time?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  note: "\nRespondents were restricted to entering a number between 0 and 99; respondents\n\
+    who tried to submit a number outside of this range were prompted with the \nmessage:\
+    \ 'Please enter a number between 0 and 99.'\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In the __past 30 days__, how many children ages 12-17 lived in  your
+      household at least some of the time?
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Number of Children in Household, Ages 12-17
+dem_hhdisabl:
+  title: Household members with disability
+  storage_type: factor
+  question_text: Do you or any member of your household have a disability? This could
+    be any type of disability including physical, mental, intellectual, developmental
+  surveys_used:
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: yesno2
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Household Members With Disability
+dem_edattain:
+  title: Educational attainment
+  storage_type: factor
+  question_text: What is the highest degree or level of school you have completed?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: highest_degree
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    value_labels_name: edattain
+dem_inths:
+  title: High school racial integration
+  storage_type: factor
+  question_text: 'Think about the high school you attended. If you attended more than
+    one high school, think about the last one you attended. Would you say that the
+    students who attended that school were:'
+  surveys_used:
+  - bas-2024
+  vargroup: dem
+  value_labels_name: inths
+dem_married:
+  title: Marital status
+  storage_type: factor
+  question_text: Are you now married, widowed, divorced, separated, or have you never
+    been  married?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: marital_status
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: Are you now married, widowed, divorced, separated, or have you
+      never been married
+    value_labels_name: married
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: Are you now married, widowed, divorced, separated, or have you
+      never been married?
+    title: Marital Status
+dem_yearborn:
+  title: Respondent's birth year
+  storage_type: integer
+  question_text: In what year were you born?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  note: '
+
+    Respondents were allowed to enter 4 numeric characters. If a respondent gave
+
+    a number less than 1900, they were prompted with the message: ''Please enter
+
+    the year you were born using four digits.''
+
+    '
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In what year were you born
+    title: Birth Year
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Respondent's Birth Year
+dem_gender:
+  title: Gender
+  storage_type: factor
+  question_text: What is your current gender?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: gender
+dem_sexlty:
+  title: Sexuality
+  storage_type: factor
+  question_text: Do you personally think of yourself as...
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: sexuality
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: Do you personally think of yourself as…
+    value_labels_name: sexlty
+dem_latx:
+  title: 'Race/ethnicity indicator: Latinx'
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: 'yes'
+  description: "\nA binary indicator for any respondent who identified as being of\
+    \ 'Hispanic, \nLatino, or Spanish origin' on the survey or specified  'some other\
+    \ race' for \ntheir racial identity that was then recoded into this category.\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    value_labels_name: yesno01
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: Are you of Hispanic, Latino, or Spanish origin?
+    title: Reported Hispanic Ethincity
+    value_labels_name: yesno2
+dem_race_wh:
+  title: 'Race/ethnicity indicator: White'
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  vargroup: dem
+  value_labels_name: 'yes'
+  description: "\nA binary indicator for any respondent who identified as 'White'\
+    \ on the survey \nor specified 'some other race' that was then recoded into this\
+    \ category.\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    value_labels_name: yesno01
+dem_race_bl:
+  title: 'Race/ethnicity indicator: Black'
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  vargroup: dem
+  value_labels_name: 'yes'
+  description: "\nA binary indicator for any respondent who identified as 'Black or\
+    \ African \nAmerican' on the survey or specified 'some other race' that was then\
+    \ recoded \ninto this category.\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    value_labels_name: yesno01
+dem_race_am:
+  title: 'Race/ethnicity indicator: American Indian'
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  vargroup: dem
+  value_labels_name: 'yes'
+  description: "\nA binary indicator for any respondent who identified as 'American\
+    \ Indian or \nAlaska Native' on the survey or specified 'some other race' that\
+    \ was then \nrecoded into this category.\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    value_labels_name: yesno01
+dem_race_as:
+  title: 'Race/ethnicity indicator: Asian'
+  storage_type: factor
+  question_text: ''
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  vargroup: dem
+  value_labels_name: 'yes'
+  description: "\nA binary indicator for any respondent who identified as 'Asian,\
+    \ Asian American, \nNative Hawaiian or other Pacific Islander' on the survey or\
+    \ specified \n'some other race' that was then recoded into this category.\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    value_labels_name: yesno01
+dem_fborn:
+  title: Nativity
+  storage_type: factor
+  question_text: Where were you born?
+  surveys_used:
+  - bas-2025
+  vargroup: dem
+  value_labels_name: nativity3
+dem_fbornm:
+  title: Mother Nativity
+  storage_type: factor
+  question_text: Where was your mother born?
+  surveys_used:
+  - bas-2025
+  vargroup: dem
+  value_labels_name: nativity3
+dem_religion:
+  title: Religion
+  storage_type: factor
+  question_text: What is your religious preference?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: religion
+dem_denom:
+  title: Religion Denomination - Protestant
+  storage_type: factor
+  question_text: What specific denominaton is that, if any?
+  surveys_used:
+  - bas-2025
+  vargroup: dem
+  source: Modified GSS relig/tmpdenom
+  value_labels_name: denom
+  note: "\nThis question is shown if the respondent answered 1 for DEM_RELIGION \n"
+dem_jewtrad:
+  title: Religion -- Jewish Tradition
+  storage_type: factor
+  question_text: Do you consider yourself Orthodox, Conservative, Reform, or none
+    of these?
+  surveys_used:
+  - bas-2025
+  vargroup: dem
+  source: Modified GSS relig/jew
+  value_labels_name: jewtrad
+  note: "\nThis question is shown if the respondent answered 4 for DEM_RELIGION \n"
+dem_attrel:
+  title: Religious attendance
+  storage_type: factor
+  question_text: How often do you attend religious services?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: attend_religion
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    value_labels_name: attrel
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Religious Attendance
+dem_income_70k:
+  title: High/low income
+  storage_type: factor
+  question_text: 'During 2022, in which of these groups did your total family income,
+    from all sources, fall before taxes?
+
+
+    For your total income, please include interest or dividends, rent, Social Security,
+    other pensions, alimony or child support, unemployment compensation, public aid
+    (welfare), armed forces or veteran''s allotment.'
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: income_70k
+  note: "\nIf the responent answered 'Under $70,000,' they were shown the 'dem_income_lo'\n\
+    question; if the respondent answered '$70,000 or more,' they were shown the \n\
+    'dem_income_hi' question. If a respondent left this blank, the survey skipped\
+    \ to\n'dem_houslate.'\n"
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: "During 2023 in which of these groups did your total family income,\
+      \ from all sources, fall before taxes? \n\nFor your total income, please include\
+      \ interest or dividends, rent, Social Security, other pensions, alimony or child\
+      \ support, unemployment compensation, public aid (welfare), armed forces or\
+      \ veteran's allotment."
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: During 2024, in which of these groups did your total family income,
+      from all sources, fall before taxes?
+    title: High/Low Income
+dem_income_lo:
+  title: Low income level
+  storage_type: factor
+  question_text: During 2022, in which of these groups did your total family income,
+    from all sources, fall before taxes?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: low_income
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: During 2023, in which of these groups did your total family income,
+      from all sources, fall before taxes?
+    value_labels_name: income_lo
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: During 2024, in which of these groups did your total family income,
+      from all sources, fall before taxes?
+    title: Low Income Level
+dem_income_hi:
+  title: High income level
+  storage_type: factor
+  question_text: During 2022, in which of these groups did your total family income,
+    from all sources, fall before taxes?
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: high_income
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: During 2023, in which of these groups did your total family income,
+      from all sources, fall before taxes?
+    value_labels_name: income_hi
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: During 2024, in which of these groups did your total family income,
+      from all sources, fall before taxes?
+    title: High Income Level
+    value_labels_name: income_hi25
+prg_snap:
+  title: Received SNAP benefits
+  storage_type: factor
+  question_text: 'The next question is about public benefits you or your family may
+    have received in the past 12 months. Did you or anyone in your family receive
+    the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
+    include benefits received by you, your spouse or partner and any of your children
+    or stepchildren under 19 who usually live with you.
+
+
+    The Supplemental Nutrition Assistance Program, or SNAP (formerly known as the  Food
+    Stamp Program)'
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: 'yes'
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: 'The next question is about the public benefits you or your family
+      may have received in the __past 12 months__. Did you or anyone in your family
+      receive the following benefits at any time since {{CMONTHNM}} 2023? Please include  benefits
+      received by you, your spouse or partner and any of your children or stepchildren
+      under 19 who usually live with you.
+
+
+      The Supplemental Nutrition Assistance Program, or SNAP (formerly known as the
+      Food Stamp Program)'
+    value_labels_name: yesno2
+prg_med:
+  title: Received Medicaid or similar benefits
+  storage_type: factor
+  question_text: 'The next question is about public benefits you or your family may
+    have received in the past 12 months. Did you or anyone in your family receive
+    the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
+    include benefits received by you, your spouse or partner and any of your children
+    or stepchildren under 19 who usually live with you.
+
+
+    Medicaid, Medical Assistance, the Maryland Children''s Health Program or any kind
+    of state or government-sponsored assistance plan based on income or disability'
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: 'yes'
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: 'The next question is about the public benefits you or your family
+      may have received in the __past 12 months__. Did you or anyone in your family
+      receive the following benefits at any time since {{CMONTHNM}} 2023? Please include  benefits
+      received by you, your spouse or partner and any of your children or stepchildren
+      under 19 who usually live with you.
+
+
+      Medicaid, Medical Assistance, the Maryland Children’s Health Program or any
+      kind of state or government-sponsored assistance plan based on income or a disability'
+    value_labels_name: yesno2
+prg_housing:
+  title: Received governmental housing benefits
+  storage_type: factor
+  question_text: 'The next question is about public benefits you or your family may
+    have received in the past 12 months. Did you or anyone in your family receive
+    the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
+    include benefits received by you, your spouse or partner and any of your children
+    or stepchildren under 19 who usually live with you.
+
+
+    A federal, state, or local government housing program that lowers your rent, such
+    as a housing voucher or public housing'
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: 'yes'
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: 'The next question is about the public benefits you or your family
+      may have received in the __past 12 months__. Did you or anyone in your family
+      receive the following benefits at any time since {{CMONTHNM}} 2023? Please include  benefits
+      received by you, your spouse or partner and any of your children or stepchildren
+      under 19 who usually live with you.
+
+
+      A federal, state, or local government housing program that lowers your rent,
+      such as a housing voucher or public housing'
+    value_labels_name: yesno2
+prg_ssi:
+  title: Received SSI benefits
+  storage_type: factor
+  question_text: 'The next question is about public benefits you or your family may
+    have received in the past 12 months. Did you or anyone in your family receive
+    the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
+    include benefits received by you, your spouse or partner and any of your children
+    or stepchildren under 19 who usually live with you.
+
+
+    Supplemental Security Income (SSI), which provides cash assistance to low-income
+    aged, blind, and disabled persons'
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: 'yes'
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: 'The next question is about the public benefits you or your family
+      may have received in the __past 12 months__. Did you or anyone in your family
+      receive the following benefits at any time since {{CMONTHNM}} 2023? Please include  benefits
+      received by you, your spouse or partner and any of your children or stepchildren
+      under 19 who usually live with you.
+
+
+      Supplemental Security Income (SSI), which provides cash assistance to low-income,
+      aged (age 65 or older), blind, and disabled persons'
+    value_labels_name: yesno2
+prg_ssdi:
+  title: Received SSDI benefits
+  storage_type: factor
+  question_text: 'The next question is about public benefits you or your family may
+    have received in the past 12 months. Did you or anyone in your family receive
+    the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
+    include benefits received by you, your spouse or partner and any of your children
+    or stepchildren under 19 who usually live with you.
+
+
+    Social Security Disability Income (SSDI), which provides cash assistance to  disabled
+    adults with longer work histories'
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: 'yes'
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: 'The next question is about the public benefits you or your family
+      may have received in the __past 12 months__. Did you or anyone in your family
+      receive the following benefits at any time since {{CMONTHNM}} 2023? Please include  benefits
+      received by you, your spouse or partner and any of your children or stepchildren
+      under 19 who usually live with you.
+
+
+      Social Security Disability Income (SSDI), which provides cash assistance to
+      disabled adults with longer work histories'
+    value_labels_name: yesno2
+prg_tanf:
+  title: Received TANF benefits
+  storage_type: factor
+  question_text: 'The next question is about public benefits you or your family may
+    have received in the past 12 months. Did you or anyone in your family receive
+    the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
+    include benefits received by you, your spouse or partner and any of your children
+    or stepchildren under 19 who usually live with you.
+
+
+    Temporary Assistance for Needy Families (TANF), sometimes known as cash welfare'
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: 'yes'
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: 'The next question is about the public benefits you or your family
+      may have received in the __past 12 months__. Did you or anyone in your family
+      receive the following benefits at any time since {{CMONTHNM}} 2023? Please include  benefits
+      received by you, your spouse or partner and any of your children or stepchildren
+      under 19 who usually live with you.
+
+
+      Temporary Assistance for Needy Families (TANF), sometimes known as cash welfare'
+    value_labels_name: yesno2
+inv_votreg:
+  title: Registered to vote
+  storage_type: factor
+  question_text: Some people register to vote and some people do not. Are you  registered
+    to vote __at your current address__?
+  surveys_used:
+  - bas-2024
+  vargroup: dem
+  value_labels_name: votereg
+inv_voteupc:
+  title: Likely to vote in 2024 general election
+  storage_type: factor
+  question_text: "There is an election in November 2024 where voters will have the\
+    \  opportunity to vote for president, senator for the state of Maryland, members\
+    \  of Congress, and local offices. \n\nHow likely are you to vote in the November\
+    \ 2024 election?"
+  surveys_used:
+  - bas-2024
+  vargroup: dem
+  value_labels_name: voteupc
+dem_voter:
+  title: General election 2022 voting
+  storage_type: factor
+  question_text: Last year, in November 2022, Wes Moore ran against Dan Cox to be
+    governor of  Maryland. Do you remember for sure whether or not you voted in that
+    election?”
+  surveys_used:
+  - bas-2023
+  - bas-2025
+  vargroup: con
+  value_labels_name: voted
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: Last year, in November 2024, there was a general election for president,
+      senator for the state of Maryland, members of Congress, and local offices. Do
+      you remember for sure whether or not you voted in that election?
+    title: General Election 2024 Voting
+    value_labels_name: votereg
+dem_voteelig:
+  title: Eligible to vote
+  storage_type: factor
+  question_text: To the best of your knowledge, were you eligible to vote in the election
+    in  November 2022?
+  surveys_used:
+  - bas-2023
+  - bas-2025
+  vargroup: con
+  value_labels_name: 'yes'
+  note: "\nThis question was only asked of respondents who responded to question \n\
+    `bas23_con_invvoter` with either \"I thought about voting this time-but didn't\"\
+    \ \nor \"I did not vote in the election\". \n"
+  versions:
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    question_text: To the best of your knowledge, were you eligible to vote in the
+      election in November 2024?
+    value_labels_name: yesno2
+dem_ideo:
+  title: Political ideology
+  storage_type: factor
+  question_text: In general, would you describe your political views as...
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: ideology
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In general, would you describe your political views as…
+    value_labels_name: ideo
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Political Ideology
+dem_pparty:
+  title: Political party
+  storage_type: factor
+  question_text: In politics today, do you consider yourself a...
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  vargroup: dem
+  value_labels_name: political_party
+  versions:
+  - version_id: '2024'
+    surveys_used:
+    - bas-2024
+    question_text: In politics today, do you consider yourself a…
+    value_labels_name: pparty
+  - version_id: '2025'
+    surveys_used:
+    - bas-2025
+    title: Political Party
