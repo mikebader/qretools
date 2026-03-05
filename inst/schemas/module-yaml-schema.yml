@@ -1,5 +1,5 @@
-# SCHEMA FOR DEFINING CONTROL PARAMETER VARIABLES
-# Used for creating modules of questions
+# SCHEMA FOR DEFINING QUESTION MODULES
+# Used for grouping related questions into named modules
 
 id: string                       # REQUIRED  - Unique identifier
     title: string                # REQUIRED - Short descriptive title
