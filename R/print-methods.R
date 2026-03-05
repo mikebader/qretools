@@ -1,4 +1,4 @@
-# Print Methods for qretools Variable Objects
+# Print & Summary Methods for qretools Variable Objects
 #
 # Brief S3 print methods for individual variable objects (qt_qvar, qt_ctrlvar,
 # qt_genvar). The default output shows the variable ID, storage type, title,
@@ -16,6 +16,12 @@
 #'
 #' @return Invisibly returns the original object
 #'
+#' Summarize a qretoos Variable Object
+#'
+#' Display more information about an individual variable object. The output
+#' shows the information in `print()` methods as well as additional information
+#' such as factor labels, full question or description, etc.
+#'
 #' @examples
 #' \dontrun{
 #' qbank <- qt_qbank()
@@ -30,6 +36,23 @@ print.qt_qvar <- function(x, ...) {
   cat(x$variable_id, " [", x$storage_type, "] ", x$title, "\n", sep = "")
   cat("  Surveys: ", paste(x$surveys_used, collapse = ", "), "\n", sep = "")
   invisible(x)
+}
+
+#' @name print-variables
+#' @export
+summary.qt_qvar <- function(x, ...) {
+  cli::cli_text("{.strong {x$variable_id}}: {x$title}")
+  cli::cli_text("Variable type: {x$storage_type}")
+  if (x$storage_type == "factor") {
+    cli::cli_text("Factor label: {.val {x$value_labels_name}}")
+  }
+  if(!is.null(x$question_text) && nzchar(x$question_text)) {
+    full <- paste("Question text:", x$question_text)
+  } else {
+    full <- paste("Description:", x$description)
+  }
+  cli::cli_text({full})
+  cli::cli_text("Surveys: {paste(x$surveys_used, collapse = ", ")}")
 }
 
 #' @rdname print-variables
@@ -47,3 +70,5 @@ print.qt_genvar <- function(x, ...) {
   cat("  Surveys: ", paste(x$surveys_used, collapse = ", "), "\n", sep = "")
   invisible(x)
 }
+
+
