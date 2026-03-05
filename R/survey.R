@@ -80,11 +80,15 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   survey_yaml <- .read_yaml_safe(survey_config_file, "survey config")
 
   # Validate required top-level fields
-  required_fields <- c("meta", "sections")
+  required_fields <- c("meta", "questionnaire")
   missing <- setdiff(required_fields, names(survey_yaml))
   if (length(missing) > 0) {
     stop("Survey config missing required fields: ",
          paste(missing, collapse = ", "), call. = FALSE)
+  }
+
+  if (is.null(survey_yaml$questionnaire$items)) {
+    stop("Survey config 'questionnaire' must contain an 'items' array", call. = FALSE)
   }
 
   # Validate meta fields
@@ -95,25 +99,30 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
          paste(missing_meta, collapse = ", "), call. = FALSE)
   }
 
-  # Step 4: Process sections and items
-  all_items <- list()
-
-  for (section in survey_yaml$sections) {
-    section_id <- section$id
-
-    # Process items (which may be containers)
-    section_items <- .process_items_recursive(
-      section$items,
-      section_id = section_id,
-      qbank = qbank,
-      candidates = candidates,
-      config = config,
-      container_context = NULL,
-      modbank = modbank
-    )
-
-    all_items <- c(all_items, section_items)
+  # Step 4a: Process preload items (compute only)
+  preload_items <- list()
+  if (!is.null(survey_yaml$questionnaire$preload)) {
+    for (item in survey_yaml$questionnaire$preload) {
+      if (!identical(item$item_type, "compute")) {
+        stop("'preload' only allows 'compute' items; found item_type: '",
+             item$item_type, "'", call. = FALSE)
+      }
+      preload_items <- c(preload_items,
+                         list(.make_compute_item(item, section_id = "preload",
+                                                 container_context = NULL)))
+    }
   }
+
+  # Step 4b: Process questionnaire items recursively
+  all_items <- .process_items_recursive(
+    survey_yaml$questionnaire$items,
+    section_id = NULL,
+    qbank = qbank,
+    candidates = candidates,
+    config = config,
+    container_context = NULL,
+    modbank = modbank
+  )
 
   # Step 5: Build indices and references
   varnames <- character()
@@ -130,11 +139,12 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
     if (item$item_type == "question") {
       varnames <- c(varnames, item$variable_id)
 
-      # Add to section map
-      if (is.null(section_map[[item$section_id]])) {
-        section_map[[item$section_id]] <- character()
+      # Add to section map (items without a section are grouped under NA)
+      sid <- item$section_id %||% NA_character_
+      if (is.null(section_map[[sid]])) {
+        section_map[[sid]] <- character()
       }
-      section_map[[item$section_id]] <- c(section_map[[item$section_id]], item$variable_id)
+      section_map[[sid]] <- c(section_map[[sid]], item$variable_id)
 
       # Extract fills from question text
       fills <- .extract_fills(item$definition$question_text)
@@ -194,9 +204,9 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
     source_map <- rbind(source_map, data.frame(
       item_id = item$id,
       item_type = item$item_type,
-      source = item$source %||% NA,
-      source_file = source_file %||% NA,
-      section_id = item$section_id,
+      source = item$source %||% NA_character_,
+      source_file = source_file %||% NA_character_,
+      section_id = item$section_id %||% NA_character_,
       stringsAsFactors = FALSE
     ))
   }
@@ -205,6 +215,7 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   result <- structure(
     list(
       meta = survey_yaml$meta,
+      preload = preload_items,
       items = all_items,
       indices = list(
         questions = unique(varnames),
@@ -252,6 +263,12 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
                         "statement" = list(.make_statement_item(item, section_id, container_context)),
                         "question" = list(.make_question_item(item, section_id, qbank, candidates, container_context)),
                         "compute" = list(.make_compute_item(item, section_id, container_context)),
+
+                        # Section - set section_id, recurse into items
+                        "section" = .process_items_recursive(
+                          item$items, item$id, qbank, candidates, config,
+                          container_context, modbank
+                        ),
 
                         # Containers - return multiple items
                         "module" = .expand_module(item, section_id, qbank, candidates, config, container_context, modbank),
@@ -620,8 +637,8 @@ print.qt_qreconfig <- function(x, ...) {
   cat(strrep("=", 50), "\n\n", sep = "")
 
   cat("Survey:   ", x$meta$title, "\n")
-  cat("Year:     ", x$meta$year %||% "(not specified)", "\n")
   cat("Status:   ", x$meta$status, "\n")
+  cat("Preload:  ", length(x$preload), " compute item(s)\n", sep = "")
   cat("Items:    ", length(x$items), "\n")
   cat("Questions:", length(x$indices$questions), "\n\n")
 
@@ -646,6 +663,7 @@ summary.qt_qreconfig <- function(object, ...) {
   cat("  Status:   ", object$meta$status, "\n\n")
 
   cat("Content:\n")
+  cat("  Preload items:   ", length(object$preload), "\n")
   cat("  Total items:     ", length(object$items), "\n")
   cat("  Questions:       ", length(object$indices$questions), "\n")
   cat("  Sections:        ", length(object$indices$section_map), "\n")
