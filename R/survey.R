@@ -79,6 +79,37 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   # Step 3: Read and validate survey config YAML
   survey_yaml <- .read_yaml_safe(survey_config_file, "survey config")
 
+  .qt_build_qreconfig(survey_yaml,
+                       source_file = survey_config_file,
+                       config      = config,
+                       qbank       = qbank,
+                       candidates  = candidates,
+                       modbank     = modbank)
+}
+
+
+#' Build a qt_qreconfig from a Parsed Survey YAML List
+#'
+#' Shared internal helper used by both `qt_read_survey_config()` (YAML path)
+#' and `qt_process.qt_qre()` (builder path). Accepts a plain list that
+#' mirrors the parsed YAML structure, validates it, expands all containers,
+#' and returns a `qt_qreconfig` object.
+#'
+#' @param survey_yaml Named list. Must have `$meta` and `$questionnaire$items`.
+#' @param source_file Character string or NULL. Original file path (used in
+#'   `read_meta`; NULL when processing a `qt_qre` object directly without
+#'   writing a file).
+#' @param config A `qt_config` object.
+#' @param qbank,candidates,modbank Bank objects (placeholders until
+#'   bank-loading is fully implemented).
+#'
+#' @return A `qt_qreconfig` object.
+#'
+#' @keywords internal
+#' @noRd
+.qt_build_qreconfig <- function(survey_yaml, source_file, config,
+                                  qbank, candidates, modbank) {
+
   # Validate required top-level fields
   required_fields <- c("meta", "questionnaire")
   missing <- setdiff(required_fields, names(survey_yaml))
@@ -88,7 +119,8 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   }
 
   if (is.null(survey_yaml$questionnaire$items)) {
-    stop("Survey config 'questionnaire' must contain an 'items' array", call. = FALSE)
+    stop("Survey config 'questionnaire' must contain an 'items' array",
+         call. = FALSE)
   }
 
   # Validate meta fields
@@ -153,7 +185,8 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
       # Track module usage
       if (!is.null(item$module_id)) {
         modules_used <- c(modules_used, item$module_id)
-        module_map[[item$module_id]] <- c(module_map[[item$module_id]], item$variable_id)
+        module_map[[item$module_id]] <- c(module_map[[item$module_id]],
+                                          item$variable_id)
       }
 
       # Track loop usage
@@ -195,51 +228,45 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   )
 
   for (item in all_items) {
-    source_file <- if (item$item_type == "question") {
-      item$definition$source_file
-    } else {
-      NA
-    }
+    sf <- if (item$item_type == "question") item$definition$source_file else NA
 
     source_map <- rbind(source_map, data.frame(
-      item_id = item$id,
-      item_type = item$item_type,
-      source = item$source %||% NA_character_,
-      source_file = source_file %||% NA_character_,
+      item_id    = item$id,
+      item_type  = item$item_type,
+      source     = item$source %||% NA_character_,
+      source_file = sf %||% NA_character_,
       section_id = item$section_id %||% NA_character_,
       stringsAsFactors = FALSE
     ))
   }
 
   # Step 7: Build final structure
-  result <- structure(
+  structure(
     list(
-      meta = survey_yaml$meta,
+      meta    = survey_yaml$meta,
       preload = preload_items,
-      items = all_items,
+      items   = all_items,
       indices = list(
-        questions = unique(varnames),
-        controls = unique(control_params),
-        modules = unique(modules_used),
-        fills = unique(fills_found),
-        items = seq_along(all_items),
+        questions   = unique(varnames),
+        controls    = unique(control_params),
+        modules     = unique(modules_used),
+        fills       = unique(fills_found),
+        items       = seq_along(all_items),
         section_map = section_map,
-        module_map = module_map,
-        loop_map = loop_map,
-        logic_map = logic_map,
-        split_map = split_map
+        module_map  = module_map,
+        loop_map    = loop_map,
+        logic_map   = logic_map,
+        split_map   = split_map
       ),
       source_map = source_map,
-      read_meta = list(
-        source_file = survey_config_file,
-        read_time = Sys.time(),
+      read_meta  = list(
+        source_file = source_file,
+        read_time   = Sys.time(),
         config_used = config$meta$project_root
       )
     ),
     class = "qt_qreconfig"
   )
-
-  return(result)
 }
 
 # Internal helper functions -----------------------------------------------
