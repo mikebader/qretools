@@ -912,9 +912,17 @@ qt_process.qt_qre <- function(x, yaml_path = .qt_default_yaml_path(x),
   if (is.null(config)) config <- qt_config()
 
   survey_yaml <- .qt_qre_to_list(x)
-  qbank      <- list(variables = list())   # TODO: load from config
-  candidates <- list(variables = list())   # TODO: load from config
-  modbank    <- list(modules   = list())   # TODO: load from config
+  qbank   <- qt_read_question_bank(config)
+  modbank <- qt_read_module_bank(config)
+
+  # Candidates: look in the survey's design directory when yaml_path is known.
+  candidates_rel  <- x$meta$candidates_path %||% "candidates"
+  candidates_path <- if (!is.null(yaml_path)) {
+    file.path(dirname(yaml_path), candidates_rel)
+  } else {
+    NULL
+  }
+  candidates <- .qt_read_candidates_safe(candidates_path, config)
 
   .qt_build_qreconfig(survey_yaml,
                        source_file = yaml_path,

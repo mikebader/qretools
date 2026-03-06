@@ -61,20 +61,17 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   }
 
   # Step 2: Load banks
-  # TODO: Implement qt_qbank(), qt_ctrlbank(), qt_read_candidates(), qt_modbank()
-  qbank <- list(variables = list())  # Placeholder
-  ctrlbank <- list(variables = list())  # Placeholder
+  qbank   <- qt_read_question_bank(config)
+  modbank <- qt_read_module_bank(config)
 
-  # Resolve candidates path
+  # Candidates are optional: a per-survey question bank for questions that are
+  # being considered for inclusion but are not yet in the main question bank.
+  # The path defaults to a "candidates" subdirectory next to the survey config
+  # file, but can be overridden via meta$candidates_path in the YAML.
   survey_yaml_temp <- .read_yaml_safe(survey_config_file, "survey config")
-  candidates_path <- survey_yaml_temp$meta$candidates_path %||% "candidates"
-  candidates_full_path <- file.path(dirname(survey_config_file), candidates_path)
-
-  # TODO: Implement qt_read_candidates() - thin wrapper around qt_qbank()
-  candidates <- list(variables = list())  # Placeholder
-
-  # TODO: Implement qt_modbank()
-  modbank <- list(modules = list())  # Placeholder
+  candidates_rel   <- survey_yaml_temp$meta$candidates_path %||% "candidates"
+  candidates_path  <- file.path(dirname(survey_config_file), candidates_rel)
+  candidates       <- .qt_read_candidates_safe(candidates_path, config)
 
   # Step 3: Read and validate survey config YAML
   survey_yaml <- .read_yaml_safe(survey_config_file, "survey config")
@@ -270,6 +267,58 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
 }
 
 # Internal helper functions -----------------------------------------------
+
+# Read candidate question bank, returning an empty qt_qbank if the path does
+# not exist. Candidates are optional per-survey YAML files that hold questions
+# under consideration but not yet committed to the main question bank.
+#
+# @param candidates_path Full path to the candidates file (without .yml) or
+#   directory. May be NULL (treated as absent).
+# @param config A qt_config object.
+# @return A qt_qbank object (possibly empty).
+#
+# @keywords internal
+# @noRd
+.qt_read_candidates_safe <- function(candidates_path, config) {
+  if (is.null(candidates_path)) return(.qt_empty_qbank(candidates_path))
+
+  has_file <- file.exists(paste0(candidates_path, ".yml"))
+  has_dir  <- dir.exists(candidates_path)
+
+  if (!has_file && !has_dir) return(.qt_empty_qbank(candidates_path))
+
+  qt_read_question_bank(config = config, path = candidates_path)
+}
+
+# Construct a zero-variable qt_qbank object. Used when candidates are absent.
+#
+# @param source_path Character string or NULL.
+# @return An empty qt_qbank inheriting from qt_bank.
+#
+# @keywords internal
+# @noRd
+.qt_empty_qbank <- function(source_path = NULL) {
+  structure(
+    list(
+      variables = list(),
+      meta = list(
+        source_path      = source_path %||% NA_character_,
+        source_type      = "none",
+        source_files     = character(),
+        file_order       = character(),
+        n_variables      = 0L,
+        read_time        = Sys.time(),
+        indices = list(
+          by_variable_id   = character(),
+          by_file          = list(),
+          by_file_position = character(),
+          by_survey        = list()
+        )
+      )
+    ),
+    class = c("qt_qbank", "qt_bank")
+  )
+}
 
 #' Process Items Recursively
 #'
