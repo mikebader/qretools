@@ -912,8 +912,12 @@ qt_process.qt_qre <- function(x, yaml_path = .qt_default_yaml_path(x),
   if (is.null(config)) config <- qt_config()
 
   survey_yaml <- .qt_qre_to_list(x)
-  qbank   <- qt_read_question_bank(config)
-  modbank <- qt_read_module_bank(config)
+
+  # Load value labels once; pass to all bank readers to avoid redundant I/O.
+  vlabs    <- qt_read_value_labels(config)
+  qbank    <- qt_read_question_bank(config, value_labels = vlabs)
+  ctrlbank <- qt_read_control_parameters(config, value_labels = vlabs)
+  modbank  <- qt_read_module_bank(config)
 
   # Candidates: look in the survey's design directory when yaml_path is known.
   candidates_rel  <- x$meta$candidates_path %||% "candidates"
@@ -922,13 +926,15 @@ qt_process.qt_qre <- function(x, yaml_path = .qt_default_yaml_path(x),
   } else {
     NULL
   }
-  candidates <- .qt_read_candidates_safe(candidates_path, config)
+  candidates <- .qt_read_candidates_safe(candidates_path, config,
+                                         value_labels = vlabs)
 
   .qt_build_qreconfig(survey_yaml,
                        source_file = yaml_path,
                        config      = config,
                        qbank       = qbank,
                        candidates  = candidates,
+                       ctrlbank    = ctrlbank,
                        modbank     = modbank)
 }
 

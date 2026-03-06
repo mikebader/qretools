@@ -60,9 +60,13 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
     config <- qt_config()
   }
 
-  # Step 2: Load banks
-  qbank   <- qt_read_question_bank(config)
-  modbank <- qt_read_module_bank(config)
+  # Step 2: Load banks. Value labels are loaded once and passed to all bank
+  # readers so that factor variable references are validated without
+  # re-reading the same files on each call.
+  vlabs    <- qt_read_value_labels(config)
+  qbank    <- qt_read_question_bank(config, value_labels = vlabs)
+  ctrlbank <- qt_read_control_parameters(config, value_labels = vlabs)
+  modbank  <- qt_read_module_bank(config)
 
   # Candidates are optional: a per-survey question bank for questions that are
   # being considered for inclusion but are not yet in the main question bank.
@@ -71,7 +75,8 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   survey_yaml_temp <- .read_yaml_safe(survey_config_file, "survey config")
   candidates_rel   <- survey_yaml_temp$meta$candidates_path %||% "candidates"
   candidates_path  <- file.path(dirname(survey_config_file), candidates_rel)
-  candidates       <- .qt_read_candidates_safe(candidates_path, config)
+  candidates       <- .qt_read_candidates_safe(candidates_path, config,
+                                               value_labels = vlabs)
 
   # Step 3: Read and validate survey config YAML
   survey_yaml <- .read_yaml_safe(survey_config_file, "survey config")
@@ -81,6 +86,7 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
                        config      = config,
                        qbank       = qbank,
                        candidates  = candidates,
+                       ctrlbank    = ctrlbank,
                        modbank     = modbank)
 }
 
@@ -97,15 +103,14 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
 #'   `read_meta`; NULL when processing a `qt_qre` object directly without
 #'   writing a file).
 #' @param config A `qt_config` object.
-#' @param qbank,candidates,modbank Bank objects (placeholders until
-#'   bank-loading is fully implemented).
+#' @param qbank,candidates,ctrlbank,modbank Bank objects.
 #'
 #' @return A `qt_qreconfig` object.
 #'
 #' @keywords internal
 #' @noRd
 .qt_build_qreconfig <- function(survey_yaml, source_file, config,
-                                  qbank, candidates, modbank) {
+                                  qbank, candidates, ctrlbank, modbank) {
 
   # Validate required top-level fields
   required_fields <- c("meta", "questionnaire")
@@ -212,7 +217,17 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
     }
   }
 
-  # TODO: Extract control_params from fills_found and validate against ctrlbank
+  # Classify fills: any {{name}} that matches a control parameter variable_id
+  # is a control param reference. Warn about fills that are in neither bank.
+  for (fill in fills_found) {
+    if (!is.null(ctrlbank$variables[[fill]])) {
+      control_params <- c(control_params, fill)
+    } else if (is.null(qbank$variables[[fill]])) {
+      warning("Fill '{{", fill, "}}' is not defined in the question bank or ",
+              "control parameter bank", call. = FALSE)
+    }
+  }
+  control_params <- unique(control_params)
 
   # Step 6: Build source map
   source_map <- data.frame(
@@ -279,7 +294,7 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
 #
 # @keywords internal
 # @noRd
-.qt_read_candidates_safe <- function(candidates_path, config) {
+.qt_read_candidates_safe <- function(candidates_path, config, value_labels = NULL) {
   if (is.null(candidates_path)) return(.qt_empty_qbank(candidates_path))
 
   has_file <- file.exists(paste0(candidates_path, ".yml"))
@@ -287,7 +302,8 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
 
   if (!has_file && !has_dir) return(.qt_empty_qbank(candidates_path))
 
-  qt_read_question_bank(config = config, path = candidates_path)
+  qt_read_question_bank(config = config, path = candidates_path,
+                        value_labels = value_labels)
 }
 
 # Construct a zero-variable qt_qbank object. Used when candidates are absent.

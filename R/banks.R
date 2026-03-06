@@ -15,7 +15,8 @@
 .qt_read_variable_bank <- function(config_path_name, path, config,
                                    item_type = "variables",
                                    class_name = c("qt_bank"),
-                                   validate_value_labels = TRUE) {
+                                   validate_value_labels = TRUE,
+                                   value_labels = NULL) {
 
   # 1. Resolve path
   source_path <- .qt_resolve_path(config_path_name, path, config)
@@ -28,11 +29,11 @@
     result$items[[variable_id]]$variable_id <- variable_id
   }
 
-  # 3. Load value labels for validation (if needed)
-  value_labels <- if (validate_value_labels) {
-    qt_read_value_labels(config)
-  } else {
-    NULL
+  # 3. Load value labels for validation if needed and not already provided.
+  # Callers that have already loaded value labels should pass them here to
+  # avoid redundant file reads.
+  if (validate_value_labels && is.null(value_labels)) {
+    value_labels <- qt_read_value_labels(config)
   }
 
   # 4. Validate variables
@@ -154,14 +155,16 @@ NULL
 
 #' @rdname read_banks
 #' @export
-qt_read_question_bank <- function(config = qt_config(), path = NULL) {
+qt_read_question_bank <- function(config = qt_config(), path = NULL,
+                                  value_labels = NULL) {
   .qt_read_variable_bank(
     config_path_name = "question_bank",
     path = path,
     config = config,
     item_type = "questions",
     class_name = c("qt_qbank", "qt_bank"),
-    validate_value_labels = TRUE
+    validate_value_labels = TRUE,
+    value_labels = value_labels
   )
 }
 
@@ -171,14 +174,16 @@ qt_qbank <- qt_read_question_bank
 
 #' @rdname read_banks
 #' @export
-qt_read_generated_variables <- function(config = qt_config(), path = NULL) {
+qt_read_generated_variables <- function(config = qt_config(), path = NULL,
+                                        value_labels = NULL) {
   .qt_read_variable_bank(
     config_path_name = "generated_bank",
     path = path,
     config = config,
     item_type = "generated variables",
     class_name = c("qt_genbank", "qt_bank"),
-    validate_value_labels = TRUE
+    validate_value_labels = TRUE,
+    value_labels = value_labels
   )
 }
 
@@ -188,14 +193,16 @@ qt_genbank <- qt_read_generated_variables
 
 #' @rdname read_banks
 #' @export
-qt_read_control_parameters <- function(config = qt_config(), path = NULL) {
+qt_read_control_parameters <- function(config = qt_config(), path = NULL,
+                                       value_labels = NULL) {
   .qt_read_variable_bank(
     config_path_name = "control_bank",
     path = path,
     config = config,
     item_type = "control parameters",
     class_name = c("qt_ctrlbank", "qt_bank"),
-    validate_value_labels = TRUE
+    validate_value_labels = TRUE,
+    value_labels = value_labels
   )
 }
 
