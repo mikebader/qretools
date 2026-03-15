@@ -3,6 +3,12 @@
 # These are helper functions used across multiple qretools functions.
 # They are not exported and are prefixed with . to indicate internal use.
 
+# Null-coalescing operator: return lhs if not NULL, otherwise rhs
+#
+# @keywords internal
+# @noRd
+`%||%` <- function(lhs, rhs) if (!is.null(lhs)) lhs else rhs
+
 #' Parse YAML File with User-Friendly Error Messages
 #'
 #' Internal helper to read YAML files and provide clear error messages
@@ -80,19 +86,22 @@
   all_items <- list()
   source_files <- character()
 
+  # Helper to add metadata to items
+  .add_metadata <- function(content, file_path) {
+    for (i in seq_along(content)) {
+      content[[i]]$source_file <- file_path
+      content[[i]]$file_position <- i
+    }
+    content
+  }
+
   if (is_file) {
     # Single file
     file_path <- paste0(source_path, ".yml")
     content <- .read_yaml_safe(file_path, basename(file_path))
 
     if (!is.null(content) && length(content) > 0) {
-      # Add source_file and file_position to each item
-      for (i in seq_along(content)) {
-        name <- names(content)[i]
-        content[[name]]$source_file <- file_path
-        content[[name]]$file_position <- i
-      }
-      all_items <- content
+      all_items <- .add_metadata(content, file_path)
     }
     source_files <- file_path
     source_type <- "file"
@@ -100,7 +109,7 @@
   } else {
     # Directory - read all .yml files in alphabetical order
     yml_files <- list.files(source_path, pattern = "\\.yml$", full.names = TRUE)
-    yml_files <- sort(yml_files)  # Alphabetical order
+    yml_files <- sort(yml_files)
 
     if (length(yml_files) == 0) {
       stop("No .yml files found in directory: ", source_path, call. = FALSE)
@@ -110,12 +119,7 @@
       content <- .read_yaml_safe(file_path, basename(file_path))
 
       if (!is.null(content) && length(content) > 0) {
-        # Add source_file and file_position to each item
-        for (i in seq_along(content)) {
-          name <- names(content)[i]
-          content[[name]]$source_file <- file_path
-          content[[name]]$file_position <- i
-        }
+        content <- .add_metadata(content, file_path)
         all_items <- c(all_items, content)
       }
     }
@@ -144,57 +148,82 @@
 # @param variables Named list of variables (from YAML)
 # @param value_labels qt_vlabs object or NULL - for validating label references
 # @param validate_value_labels Logical - whether to check value label references exist
+# @param bank_type Character string - type of bank being validated; one of
+#   "questions", "generated variables", "control parameters"
 # @return Invisible TRUE on success, stops with error on validation failure
-.qt_validate_variables <- function(variables, value_labels = NULL, validate_value_labels = TRUE) {
+.qt_validate_variables <- function(variables, value_labels = NULL, validate_value_labels = TRUE,
+                                   bank_type = "questions") {
   errors <- character()
 
-  # 1. Check required fields
-  required_fields <- c("varname", "title", "type", "vargroup", "question_text", "surveys_used")
+  # 1. Check required fields (common to all bank types)
+  required_fields <- c("variable_id", "title", "surveys_used")
 
-  for (varname in names(variables)) {
-    var <- variables[[varname]]
+  # Determine the required text field by bank type
+  requires_question_text <- bank_type == "questions"
+
+  for (variable_id in names(variables)) {
+    var <- variables[[variable_id]]
     missing <- setdiff(required_fields, names(var))
+
+    # Check for required text field
+    if (requires_question_text) {
+      if (is.null(var$question_text)) {
+        missing <- c(missing, "question_text")
+      }
+    } else {
+      # Generated variables and control parameters use 'description'
+      # (but also accept 'question_text' for backward compatibility)
+      if (is.null(var$description) && is.null(var$question_text)) {
+        missing <- c(missing, "description")
+      }
+    }
 
     if (length(missing) > 0) {
       errors <- c(errors,
                   sprintf("Variable '%s': Missing required fields: %s",
-                          varname, paste(missing, collapse = ", ")))
+                          variable_id, paste(missing, collapse = ", ")))
     }
   }
 
-  # 2. Check valid types
-  valid_types <- c("integer", "numeric", "factor", "character", "composite", "multiple_response")
+  # 2. Check valid types (storage_type, variable_type, or response_type)
+  valid_types <- c("integer", "numeric", "factor", "character", "composite",
+                   "multiple_response", "logical", "boolean")
 
-  for (varname in names(variables)) {
-    var <- variables[[varname]]
-    if (!is.null(var$type) && !var$type %in% valid_types) {
+  for (variable_id in names(variables)) {
+    var <- variables[[variable_id]]
+    # Accept storage_type or variable_type (schema alias for gen/ctrl banks)
+    type_val <- var$storage_type %||% var$variable_type
+    if (!is.null(type_val) && !type_val %in% valid_types) {
       errors <- c(errors,
                   sprintf("Variable '%s': Invalid type '%s'. Must be one of: %s",
-                          varname, var$type, paste(valid_types, collapse = ", ")))
+                          variable_id, type_val, paste(valid_types, collapse = ", ")))
     }
   }
 
   # 3. Conditional requirements
-  for (varname in names(variables)) {
-    var <- variables[[varname]]
+  for (variable_id in names(variables)) {
+    var <- variables[[variable_id]]
 
-    # Factor must have value_labels_name
-    if (!is.null(var$type) && var$type == "factor" && is.null(var$value_labels_name)) {
+    # Factor must have value_labels_name OR value_label_id
+    type_val <- var$storage_type %||% var$variable_type
+    has_value_labels <- !is.null(var$value_labels_name) || !is.null(var$value_label_id)
+    if (!is.null(type_val) && type_val == "factor" && !has_value_labels) {
       errors <- c(errors,
-                  sprintf("Variable '%s': type='factor' requires value_labels_name", varname))
+                  sprintf("Variable '%s': type='factor' requires value_labels_name or value_label_id",
+                          variable_id))
     }
 
     # Restricted must have reason
     if (isTRUE(var$restricted_access) && is.null(var$restriction_reason)) {
       errors <- c(errors,
-                  sprintf("Variable '%s': restricted_access=true requires restriction_reason", varname))
+                  sprintf("Variable '%s': restricted_access=true requires restriction_reason", variable_id))
     }
 
     # creates_variables requires variable_parts
     if (!is.null(var$creates_variables)) {
       if (is.null(var$variable_parts)) {
         errors <- c(errors,
-                    sprintf("Variable '%s': creates_variables specified but variable_parts missing", varname))
+                    sprintf("Variable '%s': creates_variables specified but variable_parts missing", variable_id))
       } else {
         # Check all created variables are defined
         created <- var$creates_variables
@@ -204,13 +233,13 @@
         if (length(missing) > 0) {
           errors <- c(errors,
                       sprintf("Variable '%s': Variables in creates_variables not defined in variable_parts: %s",
-                              varname, paste(missing, collapse = ", ")))
+                              variable_id, paste(missing, collapse = ", ")))
         }
       }
     }
   }
 
-  # 4. Check for duplicate varnames (should already be caught, but double-check)
+  # 4. Check for duplicate variable_ids (should already be caught, but double-check)
   if (any(duplicated(names(variables)))) {
     dups <- names(variables)[duplicated(names(variables))]
     errors <- c(errors,
@@ -218,8 +247,8 @@
   }
 
   # 5. Version consistency (if versions present)
-  for (varname in names(variables)) {
-    var <- variables[[varname]]
+  for (variable_id in names(variables)) {
+    var <- variables[[variable_id]]
 
     if (!is.null(var$versions)) {
       version_years <- unlist(lapply(var$versions, function(v) v$years))
@@ -227,19 +256,19 @@
       # Check for overlapping years
       if (any(duplicated(version_years))) {
         errors <- c(errors,
-                    sprintf("Variable '%s': Overlapping years in versions", varname))
+                    sprintf("Variable '%s': Overlapping years in versions", variable_id))
       }
 
       # Check version years are subset of years_used
       if (!all(version_years %in% var$years_used)) {
         errors <- c(errors,
-                    sprintf("Variable '%s': Version years must be subset of years_used", varname))
+                    sprintf("Variable '%s': Version years must be subset of years_used", variable_id))
       }
 
       # Check all years_used are covered by versions
       if (!all(var$years_used %in% version_years)) {
         errors <- c(errors,
-                    sprintf("Variable '%s': Not all years_used are covered by versions", varname))
+                    sprintf("Variable '%s': Not all years_used are covered by versions", variable_id))
       }
     }
   }
@@ -248,15 +277,15 @@
   if (validate_value_labels && !is.null(value_labels)) {
     missing_labels <- character()
 
-    for (varname in names(variables)) {
-      var <- variables[[varname]]
+    for (variable_id in names(variables)) {
+      var <- variables[[variable_id]]
 
-      if (!is.null(var$value_labels_name)) {
-        label_name <- var$value_labels_name
-
+      # Accept value_labels_name or value_label_id (schema alias)
+      label_name <- var$value_labels_name %||% var$value_label_id
+      if (!is.null(label_name)) {
         if (!label_name %in% names(value_labels$labels)) {
           missing_labels <- c(missing_labels,
-                              sprintf("  Variable '%s' references '%s'", varname, label_name))
+                              sprintf("  Variable '%s' references '%s'", variable_id, label_name))
         }
       }
     }
@@ -295,19 +324,19 @@
   }
 
   # Build indices
-  varnames <- names(variables)
+  variable_ids <- names(variables)
 
-  # by_varname: alphabetical
-  by_varname <- sort(varnames)
+  # by_variable_id: alphabetical
+  by_variable_id <- sort(variable_ids)
 
   # by_file: group by source file
   by_file <- list()
-  for (varname in varnames) {
-    file <- basename(variables[[varname]]$source_file)
+  for (variable_id in variable_ids) {
+    file <- basename(variables[[variable_id]]$source_file)
     if (is.null(by_file[[file]])) {
       by_file[[file]] <- character()
     }
-    by_file[[file]] <- c(by_file[[file]], varname)
+    by_file[[file]] <- c(by_file[[file]], variable_id)
   }
 
   # by_file_position: sort by file order, then by position within file
@@ -319,6 +348,18 @@
       positions <- sapply(vars_in_file, function(v) variables[[v]]$file_position)
       vars_in_file <- vars_in_file[order(positions)]
       by_file_position <- c(by_file_position, vars_in_file)
+    }
+  }
+
+  # by_survey: group variable IDs by survey wave
+  by_survey <- list()
+  for (var_id in variable_ids) {
+    surveys <- variables[[var_id]]$surveys_used
+    if (!is.null(surveys)) {
+      for (s in surveys) {
+        if (is.null(by_survey[[s]])) by_survey[[s]] <- character(0)
+        by_survey[[s]] <- c(by_survey[[s]], var_id)
+      }
     }
   }
 
@@ -334,9 +375,10 @@
         n_variables = length(variables),
         read_time = Sys.time(),
         indices = list(
-          by_varname = by_varname,
+          by_variable_id = by_variable_id,
           by_file = by_file,
-          by_file_position = by_file_position
+          by_file_position = by_file_position,
+          by_survey = by_survey
         )
       )
     ),

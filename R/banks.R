@@ -15,22 +15,52 @@
 .qt_read_variable_bank <- function(config_path_name, path, config,
                                    item_type = "variables",
                                    class_name = c("qt_bank"),
-                                   validate_value_labels = TRUE) {
+                                   validate_value_labels = TRUE,
+                                   value_labels = NULL) {
+
   # 1. Resolve path
   source_path <- .qt_resolve_path(config_path_name, path, config)
 
   # 2. Read YAML file(s)
   result <- .qt_read_yaml_files(source_path, item_type)
 
-  # 3. Load value labels for validation (if needed)
-  value_labels <- if (validate_value_labels) {
-    qt_read_value_labels(config)
-  } else {
-    NULL
+  # 2.5 Add varname from dictionary key to each item
+  for (variable_id in names(result$items)) {
+    result$items[[variable_id]]$variable_id <- variable_id
+  }
+
+  # 3. Load value labels for validation if needed and not already provided.
+  # Callers that have already loaded value labels should pass them here to
+  # avoid redundant file reads.
+  if (validate_value_labels && is.null(value_labels)) {
+    value_labels <- qt_read_value_labels(config)
   }
 
   # 4. Validate variables
-  .qt_validate_variables(result$items, value_labels, validate_value_labels)
+  .qt_validate_variables(result$items, value_labels, validate_value_labels,
+                         bank_type = item_type)
+
+  # 4.5. Wrap each variable in appropriate class based on bank type
+  bank_type_map <- list(
+    "questions" = "qt_make_qvar",
+    "generated variables" = "qt_make_genvar",
+    "control parameters" = "qt_make_ctrlvar"
+  )
+
+  constructor_name <- bank_type_map[[item_type]]
+  if (is.null(constructor_name)) {
+    stop("Unknown item_type: ", item_type, call. = FALSE)
+  }
+
+  constructor_fn <- get(constructor_name)
+
+  vars_with_classes <- lapply(result$items, function(var_data) {
+    constructor_fn(var_data)
+  })
+  names(vars_with_classes) <- sapply(result$items, function(x) x$variable_id)
+
+  # Use the typed variables for the rest of the function
+  result$items <- vars_with_classes
 
   # 5. Build structure with indices
   .qt_build_variable_structure(
@@ -41,7 +71,6 @@
     class_name = class_name
   )
 }
-
 #' Read Variable Banks
 #'
 #' Read variables from the different variable banks (questions, generated, control).
@@ -55,7 +84,7 @@
 #' @return An S3 object of class \code{qt_qbank}, \code{qt_genbank}, or
 #'   \code{qt_ctrlbank} (all inherit from \code{qt_bank}). Contains:
 #'   \describe{
-#'     \item{variables}{Named list of variables, indexed by varname}
+#'     \item{variables}{Named list of variables, indexed by variable_id}
 #'     \item{meta}{Metadata including source files, read time, and indices}
 #'   }
 #'
@@ -83,7 +112,7 @@
 #' }
 #'
 #' **Returned Structure:**
-#' Variables are returned in a named list indexed by \code{varname}, with metadata
+#' Variables are returned in a named list indexed by \code{variable_id}, with metadata
 #' providing multiple access patterns:
 #' \itemize{
 #'   \item{\code{$meta$indices$by_varname}: Alphabetical order}
@@ -108,7 +137,7 @@
 #' qbank$variables$nhd_sat
 #'
 #' # List all questions alphabetically
-#' qbank$meta$indices$by_varname
+#' qbank$meta$indices$by_variable_id
 #'
 #' # Read generated variables
 #' genbank <- qt_genbank()
@@ -126,14 +155,16 @@ NULL
 
 #' @rdname read_banks
 #' @export
-qt_read_question_bank <- function(config = qt_config(), path = NULL) {
+qt_read_question_bank <- function(config = qt_config(), path = NULL,
+                                  value_labels = NULL) {
   .qt_read_variable_bank(
     config_path_name = "question_bank",
     path = path,
     config = config,
     item_type = "questions",
     class_name = c("qt_qbank", "qt_bank"),
-    validate_value_labels = TRUE
+    validate_value_labels = TRUE,
+    value_labels = value_labels
   )
 }
 
@@ -143,14 +174,16 @@ qt_qbank <- qt_read_question_bank
 
 #' @rdname read_banks
 #' @export
-qt_read_generated_variables <- function(config = qt_config(), path = NULL) {
+qt_read_generated_variables <- function(config = qt_config(), path = NULL,
+                                        value_labels = NULL) {
   .qt_read_variable_bank(
     config_path_name = "generated_bank",
     path = path,
     config = config,
     item_type = "generated variables",
     class_name = c("qt_genbank", "qt_bank"),
-    validate_value_labels = TRUE
+    validate_value_labels = TRUE,
+    value_labels = value_labels
   )
 }
 
@@ -160,14 +193,16 @@ qt_genbank <- qt_read_generated_variables
 
 #' @rdname read_banks
 #' @export
-qt_read_control_parameters <- function(config = qt_config(), path = NULL) {
+qt_read_control_parameters <- function(config = qt_config(), path = NULL,
+                                       value_labels = NULL) {
   .qt_read_variable_bank(
     config_path_name = "control_bank",
     path = path,
     config = config,
     item_type = "control parameters",
     class_name = c("qt_ctrlbank", "qt_bank"),
-    validate_value_labels = TRUE
+    validate_value_labels = TRUE,
+    value_labels = value_labels
   )
 }
 
@@ -321,24 +356,59 @@ qt_vlabs <- qt_read_value_labels
 #'
 #' Print a brief summary of value labels object.
 #'
-#' @param x A qt_value_labels object
+#' @param x A qt_vlabs object
 #' @param ... Additional arguments (ignored)
 #'
 #' @return Invisibly returns the original object
 #'
 #' @export
-print.qt_value_labels <- function(x, ...) {
-  # Get project name if available (would need config passed, or skip)
-  cat("Value Labels\n")
-  cat(strrep("=", 50), "\n\n", sep = "")
-
-  cat("Label sets:", x$meta$n_labels, "\n")
-  cat("Files:\n")
-  for (f in x$meta$source_files) {
-    cat("  ", f, "\n", sep = "")
-  }
-
+print.qt_vlabs <- function(x, ...) {
+  cat("Value labels: ", x$meta$n_labels, " label set(s)\n", sep = "")
+  cat("  Source: ", x$meta$source_path, "\n", sep = "")
   cat("\n")
+  invisible(x)
+}
+
+#' Print qretools Bank Objects
+#'
+#' Print a brief summary of bank objects (question, generated variable, or
+#' control parameter banks).
+#'
+#' @param x A bank object (\code{qt_qbank}, \code{qt_genbank}, or \code{qt_ctrlbank})
+#' @param ... Additional arguments (ignored)
+#'
+#' @return Invisibly returns the original object
+#'
+#' @name print-banks
+#' @export
+print.qt_qbank <- function(x, ...) {
+  surveys <- sort(unique(unlist(lapply(x$variables, `[[`, "surveys_used"))))
+  cat("Question bank: ", x$meta$n_variables, " variable(s)",
+      " across ", length(surveys), " survey wave(s)\n", sep = "")
+  cat("  Surveys: ", paste(surveys, collapse = ", "), "\n", sep = "")
+  cat("  Source:  ", x$meta$source_path, "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print-banks
+#' @export
+print.qt_genbank <- function(x, ...) {
+  surveys <- sort(unique(unlist(lapply(x$variables, `[[`, "surveys_used"))))
+  cat("Generated variable bank: ", x$meta$n_variables, " variable(s)",
+      " across ", length(surveys), " survey wave(s)\n", sep = "")
+  cat("  Surveys: ", paste(surveys, collapse = ", "), "\n", sep = "")
+  cat("  Source:  ", x$meta$source_path, "\n", sep = "")
+  invisible(x)
+}
+
+#' @rdname print-banks
+#' @export
+print.qt_ctrlbank <- function(x, ...) {
+  surveys <- sort(unique(unlist(lapply(x$variables, `[[`, "surveys_used"))))
+  cat("Control parameter bank: ", x$meta$n_variables, " variable(s)",
+      " across ", length(surveys), " survey wave(s)\n", sep = "")
+  cat("  Surveys: ", paste(surveys, collapse = ", "), "\n", sep = "")
+  cat("  Source:  ", x$meta$source_path, "\n", sep = "")
   invisible(x)
 }
 

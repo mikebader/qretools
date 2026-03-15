@@ -1,0 +1,182 @@
+meta:
+  id: bas-example
+  title: "Baltimore Area Survey — Example Configuration"
+  short_title: "BAS Example"
+  status: draft
+  version: "0.1"
+  organization: "Johns Hopkins 21st Century Cities Initiative"
+  description: >
+    A minimal but representative example survey configuration illustrating
+    all major item types: sections, questions, logic blocks,
+    splits, randomization, and compute preloads.
+  controls_required: [YEAR, JURISDICTION]
+  programmer_note: "This is an example file only — not a real survey."
+
+questionnaire:
+
+  preload:
+    - item_type: compute
+      id: assign_exp_condition
+      description: "Assign respondent to experimental condition A or B"
+      command: "exp_condition <- sample(c('A', 'B'), 1)"
+      provides: [exp_condition]
+
+    - item_type: compute
+      id: assign_nhd_module
+      description: "Select neighborhood module variant based on jurisdiction"
+      command: "nhd_module <- if (JURISDICTION == 'Baltimore City') 'city' else 'county'"
+      requires: [JURISDICTION]
+      provides: [nhd_module]
+
+  items:
+
+    # -------------------------------------------------------------------------
+    # Section 1: Neighborhoods
+    # -------------------------------------------------------------------------
+    - item_type: section
+      id: neighborhoods
+      title: Neighborhoods
+      description: Questions about respondent's neighborhood experience
+      items:
+
+        - item_type: question
+          variable_id: nhd_sat
+
+        - item_type: logic
+          id: nhd_problems_logic
+          condition: "nhd_sat <= 2"
+          then:
+            - item_type: question
+              variable_id: nhd_prob_main
+            - item_type: question
+              variable_id: nhd_prob_duration
+          else:
+            - item_type: statement
+              id: nhd_positive_affirm
+              text: "Thank you for sharing that."
+
+        - item_type: randomize
+          id: nhd_service_block
+          description: "Randomize order of service satisfaction questions"
+          items:
+            - item_type: question
+              variable_id: nhd_svc_schools
+            - item_type: question
+              variable_id: nhd_svc_parks
+            - item_type: question
+              variable_id: nhd_svc_transit
+
+    # -------------------------------------------------------------------------
+    # Section 2: Housing
+    # -------------------------------------------------------------------------
+    - item_type: section
+      id: housing
+      title: Housing
+      items:
+
+        - item_type: question
+          variable_id: hsg_tenure
+
+        - item_type: logic
+          id: hsg_owner_logic
+          condition: "hsg_tenure == 1"
+          then:
+            - item_type: question
+              variable_id: hsg_own_years
+            - item_type: question
+              variable_id: hsg_own_value
+          else:
+            - item_type: question
+              variable_id: hsg_rent_monthly
+
+    # -------------------------------------------------------------------------
+    # Section 3: Experimental split (A/B question wording)
+    # -------------------------------------------------------------------------
+    - item_type: section
+      id: experiment
+      title: Community Questions
+      note: "Split on exp_condition assigned in preload"
+      items:
+
+        - item_type: split
+          id: community_wording_split
+          description: "A/B test of community attachment question wording"
+          control_id: exp_condition
+          paths:
+            - id: wording_a
+              control_value: "A"
+              items:
+                - item_type: question
+                  variable_id: com_attach_a
+            - id: wording_b
+              control_value: "B"
+              items:
+                - item_type: question
+                  variable_id: com_attach_b
+
+    # -------------------------------------------------------------------------
+    # Section 4: Loop example — rate up to 3 neighborhood features
+    # -------------------------------------------------------------------------
+    - item_type: section
+      id: features
+      title: Neighborhood Features
+      items:
+
+        - item_type: statement
+          id: features_intro
+          text: "We will ask you about a few specific features of your neighborhood."
+
+        - item_type: loop
+          id: feature_ratings
+          id_fills: ["1", "2", "3"]
+          title_fills: ["parks and green space", "public safety", "local businesses"]
+          items:
+            - item_type: question
+              variable_id: "feat_rating_{i}"
+            - item_type: question
+              variable_id: "feat_improve_{i}"
+
+    # -------------------------------------------------------------------------
+    # Section 5: Demographics
+    # -------------------------------------------------------------------------
+    - item_type: section
+      id: demographics
+      title: About You
+      description: Standard demographic battery
+      items:
+
+        - item_type: question
+          variable_id: dem_yearborn
+
+        - item_type: question
+          variable_id: dem_race
+
+        - item_type: question
+          variable_id: dem_edattain
+
+        - item_type: question
+          variable_id: dem_income_70k
+
+        - item_type: question
+          variable_id: dem_child
+
+        - item_type: logic
+          id: dem_children_logic
+          condition: "dem_child == 1"
+          then:
+            - item_type: question
+              variable_id: dem_children_n
+            - item_type: question
+              variable_id: dem_children_age_youngest
+
+        - item_type: display_together
+          id: dem_contact_block
+          items:
+            - item_type: question
+              variable_id: dem_email
+            - item_type: question
+              variable_id: dem_phone
+
+        - item_type: statement
+          id: dem_close
+          text: "That completes our survey. Thank you very much for your time."

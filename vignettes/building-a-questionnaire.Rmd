@@ -1,0 +1,397 @@
+---
+title: "Building a Survey Questionnaire with qretools"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Building a Survey Questionnaire with qretools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment  = "#>"
+)
+library(qretools)
+```
+
+This vignette shows how to use qretools to build a survey questionnaire from
+start to finish.  All examples use the built-in example project shipped with
+the package, so you can run every code block without any additional files.
+
+## How qretools organises a project
+
+A qretools project is a directory that contains:
+
+| Path | Purpose |
+|---|---|
+| `project-config.yml` | Project-level metadata and path overrides |
+| `banks/questions/` | One or more YAML files defining question variables |
+| `banks/control/` | Control-parameter variables (survey metadata, A/B flags, …) |
+| `banks/modules/` | Reusable question modules |
+| `value-labels/` | Shared value-label sets |
+| `surveys/<id>/design/` | Per-survey YAML configuration files |
+
+`qt_config()` locates the project root automatically by walking up the
+directory tree until it finds `project-config.yml` or `_qretools.yml`.
+
+```{r point-at-examples}
+# Point the session at the built-in example project
+example_dir <- system.file("examples", package = "qretools")
+setwd(example_dir)
+
+config <- qt_config()
+config
+```
+
+## Loading the question bank
+
+Before building a questionnaire you can inspect the banks independently:
+
+```{r load-banks}
+vlabs  <- qt_read_value_labels(config)
+qbank  <- qt_read_question_bank(config, value_labels = vlabs)
+qbank
+```
+
+Each entry in the question bank is a `qt_qvar` object.  Print one to see its
+fields:
+
+```{r inspect-variable}
+qbank$variables[["nhd_sat"]]
+```
+
+## Two ways to build a questionnaire
+
+qretools supports two authoring styles that produce identical output.
+
+### Option A — write the YAML by hand
+
+A survey config file has two top-level keys: `meta` (survey metadata) and
+`questionnaire` (the ordered item list).
+
+```yaml
+meta:
+  id: bas-2026
+  title: "Baltimore Area Survey 2026"
+  status: draft
+  controls_required: [YEAR, JURISDICTION]
+
+questionnaire:
+  items:
+    - item_type: section
+      id: neighborhoods
+      title: Neighborhoods
+      items:
+        - item_type: question
+          variable_id: nhd_sat
+```
+
+Read and expand a YAML file with `qt_read_survey_config()`:
+
+```{r read-yaml, eval=FALSE}
+qreconfig <- qt_read_survey_config(
+  "surveys/bas-example/design/survey-bas-example.yml"
+)
+```
+
+### Option B — build programmatically with `qt_qre()`
+
+The builder mirrors the YAML structure but lets you compose questionnaires
+in R scripts and pipe chains.  Every `qt_add_*()` function works in two modes:
+
+- **Pipe mode** — first argument is a `qt_qre` object; the item is appended and
+  the modified `qt_qre` is returned invisibly.
+- **Spec mode** — first argument is an ID string; the function returns a plain
+  item spec for nesting inside a container such as `qt_add_section()`.
+
+```{r build-programmatic, eval=FALSE}
+qre <- qt_qre(
+  id                = "bas-2026",
+  title             = "Baltimore Area Survey 2026",
+  status            = "draft",
+  organization      = "Johns Hopkins 21st Century Cities Initiative",
+  controls_required = c("YEAR", "JURISDICTION")
+)
+```
+
+## Adding sections and questions
+
+Questions are referenced by their `variable_id` in the question bank.
+Sections group related questions:
+
+```{r add-sections, eval=FALSE}
+qre <- qre |>
+  qt_add_section("neighborhoods", "Neighborhoods",
+    qt_add_question("nhd_sat"),
+    qt_add_question("nhd_chg")
+  ) |>
+  qt_add_section("demographics", "About You",
+    qt_add_question("dem_yearborn"),
+    qt_add_question("dem_race"),
+    qt_add_question("dem_edattain")
+  )
+```
+
+## Skip patterns with `qt_add_logic()`
+
+A logic block routes survey flow based on an R expression.  Items in `then`
+are shown when the condition is `TRUE`; items in `otherwise` are shown when
+it is `FALSE`.  The `otherwise` argument serializes as `else:` in YAML.
+
+```{r skip-patterns, eval=FALSE}
+qre <- qre |>
+  qt_add_section("housing", "Housing",
+
+    # Ask about tenure first
+    qt_add_question("hsg_tenure"),
+
+    # Skip to the relevant follow-up based on tenure
+    qt_add_logic("hsg_owner_logic",
+      condition  = "hsg_tenure == 2",        # 2 = Own (see value label set 'own')
+      then       = list(
+        qt_add_question("hsg_own_years"),
+        qt_add_question("hsg_own_value")
+      ),
+      otherwise  = list(
+        qt_add_question("hsg_rent_monthly")
+      )
+    )
+  )
+```
+
+Logic blocks can be nested.  For example, a follow-up question about children
+only appears after a screening question confirms the respondent has children:
+
+```{r nested-skip, eval=FALSE}
+qt_add_section("demographics", "About You",
+  qt_add_question("dem_child"),              # "Do you have children at home?"
+  qt_add_logic("dem_children_logic",
+    condition = "dem_child == 1",
+    then = list(
+      qt_add_question("dem_children_n"),
+      qt_add_question("dem_children_age_youngest")
+    )
+  )
+)
+```
+
+## Select-all (multiple-response) questions
+
+There are two ways to represent a "select all that apply" question.
+
+### Approach 1 — separate indicator variables (recommended)
+
+This matches the convention used in the BAS question banks.  Each response
+option is its own variable with `storage_type: factor` and a yes/no value
+label set.  All share the same `question_text`.
+
+**In the question bank (`banks/questions/demographics.yml`):**
+
+```yaml
+dem_race_wh:
+  title: "Race indicator: White"
+  storage_type: factor
+  question_text: "What is your racial or ethnic background? Select all that apply."
+  surveys_used: [bas-2026]
+  vargroup: dem
+  value_labels_name: yesno01
+
+dem_race_bl:
+  title: "Race indicator: Black or African American"
+  storage_type: factor
+  question_text: "What is your racial or ethnic background? Select all that apply."
+  surveys_used: [bas-2026]
+  vargroup: dem
+  value_labels_name: yesno01
+
+dem_race_hisp:
+  title: "Race indicator: Hispanic or Latino"
+  storage_type: factor
+  question_text: "What is your racial or ethnic background? Select all that apply."
+  surveys_used: [bas-2026]
+  vargroup: dem
+  value_labels_name: yesno01
+```
+
+**In the questionnaire,** group them with `qt_add_display_together()` so the
+survey platform knows they belong to one screen:
+
+```{r select-all-indicators, eval=FALSE}
+qt_add_section("demographics", "About You",
+  qt_add_display_together("dem_race_block",
+    qt_add_question("dem_race_wh",   hide_question = TRUE),
+    qt_add_question("dem_race_bl",   hide_question = TRUE),
+    qt_add_question("dem_race_hisp", hide_question = TRUE)
+  )
+)
+```
+
+`hide_question = TRUE` suppresses the repeated question text on the second
+and subsequent items, showing it only once for the whole block.
+
+### Approach 2 — `multiple_response` storage type
+
+Use this when you want a single question bank entry to document the whole
+select-all item.  The entry must list the indicator variables it creates
+(`creates_variables`) and define each option (`variable_parts`):
+
+```yaml
+dem_race_origin:
+  title: Race or ethnic background (select all)
+  storage_type: multiple_response
+  question_text: "What is your racial or ethnic background? Select all that apply."
+  surveys_used: [bas-2026]
+  vargroup: dem
+  creates_variables: [dem_race_wh, dem_race_bl, dem_race_hisp, dem_race_as, dem_race_oth]
+  variable_parts:
+    dem_race_wh:   White
+    dem_race_bl:   Black or African American
+    dem_race_hisp: Hispanic or Latino
+    dem_race_as:   Asian or Pacific Islander
+    dem_race_oth:  Some other race or ethnicity
+```
+
+In the questionnaire this is a single question reference:
+
+```{r select-all-mrtype, eval=FALSE}
+qt_add_question("dem_race_origin")
+```
+
+## Preload computes
+
+Compute items in the `preload` block run before any questions are displayed —
+useful for assigning experimental conditions or deriving values from control
+parameters:
+
+```{r preload, eval=FALSE}
+qre <- qre |>
+  qt_add_preload(
+    qt_add_compute(
+      id          = "assign_condition",
+      description = "Assign respondent to A/B experimental condition",
+      command     = "condition <- sample(c('A', 'B'), 1)",
+      provides    = "condition"
+    ),
+    qt_add_compute(
+      id          = "set_jurisdiction_label",
+      description = "Set short label for jurisdiction",
+      command     = "jlabel <- if (JURISDICTION == '1') 'City' else 'County'",
+      requires    = "JURISDICTION",
+      provides    = "jlabel"
+    )
+  )
+```
+
+A split block then routes respondents based on a computed value:
+
+```{r split, eval=FALSE}
+qt_add_section("experiment", "Community Questions",
+  qt_add_split("community_wording",
+    description = "A/B wording test",
+    control_id  = "condition",
+    paths = list(
+      qt_add_path("wording_a", control_value = "A",
+        qt_add_question("com_attach_a")),
+      qt_add_path("wording_b", control_value = "B",
+        qt_add_question("com_attach_b"))
+    )
+  )
+)
+```
+
+## Loops
+
+A loop repeats a set of items, substituting `{i}` in variable IDs and titles
+with values from `id_fills`.  The question bank must have a **template entry**
+whose key contains the literal string `{i}`:
+
+```yaml
+# banks/questions/neighborhoods.yml
+"feat_rating_{i}":
+  title: "Rating of {i}"
+  storage_type: factor
+  question_text: "How would you rate {i} in your neighborhood?"
+  surveys_used: [bas-2026]
+  vargroup: nhd
+  value_labels_name: excellent5
+```
+
+In the questionnaire:
+
+```{r loop, eval=FALSE}
+qt_add_section("features", "Neighborhood Features",
+  qt_add_statement("features_intro",
+    text = "We will ask you about a few features of your neighborhood."),
+  qt_add_loop("feature_ratings",
+    id_fills    = c("1", "2", "3"),
+    title_fills = c("parks and green space", "public safety", "local businesses"),
+    qt_add_question("feat_rating_{i}"),
+    qt_add_question("feat_improve_{i}")
+  )
+)
+```
+
+The expander looks up `feat_rating_{i}` in the bank for every iteration and
+then substitutes `{i}` in the final variable ID (producing `feat_rating_1`,
+`feat_rating_2`, `feat_rating_3`) and in the title.
+
+## Processing and inspecting the result
+
+### From a `qt_qre` object
+
+`qt_process()` expands all containers, resolves every question reference
+against the bank, and returns a `qt_qreconfig` object.  It also writes the
+YAML to disk so you have a version-controllable artifact:
+
+```{r process, eval=FALSE}
+qreconfig <- qt_process(qre)
+# Survey YAML written to: surveys/bas-2026/design/survey-bas-2026.yml
+```
+
+To suppress the write step, pass `yaml_path = NULL`:
+
+```{r process-no-write, eval=FALSE}
+qreconfig <- qt_process(qre, yaml_path = NULL)
+```
+
+### From an existing YAML file
+
+```{r process-yaml}
+qreconfig <- qt_process(
+  "surveys/bas-example/design/survey-bas-example.yml"
+)
+qreconfig
+```
+
+### What you get back
+
+The `qt_qreconfig` object contains:
+
+```{r inspect}
+# Total number of expanded items (questions, statements, computes)
+length(qreconfig$items)
+
+# Variable IDs of all question items
+questions <- Filter(function(i) i$item_type == "question", qreconfig$items)
+vapply(questions, `[[`, character(1), "variable_id")
+
+# Questions grouped by section
+str(qreconfig$indices$section_map, max.level = 1)
+```
+
+Each question item carries its full definition from the bank alongside
+provenance fields (section, loop iteration, logic branch, etc.) that make
+it straightforward to reconstruct the survey flow programmatically:
+
+```{r inspect-item}
+q <- qreconfig$items[[which(
+  vapply(qreconfig$items, function(i) identical(i$variable_id, "nhd_sat"),
+         logical(1))
+)]]
+
+cat("Variable: ", q$variable_id, "\n")
+cat("Section:  ", q$section_id,  "\n")
+cat("Title:    ", q$definition$title, "\n")
+cat("Type:     ", q$definition$storage_type, "\n")
+```

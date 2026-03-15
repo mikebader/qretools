@@ -5,11 +5,12 @@ project:
   organization: "Test Organization"
   principal_investigator: "Test PI"
 
-paths:
-  question_bank: "banks/questions"
-  generated_bank: "banks/generated"
-  control_bank: "banks/control"
-  value_labels: "value-labels"
+# paths:
+#   question_bank: "banks/questions"
+#   generated_bank: "banks/generated"
+#   control_bank: "banks/control"
+#   value_labels: "value-labels"
+#   modules: "banks/modules"
 
 irb:
   institution: "Test Institution"

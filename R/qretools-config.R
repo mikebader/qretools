@@ -212,6 +212,7 @@
       question_bank = "banks/questions",
       generated_bank = "banks/generated",
       control_bank = "banks/control",
+      module_bank = "banks/modules",
       value_labels = "value-labels",
       surveys = "surveys"
     ),

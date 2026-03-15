@@ -1,0 +1,22 @@
+# SCHEMA FOR DEFINING QUESTION MODULES
+# Used for grouping related questions into named modules
+
+id: string                       # REQUIRED  - Unique identifier
+    title: string                # REQUIRED - Short descriptive title
+    description: string          # REQUIRED - Full description of the
+                                 #            variable contents
+    surveys_used: array[chr]     # REQUIRED - Surveys when question is fielded
+
+    questions: array[object]     # REQUIRED - Ordered list of questions
+         variable_id: str        # REQUIRED - Variable ID of variable
+         if_condition: str       # Optional display logic
+
+    # Highly recommended
+    universe: string             # Who answers
+
+    # Optional - Documentation
+    note: string                 # Implementation notes
+    cite: string                 # Module origin/citation
+
+    # Optional - Inclusion and Survey flow
+    rotation_set: array[string]  # Rotation set membership

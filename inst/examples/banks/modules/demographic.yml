@@ -1,0 +1,44 @@
+dem_basics:
+  title: Basic Demographics
+  description: Core demographic characteristics of respondents including housing,
+    household composition, education, and income.
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  questions:
+  - variable_id: dem_own
+  - variable_id: dem_adults
+  - variable_id: dem_child
+  - variable_id: dem_childyng
+  - variable_id: dem_childmid
+  - variable_id: dem_childold
+  - variable_id: dem_edattain
+  - variable_id: dem_income_70k
+  - variable_id: dem_income_lo
+    if_condition: dem_income_70k == 1
+  - variable_id: dem_income_hi
+    if_condition: dem_income_70k == 2
+  universe: All respondents
+
+dem_identity:
+  title: Identity and Background
+  description: Respondent identity variables including race, ethnicity, gender,
+    sexuality, religion, and political affiliation.
+  surveys_used:
+  - bas-2023
+  - bas-2024
+  - bas-2025
+  questions:
+  - variable_id: dem_gender
+  - variable_id: dem_sexlty
+  - variable_id: dem_latx
+  - variable_id: dem_yearborn
+  - variable_id: dem_married
+  - variable_id: dem_religion
+  - variable_id: dem_attrel
+  - variable_id: dem_ideo
+  - variable_id: dem_pparty
+  universe: All respondents
+  note: Race/ethnicity indicator variables (dem_race_*) are derived variables not
+    included in this module.

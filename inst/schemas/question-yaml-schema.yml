@@ -1,0 +1,95 @@
+# SCHEMA FOR DEFINING QUESTIONS
+# Used for question bank and candidate bank
+
+id: string                        # REQUIRED - Unique identifier
+    title: string                 # REQUIRED - Short descriptive title
+    response_type: enum           # REQUIRED - Form of responses
+                                  #            One of: factor, character,
+                                  #            integer, number, ranking,
+                                  #            select_all, loop
+    question_text: string         # REQUIRED - Full question as asked
+    surveys_used: array[chr]      # REQUIRED - Surveys when question is fielded
+    restricted_access: enum       # REQUIRED - Exclude from public (default:
+                                  # true)
+                                  # (Set default options to "true" and "false",
+                                  # but allow user to override? see note)
+
+    # Conditionally required
+    value_label_id: string        # Required if type == factor
+    character_length: int         # Required if type == character
+    selection_number: int         # Required if response_type is select_all or
+                                  # ranking - number of selections/rankings
+                                  # allowed
+    creates_variables:            # Required if response_type is select_all or
+                                  # ranking
+      - id: string                # REQUIRED - Unique identifer-name of
+                                  #            created variable
+        part_label: string        # REQUIRED - Label for this part
+        response_type: enum       # REQUIRED (if parent.response_type = select_all, must be boolean)
+                                  #          (if parent.response_type = ranking, must be int)
+        value_label_id: string    # Required if  response_type is
+                                  # boolean or factor
+        note: string              # Part-specific notes
+        other_specify: object     # Included if part should produce text field
+            id: string            # REQUIRED - Unique identifer (name of
+                                  #            created variable)
+            other_label: string   # Label for "specify" part (default:
+                                  # "Specify")
+            character_length: int # Allowed length of fill
+            note: string          # "Specify"-specific notes
+    loop_template:                # Required if response_type = loop
+        variable_template: string # REQUIRED - Variable name with {i} placeholder
+                                  #            (e.g., "hhm_age_{i}")
+        part_label: string        # REQUIRED - Label including {i} placeholder
+        response_type: enum       # REQUIRED - Form of response (one of: factor,
+                                  #   character, integer, number, ranking,
+                                  #   select_all - NOT loop)
+        storage_type: enum        # Variable storage type if different than
+                                  # default for response_type (see below)
+        value_label_id: string    # Required if response_type = factor
+        note: string              # Implementation notes
+
+    # Highly recommended
+    universe: string              # Who answers
+    vargroup: string              # Topic grouping
+    restricted_info: string       # Recommended if restricted_access !=
+                                  # "false"; text to explain reason or how to
+                                  # gain access
+    string_label: string          # Text to display before response for string
+                                  #   variables (e.g., Adress ___________)
+
+    # Optional - Storage & Documentation
+    storage_type: enum            # Variable storage type if different than
+                                  # default for response_type (see below)
+    note: string                  # Implementation notes
+    instruction: string           # Instructions to respondent
+    help_text: string             # Optional help text
+    cite: string                  # Question origin/citation
+    programmer_note: string       # Note to survey programmer
+
+    # Optional - Inclusion and Survey flow
+    if_condition: string          # Display logic
+    randomize_responses: bool     # Randomize response option categories?
+    required: boolean             # Response required (default: false)
+    validation: character         # Type of validation to be performed
+    rotation_set: array[string]   # Rotation set membership
+
+    # Optional - Versions (for variables that change across surveys)
+    # Newer versions get entered here
+    versions: array[object]
+      - version_id: string        # REQUIRED - Unique version identifier
+        <any field above>         # Any field above (document changes)
+        surveys_used: array[chr]  # REQUIRED - Surveys this version was used
+
+    # Optional - Content
+    media: file-path              # Any media (e.g., images)
+
+# DEFAULTS
+# storage_type defaults by response_type:
+#   factor → factor
+#   character → character
+#   integer → integer
+#   number → number
+#   ranking → integer (for each created variable)
+#   select_all → boolean (for each created variable)
+#   loop → must be specified

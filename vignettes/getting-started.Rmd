@@ -1,0 +1,424 @@
+---
+title: "Getting Started with qretools"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Getting Started with qretools}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+  collapse  = TRUE,
+  comment   = "#>"
+)
+library(qretools)
+```
+
+`qretools` helps you manage survey questions, generated variables, and
+control parameters across multiple survey waves. This vignette covers:
+
+1. Setting up a project
+2. Loading the variable banks
+3. Querying banks for variable documentation and search
+
+---
+
+## 1. Project setup
+
+### Directory structure
+
+A `qretools` project lives in a single root directory. Inside that directory,
+the following layout is expected by default:
+
+```
+my-survey/
+├── project-config.yml       # Required: project metadata
+├── _qretools.yml            # Optional: override default paths
+├── banks/
+│   ├── questions/           # Question bank (one or more .yml files)
+│   ├── generated/           # Generated variable bank
+│   └── control/             # Control parameter bank
+└── value-labels/            # Value label definitions
+    └── value-labels.yml
+```
+
+Each bank directory can contain a single `.yml` file or multiple `.yml` files
+(one per topic or questionnaire module). `qretools` reads and combines all
+`.yml` files it finds in a directory.
+
+### Required file: `project-config.yml`
+
+The only required file is `project-config.yml` at the project root. At minimum
+it must contain three fields:
+
+```yaml
+project:
+  title: "Baltimore Area Survey"
+  organization: "American University"
+  principal_investigator: "Michael Bader"
+
+irb:
+  institution: "American University"
+  protocol_number: "IRB-2020-001"
+```
+
+`principal_investigator` can be a plain string (as above) or a structured
+record with `name`, `affiliation`, and `email` sub-fields:
+
+```yaml
+project:
+  title: "Baltimore Area Survey"
+  organization: "American University"
+  principal_investigator:
+    name: "Michael Bader"
+    affiliation: "American University"
+    email: "mbader@american.edu"
+```
+
+For projects with multiple PIs, supply a list of such records.
+
+### Optional file: `_qretools.yml`
+
+If your project uses non-default directory names, add a `_qretools.yml` file
+at the project root to override any path. You only need to list paths that
+differ from the defaults:
+
+```yaml
+paths:
+  question_bank: "instruments/questions"
+  value_labels:  "instruments/value-labels"
+```
+
+All other paths default to the standard layout shown above.
+
+### Loading the configuration
+
+Point `qt_config()` at the project root. When called from inside the project
+directory, the `project_root` argument can be omitted and the current working
+directory is used:
+
+```{r load-config-user, eval=FALSE}
+library(qretools)
+
+# From the project root directory (most common during analysis)
+config <- qt_config()
+
+# Or with an explicit path
+config <- qt_config(project_root = "~/projects/my-survey")
+```
+
+For this vignette we use the example project bundled with the package:
+
+```{r load-config-example}
+example_root <- system.file("examples", package = "qretools")
+config <- qt_config(project_root = example_root)
+```
+
+### Verifying the configuration
+
+`print()` gives a one-line confirmation that the configuration loaded and
+shows the project root:
+
+```{r print-config}
+print(config)
+```
+
+`summary()` shows full detail — project metadata, which configuration files
+were found, the resolved paths for each bank, and cache status. This is the
+first thing to check when something isn't loading as expected:
+
+```{r summary-config}
+summary(config)
+```
+
+If `_qretools.yml` was found, its path appears with a checkmark under
+**Configuration Files**. The **Key Paths** section shows where `qretools`
+will look for each bank relative to the project root.
+
+### Performance: caching
+
+For large projects, `qt_config()` supports two caching modes so that
+configuration files are not re-parsed on every call:
+
+```{r caching, eval=FALSE}
+# Cache in memory for the duration of the R session
+config <- qt_config(cache = "session")
+
+# Cache to disk so it persists across R sessions
+config <- qt_config(cache = "persist")
+
+# Clear the cache manually (rarely needed — cache auto-invalidates
+# when project-config.yml or _qretools.yml changes on disk)
+qt_clear_cache()
+```
+
+---
+
+## 2. Loading variable banks
+
+### Value labels
+
+Load value labels first. They are used to validate factor variables in all
+other banks and to resolve labels in codebook output:
+
+```{r load-vlabs}
+vl <- qt_read_value_labels(config)
+print(vl)
+```
+
+The shorter alias `qt_vlabs()` is equivalent:
+
+```{r load-vlabs-alias, eval=FALSE}
+vl <- qt_vlabs(config)
+```
+
+Individual label sets are stored in `vl$labels` and can be inspected
+directly:
+
+```{r inspect-vlabs}
+vl$labels[["satisfied5"]]
+```
+
+### Question bank
+
+```{r load-qbank}
+qbank <- qt_read_question_bank(config)
+print(qbank)
+```
+
+`qt_qbank()` is the short alias:
+
+```{r load-qbank-alias, eval=FALSE}
+qbank <- qt_qbank(config)
+```
+
+The printed summary shows how many variables are in the bank and which survey
+waves they span.
+
+### Generated variable bank and control parameter bank
+
+The generated variable and control parameter banks are loaded the same way.
+Your project will need corresponding `banks/generated/` and `banks/control/`
+directories (or alternative paths configured in `_qretools.yml`):
+
+```{r load-other-banks, eval=FALSE}
+genbank  <- qt_read_generated_variables(config)
+ctrlbank <- qt_read_control_parameters(config)
+
+# Short aliases
+genbank  <- qt_genbank(config)
+ctrlbank <- qt_ctrlbank(config)
+```
+
+### What the bank object contains
+
+Every bank object has the same two-part structure:
+
+| Component | Description |
+|---|---|
+| `$variables` | Named list of variable objects, indexed by variable ID |
+| `$meta` | Metadata: source path, file list, read time, and indices |
+
+```{r bank-structure}
+# Total variable count
+qbank$meta$n_variables
+
+# Source location
+qbank$meta$source_path
+
+# Files that were read
+qbank$meta$source_files
+```
+
+---
+
+## 3. Querying banks
+
+### Accessing a specific variable
+
+Use `$variables` with the variable ID to retrieve a single variable:
+
+```{r access-var}
+nhd_sat <- qbank$variables[["nhd_sat"]]
+```
+
+`print()` gives the brief format — variable ID, storage type, title, and
+the survey waves in which the variable was fielded:
+
+```{r print-var}
+print(nhd_sat)
+```
+
+To inspect the full contents of the underlying list, use `str()` or access
+fields directly:
+
+```{r inspect-var}
+nhd_sat$title
+nhd_sat$question_text
+nhd_sat$storage_type
+nhd_sat$surveys_used
+nhd_sat$vargroup
+nhd_sat$value_labels_name
+nhd_sat$source
+```
+
+### Available indices
+
+Each bank carries four pre-built indices in `$meta$indices`:
+
+| Index | Description |
+|---|---|
+| `by_variable_id` | Character vector of all IDs, sorted alphabetically |
+| `by_file_position` | Character vector of IDs in the order they appear in the source files |
+| `by_file` | Named list: each element is a character vector of variable IDs from one file |
+| `by_survey` | Named list: each element is a character vector of variable IDs used in one survey wave |
+
+```{r show-indices}
+# Alphabetical list of all variable IDs
+qbank$meta$indices$by_variable_id
+
+# Variables grouped by source file
+qbank$meta$indices$by_file
+
+# Variables grouped by survey wave
+qbank$meta$indices$by_survey
+```
+
+### Checking whether a variable was fielded in a given survey
+
+The `by_survey` index maps survey IDs to the variables used in each wave.
+The most direct check is:
+
+```{r by-survey-check}
+# Was nhd_sat asked in bas-2023?
+"nhd_sat" %in% qbank$meta$indices$by_survey[["bas-2023"]]
+
+# Was nhd_blks asked in bas-2023?
+"nhd_blks" %in% qbank$meta$indices$by_survey[["bas-2023"]]
+```
+
+To retrieve all variables fielded in a specific wave:
+
+```{r by-survey-list}
+# All variable IDs used in bas-2024
+qbank$meta$indices$by_survey[["bas-2024"]]
+```
+
+To turn those IDs into a named list of variable objects:
+
+```{r by-survey-objects}
+ids_2024  <- qbank$meta$indices$by_survey[["bas-2024"]]
+vars_2024 <- qbank$variables[ids_2024]
+
+# Print a brief summary of each
+lapply(vars_2024, print)
+```
+
+To see which survey waves are represented in the bank at all:
+
+```{r all-surveys}
+names(qbank$meta$indices$by_survey)
+```
+
+### Finding variables by topic group (`vargroup`)
+
+`vargroup` is a short code that groups variables by topic (e.g. `"nhd"` for
+neighborhood questions, `"dem"` for demographics). Because no dedicated
+`by_vargroup` index is pre-built, filter the `$variables` list directly:
+
+```{r by-vargroup}
+nhd_vars <- Filter(
+  function(v) identical(v$vargroup, "nhd"),
+  qbank$variables
+)
+
+# Print each variable in the group
+lapply(nhd_vars, print)
+```
+
+To get them in the order they appear in the source files (rather than
+whatever order `Filter()` returns), use `by_file_position` to control the
+sequence:
+
+```{r by-vargroup-ordered}
+ordered_ids <- qbank$meta$indices$by_file_position
+nhd_ids     <- ordered_ids[ordered_ids %in% names(nhd_vars)]
+
+lapply(qbank$variables[nhd_ids], print)
+```
+
+### Getting all variables from a single file (module)
+
+The `by_file` index groups variable IDs by the `.yml` file they came from.
+This is useful when files are organized by questionnaire module:
+
+```{r by-file}
+# Which files are in this bank?
+names(qbank$meta$indices$by_file)
+
+# All variables in the neighborhoods file, in source order
+nhd_file_ids <- qbank$meta$indices$by_file[["neighborhoods.yml"]]
+nhd_file_ids
+
+lapply(qbank$variables[nhd_file_ids], print)
+```
+
+### Getting all variables in file order
+
+`by_file_position` gives a single flat vector of all variable IDs in the
+order they appear across all source files. This reproduces the original
+questionnaire sequence:
+
+```{r by-file-position}
+qbank$meta$indices$by_file_position
+```
+
+Use it to iterate over the full bank in order:
+
+```{r by-file-position-iterate}
+for (id in qbank$meta$indices$by_file_position) {
+  print(qbank$variables[[id]])
+}
+```
+
+### Finding all surveys that include a variable
+
+Invert the `by_survey` index to find every wave in which a given variable
+appeared:
+
+```{r variable-surveys}
+# Which waves included nhd_nyrs?
+Filter(
+  function(survey) "nhd_nyrs" %in% qbank$meta$indices$by_survey[[survey]],
+  names(qbank$meta$indices$by_survey)
+)
+```
+
+Or access `surveys_used` directly from the variable object:
+
+```{r variable-surveys-direct}
+qbank$variables[["nhd_nyrs"]]$surveys_used
+```
+
+---
+
+## Summary of key functions
+
+| Function | Short alias | Returns |
+|---|---|---|
+| `qt_config()` | — | `qt_config` object |
+| `qt_read_value_labels()` | `qt_vlabs()` | `qt_vlabs` object |
+| `qt_read_question_bank()` | `qt_qbank()` | `qt_qbank` object |
+| `qt_read_generated_variables()` | `qt_genbank()` | `qt_genbank` object |
+| `qt_read_control_parameters()` | `qt_ctrlbank()` | `qt_ctrlbank` object |
+| `qt_codebook()` | — | text/HTML/PDF codebook |
+
+| Bank component | What it contains |
+|---|---|
+| `$variables[["id"]]` | Individual variable object |
+| `$meta$n_variables` | Count of variables |
+| `$meta$indices$by_variable_id` | Alphabetical ID list |
+| `$meta$indices$by_file_position` | IDs in source-file order |
+| `$meta$indices$by_file` | IDs grouped by source file |
+| `$meta$indices$by_survey` | IDs grouped by survey wave |

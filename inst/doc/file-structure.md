@@ -44,11 +44,10 @@ project-root/
 |   +-- bas-2023/
 |   |   +-- survey-config.yml
 |   |   +-- survey-metadata.yml
-|   |   +-- design/
-|   |       +-- candidates/
-|   |           +-- new-question.yml
-|   |           +-- promoted/
-|   |           +-- unused/
+|   |   +-- candidates/
+|   |       +-- new-question.yml
+|   |       +-- promoted/
+|   |       +-- unused/
 |   |
 |   +-- bas-2024/
 |   |   +-- ...
