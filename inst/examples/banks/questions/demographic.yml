@@ -977,3 +977,39 @@ dem_pparty:
     surveys_used:
     - bas-2025
     title: Political Party
+dem_race:
+  title: Race or ethnic identity
+  storage_type: factor
+  question_text: Which of the following best describes your race or ethnic identity?
+  surveys_used:
+  - bas-example
+  vargroup: dem
+  value_labels_name: race5
+dem_children_n:
+  title: Number of children in household
+  storage_type: integer
+  question_text: How many children under the age of 18 currently live in your household?
+  surveys_used:
+  - bas-example
+  vargroup: dem
+dem_children_age_youngest:
+  title: Age of youngest child in household
+  storage_type: integer
+  question_text: How old is the youngest child living in your household?
+  surveys_used:
+  - bas-example
+  vargroup: dem
+dem_email:
+  title: Email address
+  storage_type: character
+  question_text: May we have your email address to contact you about future surveys?
+  surveys_used:
+  - bas-example
+  vargroup: dem
+dem_phone:
+  title: Phone number
+  storage_type: character
+  question_text: May we have your phone number to contact you about future surveys?
+  surveys_used:
+  - bas-example
+  vargroup: dem

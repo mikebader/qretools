@@ -560,3 +560,45 @@ nhd_homeeasy:
   - bas-2024
   vargroup: nhd
   value_labels_name: difficult5
+nhd_prob_main:
+  title: Main neighborhood problem
+  storage_type: character
+  question_text: In your own words, what is the biggest problem in your neighborhood
+    right now?
+  surveys_used:
+  - bas-example
+  vargroup: nhd
+nhd_prob_duration:
+  title: Duration of main neighborhood problem
+  storage_type: integer
+  question_text: Approximately how many years has this been a problem in your neighborhood?
+  surveys_used:
+  - bas-example
+  vargroup: nhd
+nhd_svc_schools:
+  title: Satisfaction with neighborhood school services
+  storage_type: factor
+  question_text: How satisfied are you with the quality of public school services
+    in your neighborhood?
+  surveys_used:
+  - bas-example
+  vargroup: nhd
+  value_labels_name: satisfied5
+nhd_svc_parks:
+  title: Satisfaction with neighborhood parks
+  storage_type: factor
+  question_text: How satisfied are you with the quality of parks and recreational
+    facilities in your neighborhood?
+  surveys_used:
+  - bas-example
+  vargroup: nhd
+  value_labels_name: satisfied5
+nhd_svc_transit:
+  title: Satisfaction with neighborhood transit
+  storage_type: factor
+  question_text: How satisfied are you with the quality of public transit serving
+    your neighborhood?
+  surveys_used:
+  - bas-example
+  vargroup: nhd
+  value_labels_name: satisfied5

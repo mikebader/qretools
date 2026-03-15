@@ -292,3 +292,23 @@ att_linkwht:
 
     '
   value_labels_name: racelink4
+com_attach_a:
+  title: Community attachment (wording A)
+  storage_type: factor
+  question_text: How much do you feel a sense of belonging to your local community?
+  surveys_used:
+  - bas-example
+  vargroup: com
+  value_labels_name: agree5
+  note: |
+    Version A wording used in experimental split on exp_condition.
+com_attach_b:
+  title: Community attachment (wording B)
+  storage_type: factor
+  question_text: How strongly do you identify as a member of your local community?
+  surveys_used:
+  - bas-example
+  vargroup: com
+  value_labels_name: agree5
+  note: |
+    Version B wording used in experimental split on exp_condition.

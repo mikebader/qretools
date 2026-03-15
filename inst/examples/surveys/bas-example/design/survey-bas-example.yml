@@ -7,8 +7,8 @@ meta:
   organization: "Johns Hopkins 21st Century Cities Initiative"
   description: >
     A minimal but representative example survey configuration illustrating
-    all major item types: sections, questions, modules, logic blocks,
-    loops, splits, randomization, and compute preloads.
+    all major item types: sections, questions, logic blocks,
+    splits, randomization, and compute preloads.
   controls_required: [YEAR, JURISDICTION]
   programmer_note: "This is an example file only — not a real survey."
 
@@ -39,8 +39,8 @@ questionnaire:
       description: Questions about respondent's neighborhood experience
       items:
 
-        - item_type: module
-          module_id: nhd_basics
+        - item_type: question
+          variable_id: nhd_sat
 
         - item_type: logic
           id: nhd_problems_logic
@@ -115,29 +115,7 @@ questionnaire:
                   variable_id: com_attach_b
 
     # -------------------------------------------------------------------------
-    # Section 4: Loop example — rate up to 3 neighborhood features
-    # -------------------------------------------------------------------------
-    - item_type: section
-      id: features
-      title: Neighborhood Features
-      items:
-
-        - item_type: statement
-          id: features_intro
-          text: "We will ask you about a few specific features of your neighborhood."
-
-        - item_type: loop
-          id: feature_ratings
-          id_fills: ["1", "2", "3"]
-          title_fills: ["parks and green space", "public safety", "local businesses"]
-          items:
-            - item_type: question
-              variable_id: feat_rating_{i}
-            - item_type: question
-              variable_id: feat_improve_{i}
-
-    # -------------------------------------------------------------------------
-    # Section 5: Demographics
+    # Section 4: Demographics
     # -------------------------------------------------------------------------
     - item_type: section
       id: demographics
@@ -146,20 +124,23 @@ questionnaire:
       items:
 
         - item_type: question
-          variable_id: dem_age
+          variable_id: dem_yearborn
 
         - item_type: question
           variable_id: dem_race
 
         - item_type: question
-          variable_id: dem_educ
+          variable_id: dem_edattain
 
         - item_type: question
-          variable_id: dem_hhinc
+          variable_id: dem_income_70k
+
+        - item_type: question
+          variable_id: dem_child
 
         - item_type: logic
           id: dem_children_logic
-          condition: "dem_children == 1"
+          condition: "dem_child == 1"
           then:
             - item_type: question
               variable_id: dem_children_n
