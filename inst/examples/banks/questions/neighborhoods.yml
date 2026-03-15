@@ -602,3 +602,26 @@ nhd_svc_transit:
   - bas-example
   vargroup: nhd
   value_labels_name: satisfied5
+"feat_rating_{i}":
+  title: "Rating of {i}"
+  storage_type: factor
+  question_text: "How would you rate {i} in your neighborhood?"
+  surveys_used:
+  - bas-example
+  vargroup: nhd
+  value_labels_name: excellent5
+  note: |
+    Template variable used in a loop. {i} is replaced with the feature name
+    (e.g., "parks and green space") and the variable ID becomes feat_rating_1,
+    feat_rating_2, feat_rating_3.
+"feat_improve_{i}":
+  title: "Improvement needed for {i}"
+  storage_type: factor
+  question_text: "How much does {i} in your neighborhood need improvement?"
+  surveys_used:
+  - bas-example
+  vargroup: nhd
+  value_labels_name: a_lot4
+  note: |
+    Template variable used in a loop. {i} is replaced with the feature name
+    and the variable ID becomes feat_improve_1, feat_improve_2, feat_improve_3.

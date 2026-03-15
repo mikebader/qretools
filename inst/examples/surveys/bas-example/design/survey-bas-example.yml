@@ -115,7 +115,29 @@ questionnaire:
                   variable_id: com_attach_b
 
     # -------------------------------------------------------------------------
-    # Section 4: Demographics
+    # Section 4: Loop example — rate up to 3 neighborhood features
+    # -------------------------------------------------------------------------
+    - item_type: section
+      id: features
+      title: Neighborhood Features
+      items:
+
+        - item_type: statement
+          id: features_intro
+          text: "We will ask you about a few specific features of your neighborhood."
+
+        - item_type: loop
+          id: feature_ratings
+          id_fills: ["1", "2", "3"]
+          title_fills: ["parks and green space", "public safety", "local businesses"]
+          items:
+            - item_type: question
+              variable_id: "feat_rating_{i}"
+            - item_type: question
+              variable_id: "feat_improve_{i}"
+
+    # -------------------------------------------------------------------------
+    # Section 5: Demographics
     # -------------------------------------------------------------------------
     - item_type: section
       id: demographics
