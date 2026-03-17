@@ -150,7 +150,6 @@
 #' }
 #'
 #' @name read_banks
-#' @export
 NULL
 
 #' @rdname read_banks
