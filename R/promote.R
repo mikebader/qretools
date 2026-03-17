@@ -1,190 +1,264 @@
 # R/promote.R
 #
-# Candidate promotion functions.
+# Candidate promotion and survey finalization.
 #
-# Integrates candidate questions into the main question bank and updates
-# `surveys_used` for all questions and modules referenced by a survey.
+# The workflow is intentionally two-step:
+#
+#   1. qt_promote_candidates() -- sort candidates into promoted/ and unused/
+#      without touching the main bank.  Lets the researcher review the plan.
+#
+#   2. qt_finalize_survey()    -- read promoted/ and write to the main bank;
+#      update surveys_used for every item referenced by the survey.
+#      Calls qt_promote_candidates() automatically when promoted/ is absent.
+#
+# Candidate directory layout (relative to the survey config file):
+#
+#   candidates/               question candidates (flat .yml files)
+#   candidates/control/       control-parameter candidates
+#   candidates/generated/     generated-variable candidates
+#   candidates/promoted/      written by step 1 (cleared by step 2)
+#   candidates/promoted/questions/
+#   candidates/promoted/control/
+#   candidates/promoted/generated/
+#   candidates/unused/        question candidates not referenced in survey
+#   candidates/unused/questions/
+#
+# The root candidates/ path can be overridden with meta.candidates_path in
+# the survey config YAML.
 
 
-#' Promote Candidate Questions to the Question Bank
+# ---------------------------------------------------------------------------
+# Step 1: qt_promote_candidates
+# ---------------------------------------------------------------------------
+
+#' Sort Candidate Variables into Promoted and Unused Directories
 #'
-#' After a survey is finalized, integrates candidate questions (those
-#' referenced with `source: candbank` in the survey config) into the main
-#' question bank, and updates `surveys_used` for all questions and modules
-#' already in the bank.
+#' The first step of the two-step survey finalization workflow. Reads
+#' candidate YAML files and sorts them into `candidates/promoted/` and
+#' `candidates/unused/` based on whether they are referenced in the survey.
+#' Does **not** modify the main question, control, or generated variable banks.
 #'
-#' Two operations are performed for every question and module referenced by
-#' the survey:
-#' \enumerate{
-#'   \item{**New candidates** (not yet in the bank) are appended to the
-#'         matching bank YAML file. The target file mirrors the candidate
-#'         file name (e.g., `candidates/neighborhoods.yml` maps to
-#'         `banks/questions/neighborhoods.yml`). If the bank is a single
-#'         file, new questions are appended there.}
-#'   \item{**Existing questions and modules** (in bank or newly promoted)
-#'         have the survey ID appended to their `surveys_used` list if it
-#'         is not already present.}
-#' }
+#' **Question candidates** (flat `.yml` files in `candidates/`) are promoted
+#' when they appear in the survey config with `source: candbank`.  Unreferenced
+#' question candidates are relegated to `candidates/unused/`.
 #'
-#' After promotion, the candidate YAML files containing promoted variables
-#' are moved to `candidates/promoted/` and a `promoted.yml` tracking file
-#' is written there.
+#' **Control-parameter and generated-variable candidates** (in
+#' `candidates/control/` and `candidates/generated/`) are all promoted; there
+#' is no unused bucket for these types.
 #'
-#' @note
-#' Bank YAML files modified during promotion are re-serialised with
-#' [yaml::as.yaml()]. This preserves all field values but may reformat
-#' whitespace and field ordering compared to hand-edited files.
+#' When a promoted question candidate's `variable_id` already exists in the
+#' main question bank the promoted entry is tagged `_bank_action: version_update`
+#' (only version-relevant fields will be appended as a new `versions` entry by
+#' [qt_finalize_survey()]).  Genuinely new questions are tagged
+#' `_bank_action: add`.
 #'
 #' @param survey_config_file Character string. Path to the survey
-#'   configuration YAML file (e.g.,
-#'   `"surveys/bas-2025/design/survey-bas-2025.yml"`).
+#'   configuration YAML file.
 #' @param config A `qt_config` object. Defaults to `qt_config()`.
-#' @param dry_run Logical. If `TRUE`, report the planned changes without
-#'   writing any files. Default `FALSE`.
+#' @param dry_run Logical. If `TRUE`, report planned changes without writing
+#'   any files. Default `FALSE`.
 #'
-#' @return Invisibly returns a named list summarising the changes made (or
-#'   planned in dry-run mode):
+#' @return Invisibly returns a named list summarising what was sorted:
 #'   \describe{
-#'     \item{`survey_id`}{The survey ID from the config.}
-#'     \item{`added`}{Character vector of variable IDs added to the bank.}
-#'     \item{`update_qbank`}{Character vector of question IDs whose
-#'       `surveys_used` was updated.}
-#'     \item{`update_mbank`}{Character vector of module IDs whose
-#'       `surveys_used` was updated.}
+#'     \item{`survey_id`}{Survey ID from the config.}
+#'     \item{`questions`}{List with `$promoted` and `$relegated` ID vectors.}
+#'     \item{`control`}{List with `$promoted` ID vector.}
+#'     \item{`generated`}{List with `$promoted` ID vector.}
 #'   }
 #'
-#' @seealso [qt_read_question_bank()], [qt_read_survey_config()]
-#'
+#' @seealso [qt_finalize_survey()]
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Promote candidates and update surveys_used after finalizing bas-2025
-#' qt_promote_candidates(
-#'   "surveys/bas-2025/design/survey-bas-2025.yml"
-#' )
-#'
-#' # Preview changes without writing any files
-#' qt_promote_candidates(
-#'   "surveys/bas-2025/design/survey-bas-2025.yml",
-#'   dry_run = TRUE
-#' )
-#' }
 qt_promote_candidates <- function(survey_config_file,
                                   config = qt_config(),
                                   dry_run = FALSE) {
 
-  # --- 1. Load survey YAML ---
-  if (!file.exists(survey_config_file))
-    stop("Survey config not found: ", survey_config_file, call. = FALSE)
+  survey_yaml <- .qt_load_survey_yaml(survey_config_file)
+  survey_id   <- .qt_get_survey_id(survey_yaml)
+  cands_base  <- .qt_candidates_base(survey_config_file, survey_yaml)
 
-  survey_yaml <- .read_yaml_safe(survey_config_file, "survey config")
+  promoted_base <- file.path(cands_base, "promoted")
+  unused_base   <- file.path(cands_base, "unused")
 
-  survey_id <- survey_yaml$meta$id
-  if (is.null(survey_id) || !nzchar(as.character(survey_id)))
-    stop("Survey config missing required field 'meta.id'", call. = FALSE)
+  # Candidate references from survey questionnaire
+  refs <- .qt_collect_cand_refs(survey_yaml$questionnaire$items)
 
-  # --- 2. Locate candidates directory ---
-  cands_rel  <- survey_yaml$meta$candidates_path %||% "candidates"
-  cands_path <- file.path(dirname(survey_config_file), cands_rel)
+  # Resolve bank paths to detect existing IDs (for version vs add decision)
+  q_bank_ids <- .qt_read_bank_ids(
+    .qt_resolve_path("question_bank", NULL, config))
 
-  # --- 3. Collect all item references from the survey questionnaire ---
+  # --- Question candidates -------------------------------------------------
+  q_result <- .qt_promote_bank_candidates(
+    cand_path       = cands_base,
+    used_ids        = refs$candbank,
+    bank_ids        = q_bank_ids,
+    survey_id       = survey_id,
+    promoted_dir    = file.path(promoted_base, "questions"),
+    unused_dir      = file.path(unused_base, "questions"),
+    relegate_unused = TRUE,
+    dry_run         = dry_run
+  )
+
+  # --- Control-parameter candidates ----------------------------------------
+  ctrl_cand_path <- file.path(cands_base, "control")
+  ctrl_bank_ids  <- .qt_read_bank_ids(
+    .qt_resolve_path("control_bank", NULL, config))
+
+  ctrl_result <- .qt_promote_bank_candidates(
+    cand_path       = ctrl_cand_path,
+    used_ids        = NULL,
+    bank_ids        = ctrl_bank_ids,
+    survey_id       = survey_id,
+    promoted_dir    = file.path(promoted_base, "control"),
+    unused_dir      = NULL,
+    relegate_unused = FALSE,
+    dry_run         = dry_run
+  )
+
+  # --- Generated-variable candidates ---------------------------------------
+  gen_cand_path <- file.path(cands_base, "generated")
+  gen_bank_ids  <- .qt_read_bank_ids(
+    .qt_resolve_path("generated_bank", NULL, config))
+
+  gen_result <- .qt_promote_bank_candidates(
+    cand_path       = gen_cand_path,
+    used_ids        = NULL,
+    bank_ids        = gen_bank_ids,
+    survey_id       = survey_id,
+    promoted_dir    = file.path(promoted_base, "generated"),
+    unused_dir      = NULL,
+    relegate_unused = FALSE,
+    dry_run         = dry_run
+  )
+
+  plan <- list(
+    survey_id = survey_id,
+    questions = q_result,
+    control   = ctrl_result,
+    generated = gen_result
+  )
+
+  .qt_report_promotion_plan(plan, dry_run)
+
+  if (!dry_run)
+    .qt_write_promoted_yml(plan, promoted_base)
+
+  invisible(plan)
+}
+
+
+# ---------------------------------------------------------------------------
+# Step 2: qt_finalize_survey
+# ---------------------------------------------------------------------------
+
+#' Finalize a Survey and Integrate Candidates into the Main Banks
+#'
+#' The second step of the two-step survey finalization workflow.  Reads files
+#' written by [qt_promote_candidates()] from `candidates/promoted/` and
+#' integrates them into the main question, control, and generated variable
+#' banks.  Also appends the survey ID to `surveys_used` for every question,
+#' module, control parameter, and generated variable referenced by the survey.
+#'
+#' [qt_promote_candidates()] is called automatically if `candidates/promoted/`
+#' does not yet contain any `.yml` files.  Use `force_promote = TRUE` to
+#' re-run it even when promoted files are already present.
+#'
+#' **Bank integration rules:**
+#' \itemize{
+#'   \item{Entries tagged `_bank_action: add` are appended as new variables.}
+#'   \item{Entries tagged `_bank_action: version_update` are appended as a new
+#'     `versions` entry on the existing bank question (version-specific fields
+#'     only; base fields such as `storage_type` and `vargroup` are excluded).}
+#' }
+#'
+#' @param survey_config_file Character string. Path to the survey config YAML.
+#' @param config A `qt_config` object. Defaults to `qt_config()`.
+#' @param force_promote Logical. If `TRUE`, always re-run
+#'   [qt_promote_candidates()] even when `candidates/promoted/` already
+#'   contains files. Default `FALSE`.
+#' @param dry_run Logical. If `TRUE`, run [qt_promote_candidates()] in
+#'   dry-run mode and skip bank integration. Default `FALSE`.
+#'
+#' @return Invisibly returns a named list summarising what was integrated:
+#'   \describe{
+#'     \item{`survey_id`}{Survey ID from the config.}
+#'     \item{`questions`}{List with `$added` and `$versioned` ID vectors.}
+#'     \item{`control`}{List with `$added` ID vector.}
+#'     \item{`generated`}{List with `$added` ID vector.}
+#'     \item{`surveys_used_updated`}{Character vector of all IDs whose
+#'       `surveys_used` was updated.}
+#'   }
+#'
+#' @seealso [qt_promote_candidates()]
+#' @export
+qt_finalize_survey <- function(survey_config_file,
+                               config = qt_config(),
+                               force_promote = FALSE,
+                               dry_run = FALSE) {
+
+  survey_yaml <- .qt_load_survey_yaml(survey_config_file)
+  survey_id   <- .qt_get_survey_id(survey_yaml)
+  cands_base  <- .qt_candidates_base(survey_config_file, survey_yaml)
+
+  promoted_base <- file.path(cands_base, "promoted")
+
+  # Run promotion step unless already done
+  already_promoted <- dir.exists(promoted_base) &&
+    length(list.files(promoted_base, pattern = "\\.yml$",
+                      recursive = TRUE)) > 0
+
+  if (!already_promoted || force_promote)
+    qt_promote_candidates(survey_config_file, config, dry_run = dry_run)
+
+  if (dry_run) {
+    cli::cli_alert_info("Dry run: skipping bank integration.")
+    return(invisible(NULL))
+  }
+
+  # Resolve bank paths
+  qbank_path <- .qt_resolve_path("question_bank", NULL, config)
+  ctrl_path  <- .qt_resolve_path("control_bank",  NULL, config)
+  gen_path   <- .qt_resolve_path("generated_bank", NULL, config)
+  mbank_path <- .qt_resolve_path("module_bank",   NULL, config)
+
+  # Integrate promoted candidates into banks
+  q_fin    <- .qt_finalize_bank(
+    file.path(promoted_base, "questions"), qbank_path, survey_id)
+  ctrl_fin <- .qt_finalize_bank(
+    file.path(promoted_base, "control"),   ctrl_path,  survey_id)
+  gen_fin  <- .qt_finalize_bank(
+    file.path(promoted_base, "generated"), gen_path,   survey_id)
+
+  # Update surveys_used for all items referenced by the survey
   all_items <- .qt_collect_survey_items(survey_yaml$questionnaire$items)
 
-  candbank_ids <- unique(Filter(Negate(is.null), lapply(all_items, function(x) {
-    if (isTRUE(x$item_type == "question") &&
-        isTRUE((x$source %||% "qbank") == "candbank"))
-      x$variable_id
+  q_ids <- unique(Filter(Negate(is.null), lapply(all_items, function(x) {
+    if (isTRUE(x$item_type == "question")) x$variable_id
   })))
-
-  qbank_ids <- unique(Filter(Negate(is.null), lapply(all_items, function(x) {
-    if (isTRUE(x$item_type == "question") &&
-        !isTRUE((x$source %||% "qbank") == "candbank"))
-      x$variable_id
-  })))
-
-  module_ids <- unique(Filter(Negate(is.null), lapply(all_items, function(x) {
+  mod_ids <- unique(Filter(Negate(is.null), lapply(all_items, function(x) {
     if (isTRUE(x$item_type == "module")) x$module_id
   })))
 
-  # --- 4. Read raw candidate YAML (no validation; preserves source_file) ---
-  cand_vars <- .qt_read_raw_yaml_bank(cands_path)
-
-  missing_cands <- setdiff(candbank_ids, names(cand_vars))
-  if (length(missing_cands) > 0)
-    stop("Candidate variable(s) not found in candidates directory ",
-         sQuote(cands_path), ":\n  ",
-         paste(missing_cands, collapse = ", "), call. = FALSE)
-
-  # --- 5. Resolve bank paths and read existing IDs ---
-  qbank_path <- .qt_resolve_path("question_bank", NULL, config)
-  mbank_path <- .qt_resolve_path("module_bank",   NULL, config)
-
-  existing_q_ids <- .qt_read_bank_ids(qbank_path)
   existing_m_ids <- .qt_read_bank_ids(mbank_path)
+  updated <- character()
 
-  # --- 6. Build plan ---
-  new_ids      <- candbank_ids[!candbank_ids %in% existing_q_ids]
-  cand_in_bank <- candbank_ids[ candbank_ids %in% existing_q_ids]
-
-  # All questions to receive surveys_used update (candbank + qbank already in bank)
-  update_qbank <- unique(c(
-    cand_in_bank,
-    qbank_ids[qbank_ids %in% existing_q_ids]
-  ))
-  update_mbank <- module_ids[module_ids %in% existing_m_ids]
-
-  # Warn about references not found in bank (neither new nor existing)
-  missing_q <- qbank_ids[!qbank_ids %in% existing_q_ids]
-  if (length(missing_q) > 0)
-    warning("Variable(s) referenced in survey but not found in question bank ",
-            "(skipping surveys_used update):\n  ",
-            paste(missing_q, collapse = ", "), call. = FALSE)
-
-  missing_m <- module_ids[!module_ids %in% existing_m_ids]
-  if (length(missing_m) > 0)
-    warning("Module(s) referenced in survey but not found in module bank ",
-            "(skipping surveys_used update):\n  ",
-            paste(missing_m, collapse = ", "), call. = FALSE)
+  for (vid in q_ids) {
+    result <- .qt_add_survey_to_bank_entry(vid, survey_id, qbank_path)
+    if (!is.null(result)) updated <- c(updated, vid)
+  }
+  for (mid in mod_ids[mod_ids %in% existing_m_ids]) {
+    result <- .qt_add_survey_to_bank_entry(mid, survey_id, mbank_path)
+    if (!is.null(result)) updated <- c(updated, mid)
+  }
 
   plan <- list(
-    survey_id    = survey_id,
-    added        = new_ids,
-    update_qbank = update_qbank,
-    update_mbank = update_mbank
+    survey_id           = survey_id,
+    questions           = q_fin,
+    control             = ctrl_fin,
+    generated           = gen_fin,
+    surveys_used_updated = updated
   )
 
-  # --- 7. Report ---
-  .qt_report_promotion_plan(plan, dry_run)
-
-  if (dry_run)
-    return(invisible(plan))
-
-  # --- 8. Add new candidate variables to question bank ---
-  for (vid in new_ids) {
-    target_file <- .qt_candidate_to_bank_file(
-      cand_vars[[vid]]$source_file, qbank_path
-    )
-    .qt_append_variable_to_bank(vid, cand_vars[[vid]], survey_id, target_file)
-  }
-
-  # --- 9. Update surveys_used in question bank ---
-  for (vid in update_qbank) {
-    .qt_add_survey_to_bank_entry(vid, survey_id, qbank_path)
-  }
-
-  # --- 10. Update surveys_used in module bank ---
-  for (mid in update_mbank) {
-    .qt_add_survey_to_bank_entry(mid, survey_id, mbank_path)
-  }
-
-  # --- 11. Move promoted candidate files and write tracking record ---
-  if (length(candbank_ids) > 0) {
-    promoted_dir <- file.path(cands_path, "promoted")
-    .qt_move_promoted_candidates(cand_vars, candbank_ids, promoted_dir)
-    .qt_write_promoted_yml(plan, promoted_dir)
-  }
-
+  .qt_report_finalization_plan(plan)
   invisible(plan)
 }
 
@@ -193,12 +267,51 @@ qt_promote_candidates <- function(survey_config_file,
 # Internal helpers
 # ---------------------------------------------------------------------------
 
-# Recursively collect all items from a survey's questionnaire items list.
-# Traverses sections, logic blocks, splits, loops, randomize containers,
-# and display_together blocks.
-#
-# @param items List of survey item nodes (from parsed survey YAML).
-# @return Flat list of all item nodes found at any nesting depth.
+# Load and basic-validate a survey YAML file.
+# @keywords internal
+# @noRd
+.qt_load_survey_yaml <- function(path) {
+  if (!file.exists(path))
+    stop("Survey config not found: ", path, call. = FALSE)
+  .read_yaml_safe(path, "survey config")
+}
+
+# Extract and validate survey ID from parsed survey YAML.
+# @keywords internal
+# @noRd
+.qt_get_survey_id <- function(survey_yaml) {
+  id <- survey_yaml$meta$id
+  if (is.null(id) || !nzchar(as.character(id)))
+    stop("Survey config missing required field 'meta.id'", call. = FALSE)
+  as.character(id)
+}
+
+# Resolve the candidates base directory from the survey config file path.
+# @keywords internal
+# @noRd
+.qt_candidates_base <- function(survey_config_file, survey_yaml) {
+  rel <- survey_yaml$meta$candidates_path %||% "candidates"
+  file.path(dirname(survey_config_file), rel)
+}
+
+# Collect candidate-bank references from a survey questionnaire's item list.
+# Returns a list with element $candbank (question IDs sourced from candbank).
+# @keywords internal
+# @noRd
+.qt_collect_cand_refs <- function(items) {
+  flat <- .qt_collect_survey_items(items)
+
+  candbank <- unique(Filter(Negate(is.null), lapply(flat, function(x) {
+    if (isTRUE(x$item_type == "question") &&
+        isTRUE((x$source %||% "qbank") == "candbank"))
+      x$variable_id
+  })))
+
+  list(candbank = candbank)
+}
+
+# Recursively collect all item nodes from a survey questionnaire items list.
+# Traverses sections, logic, splits, loops, randomize, and display_together.
 # @keywords internal
 # @noRd
 .qt_collect_survey_items <- function(items) {
@@ -208,17 +321,12 @@ qt_promote_candidates <- function(survey_config_file,
   for (item in items) {
     result <- c(result, list(item))
 
-    # Standard nested items (section, loop, randomize, display_together)
     if (!is.null(item$items))
       result <- c(result, .qt_collect_survey_items(item$items))
-
-    # Logic then/else branches
     if (!is.null(item$then))
       result <- c(result, .qt_collect_survey_items(item$then))
     if (!is.null(item[["else"]]))
       result <- c(result, .qt_collect_survey_items(item[["else"]]))
-
-    # Split paths
     if (!is.null(item$paths)) {
       for (path_entry in item$paths)
         result <- c(result, .qt_collect_survey_items(path_entry$items))
@@ -227,14 +335,209 @@ qt_promote_candidates <- function(survey_config_file,
   result
 }
 
+# Sort candidates from one bank type into promoted/ and unused/ directories.
+#
+# @param cand_path    Path to flat candidate directory (or single .yml).
+# @param used_ids     Character vector of IDs referenced in survey, or NULL
+#                     to promote everything.
+# @param bank_ids     Character vector of IDs already in the main bank.
+# @param survey_id    Survey ID string (used as fallback version_id).
+# @param promoted_dir Directory to write promoted entries.
+# @param unused_dir   Directory to write unused entries (or NULL).
+# @param relegate_unused  Logical. If TRUE, write unused entries to unused_dir.
+# @param dry_run      Logical.
+# @return List with $promoted and $relegated character vectors.
+# @keywords internal
+# @noRd
+.qt_promote_bank_candidates <- function(cand_path, used_ids, bank_ids,
+                                        survey_id, promoted_dir, unused_dir,
+                                        relegate_unused = TRUE,
+                                        dry_run = FALSE) {
+
+  cand_vars <- .qt_read_raw_yaml_bank(cand_path)
+
+  if (length(cand_vars) == 0)
+    return(list(promoted = character(), relegated = character()))
+
+  all_ids <- names(cand_vars)
+
+  # Determine which IDs are promoted vs relegated
+  if (is.null(used_ids)) {
+    promote_ids <- all_ids
+    unused_ids  <- character()
+  } else {
+    missing_refs <- setdiff(used_ids, all_ids)
+    if (length(missing_refs) > 0)
+      stop("Candidate variable(s) referenced in survey but not found in ",
+           sQuote(cand_path), ":\n  ",
+           paste(missing_refs, collapse = ", "), call. = FALSE)
+
+    promote_ids <- intersect(all_ids, used_ids)
+    unused_ids  <- setdiff(all_ids, used_ids)
+  }
+
+  if (dry_run)
+    return(list(promoted = promote_ids, relegated = unused_ids))
+
+  # Write promoted entries, grouped by source file
+  if (length(promote_ids) > 0) {
+    dir.create(promoted_dir, showWarnings = FALSE, recursive = TRUE)
+
+    by_file <- split(promote_ids, vapply(
+      promote_ids,
+      function(id) cand_vars[[id]]$source_file,
+      character(1)
+    ))
+
+    for (src_file in names(by_file)) {
+      promo_content <- list()
+      for (id in by_file[[src_file]]) {
+        entry <- .qt_strip_internal_fields(cand_vars[[id]])
+        entry[["_bank_action"]] <- if (id %in% bank_ids)
+          "version_update" else "add"
+        promo_content[[id]] <- entry
+      }
+      dest_file <- file.path(promoted_dir, basename(src_file))
+      .qt_write_yaml_bank(promo_content, dest_file)
+    }
+  }
+
+  # Write unused entries (questions only)
+  if (relegate_unused && length(unused_ids) > 0 && !is.null(unused_dir)) {
+    dir.create(unused_dir, showWarnings = FALSE, recursive = TRUE)
+
+    by_file <- split(unused_ids, vapply(
+      unused_ids,
+      function(id) cand_vars[[id]]$source_file,
+      character(1)
+    ))
+
+    for (src_file in names(by_file)) {
+      unused_content <- lapply(
+        setNames(by_file[[src_file]], by_file[[src_file]]),
+        function(id) .qt_strip_internal_fields(cand_vars[[id]])
+      )
+      dest_file <- file.path(unused_dir, basename(src_file))
+      .qt_write_yaml_bank(unused_content, dest_file)
+    }
+  }
+
+  # Remove original candidate files that have been fully sorted
+  src_files <- unique(vapply(
+    names(cand_vars),
+    function(id) cand_vars[[id]]$source_file,
+    character(1)
+  ))
+  accounted <- union(promote_ids, unused_ids)
+  for (src_file in src_files) {
+    if (file.exists(src_file)) {
+      file_ids <- names(.read_yaml_safe(src_file) %||% list())
+      if (all(file_ids %in% accounted))
+        file.remove(src_file)
+    }
+  }
+
+  list(promoted = promote_ids, relegated = unused_ids)
+}
+
+# Read promoted/ files for one bank type and integrate into the main bank.
+#
+# Entries with _bank_action: add are appended as new variables.
+# Entries with _bank_action: version_update are appended as new version
+# entries on the existing bank variable.
+#
+# @param promoted_dir  Directory containing promoted .yml files for this type.
+# @param bank_path     Main bank path (file without .yml ext, or directory).
+# @param survey_id     Survey ID (used for surveys_used and version_id).
+# @return List with $added and $versioned character vectors.
+# @keywords internal
+# @noRd
+.qt_finalize_bank <- function(promoted_dir, bank_path, survey_id) {
+  added     <- character()
+  versioned <- character()
+
+  if (!dir.exists(promoted_dir))
+    return(list(added = added, versioned = versioned))
+
+  promoted_files <- sort(list.files(
+    promoted_dir, pattern = "\\.yml$", full.names = TRUE))
+  # Skip the tracking file
+  promoted_files <- promoted_files[basename(promoted_files) != "promoted.yml"]
+
+  for (f in promoted_files) {
+    content <- .read_yaml_safe(f) %||% list()
+
+    for (id in names(content)) {
+      entry       <- content[[id]]
+      bank_action <- entry[["_bank_action"]] %||% "add"
+      clean       <- entry[setdiff(names(entry), "_bank_action")]
+
+      if (bank_action == "add") {
+        target_file <- .qt_candidate_to_bank_file(f, bank_path)
+        .qt_append_variable_to_bank(id, clean, survey_id, target_file)
+        added <- c(added, id)
+
+      } else if (bank_action == "version_update") {
+        .qt_append_version_to_bank(id, clean, survey_id, bank_path)
+        versioned <- c(versioned, id)
+      }
+    }
+  }
+
+  list(added = added, versioned = versioned)
+}
+
+# Append a version entry to an existing bank question.
+#
+# Extracts version-relevant fields from version_data (dropping base-question
+# fields like storage_type and vargroup that should not vary per version).
+# Adds version_id and surveys_used if absent, then appends to the existing
+# question's versions list and updates the base surveys_used.
+#
+# @param variable_id  ID of the existing bank variable.
+# @param version_data Named list of version fields from the promoted entry.
+# @param survey_id    Survey ID used as fallback version_id.
+# @param bank_path    Main bank path (file without .yml ext, or directory).
+# @keywords internal
+# @noRd
+.qt_append_version_to_bank <- function(variable_id, version_data,
+                                       survey_id, bank_path) {
+  bank_file <- .qt_find_bank_file(variable_id, bank_path)
+  if (is.null(bank_file))
+    stop("Cannot add version: '", variable_id, "' not found in bank '",
+         bank_path, "'", call. = FALSE)
+
+  content <- .read_yaml_safe(bank_file)
+  if (is.null(content) || !variable_id %in% names(content))
+    stop("Cannot add version: '", variable_id, "' not found in '",
+         bank_file, "'", call. = FALSE)
+
+  # Fields that belong only on the base question, not in a version entry
+  base_only <- c("storage_type", "vargroup", "source", "description",
+                 "variable_id", "source_file", "file_position")
+  version_entry <- version_data[setdiff(names(version_data), base_only)]
+
+  if (is.null(version_entry$version_id))
+    version_entry$version_id <- survey_id
+
+  if (is.null(version_entry$surveys_used))
+    version_entry$surveys_used <- list(survey_id)
+
+  # Append version
+  existing_versions <- content[[variable_id]]$versions %||% list()
+  content[[variable_id]]$versions <- c(existing_versions, list(version_entry))
+
+  # Also update base surveys_used
+  base_surveys <- content[[variable_id]]$surveys_used %||% character()
+  if (!survey_id %in% base_surveys)
+    content[[variable_id]]$surveys_used <- c(base_surveys, survey_id)
+
+  .qt_write_yaml_bank(content, bank_file)
+  invisible(bank_file)
+}
 
 # Read all YAML files in a bank directory (or a single .yml file) without
-# validation. Attaches `source_file` to each entry for later file-mapping.
-#
-# @param bank_path Character string. Path to a .yml file (without extension)
-#   or a directory.
-# @return Named list: variable_id -> raw list (with source_file field).
-#   Empty list when path does not exist.
+# validation. Attaches source_file to each entry for file mapping.
 # @keywords internal
 # @noRd
 .qt_read_raw_yaml_bank <- function(bank_path) {
@@ -248,7 +551,6 @@ qt_promote_candidates <- function(survey_config_file,
         all_vars[[vid]] <- content[[vid]]
       }
     }
-
   } else if (dir.exists(bank_path)) {
     yml_files <- sort(list.files(bank_path, pattern = "\\.yml$",
                                  full.names = TRUE, recursive = FALSE))
@@ -266,43 +568,24 @@ qt_promote_candidates <- function(survey_config_file,
   all_vars
 }
 
-
-# Return only the top-level keys (IDs) present in a bank path.
-#
-# @param bank_path Character string. Path to .yml file (no ext) or directory.
-# @return Character vector of IDs.
+# Return just the top-level keys (IDs) present in a bank path.
 # @keywords internal
 # @noRd
 .qt_read_bank_ids <- function(bank_path) {
   names(.qt_read_raw_yaml_bank(bank_path))
 }
 
-
 # Determine the target bank file for a new candidate variable.
-#
-# If the question bank is a single .yml file all new candidates are written
-# there. If the bank is a directory the target file mirrors the candidate
-# file name (e.g. candidates/neighborhoods.yml →
-# banks/questions/neighborhoods.yml). The file need not exist yet; it will
-# be created on write.
-#
-# @param source_file Character string. Full path to the candidate's YAML file.
-# @param qbank_path Character string. Path to question bank (no .yml ext).
-# @return Character string. Full path to the target bank file (.yml ext).
+# Single-file bank: write there. Directory bank: mirror candidate basename.
 # @keywords internal
 # @noRd
 .qt_candidate_to_bank_file <- function(source_file, qbank_path) {
   if (file.exists(paste0(qbank_path, ".yml")))
     return(paste0(qbank_path, ".yml"))
-
   file.path(qbank_path, basename(source_file))
 }
 
-
-# Remove internal metadata fields added by the YAML reader before writing.
-#
-# @param var_data Named list. Raw variable data from .qt_read_raw_yaml_bank.
-# @return The list without source_file, file_position, or variable_id.
+# Strip internal metadata fields added by the reader before writing.
 # @keywords internal
 # @noRd
 .qt_strip_internal_fields <- function(var_data) {
@@ -310,18 +593,8 @@ qt_promote_candidates <- function(survey_config_file,
                    c("source_file", "file_position", "variable_id"))]
 }
 
-
 # Append a new variable definition to a bank YAML file.
-#
-# Strips internal metadata, ensures survey_id is in surveys_used, reads
-# the existing file (creating it if absent), appends the new entry, then
-# writes back.
-#
-# @param variable_id Character string. The variable ID (YAML dict key).
-# @param var_data Named list. Raw variable data (may include internal fields).
-# @param survey_id Character string. Survey ID to add to surveys_used.
-# @param bank_file Character string. Full path to the target .yml file.
-# @return Invisibly returns bank_file.
+# Ensures survey_id is in surveys_used; creates the file if absent.
 # @keywords internal
 # @noRd
 .qt_append_variable_to_bank <- function(variable_id, var_data,
@@ -341,19 +614,13 @@ qt_promote_candidates <- function(survey_config_file,
          call. = FALSE)
 
   bank_content[[variable_id]] <- clean
-
   dir.create(dirname(bank_file), showWarnings = FALSE, recursive = TRUE)
   .qt_write_yaml_bank(bank_content, bank_file)
-
   invisible(bank_file)
 }
 
-
-# Find the YAML file within a bank that contains a given entry ID.
-#
-# @param id Character string. The variable or module ID to find.
-# @param bank_path Character string. Path to the bank file or directory.
-# @return Character string (full path) or NULL if not found.
+# Find the YAML file within a bank that contains a given ID.
+# Returns NULL when not found.
 # @keywords internal
 # @noRd
 .qt_find_bank_file <- function(id, bank_path) {
@@ -372,49 +639,29 @@ qt_promote_candidates <- function(survey_config_file,
         return(f)
     }
   }
-
   NULL
 }
 
-
 # Append survey_id to the surveys_used list of an entry in a bank YAML file.
-# No-op if survey_id is already present.
-#
-# @param id Character string. Variable or module ID.
-# @param survey_id Character string. Survey ID to add.
-# @param bank_path Character string. Path to the bank file or directory.
-# @return Invisibly returns the path to the modified file, or NULL if the
-#   entry was not found or the survey was already listed.
+# Returns the modified file path, or NULL if already listed or not found.
 # @keywords internal
 # @noRd
 .qt_add_survey_to_bank_entry <- function(id, survey_id, bank_path) {
   bank_file <- .qt_find_bank_file(id, bank_path)
-  if (is.null(bank_file)) {
-    warning("'", id, "' not found in bank '", bank_path,
-            "' — skipping surveys_used update", call. = FALSE)
-    return(invisible(NULL))
-  }
+  if (is.null(bank_file)) return(invisible(NULL))
 
   content <- .read_yaml_safe(bank_file)
-  if (is.null(content) || !id %in% names(content))
-    return(invisible(NULL))
+  if (is.null(content) || !id %in% names(content)) return(invisible(NULL))
 
   existing_surveys <- content[[id]]$surveys_used %||% character()
-  if (survey_id %in% existing_surveys)
-    return(invisible(NULL))
+  if (survey_id %in% existing_surveys) return(invisible(NULL))
 
   content[[id]]$surveys_used <- c(existing_surveys, survey_id)
   .qt_write_yaml_bank(content, bank_file)
-
   invisible(bank_file)
 }
 
-
 # Write a named list as a YAML bank file with standard qretools formatting.
-#
-# @param content Named list. The complete bank content to serialise.
-# @param file Character string. Full path to the output .yml file.
-# @return Invisibly returns file.
 # @keywords internal
 # @noRd
 .qt_write_yaml_bank <- function(content, file) {
@@ -424,116 +671,97 @@ qt_promote_candidates <- function(survey_config_file,
   invisible(file)
 }
 
-
-# Move candidate YAML files for promoted variables to a promoted/ directory.
-#
-# If a source file contains both promoted and non-promoted variables, the
-# promoted entries are written to promoted/ and the original file is updated
-# in-place to retain only the remaining entries. If all entries are promoted
-# the original file is removed.
-#
-# @param cand_vars Named list. Raw candidate variables with source_file field.
-# @param promoted_ids Character vector. Variable IDs being promoted.
-# @param promoted_dir Character string. Destination directory (created if
-#   needed).
-# @return Invisibly NULL.
+# Write a promoted.yml tracking file in the promoted/ directory.
 # @keywords internal
 # @noRd
-.qt_move_promoted_candidates <- function(cand_vars, promoted_ids,
-                                         promoted_dir) {
-  if (length(promoted_ids) == 0) return(invisible(NULL))
+.qt_write_promoted_yml <- function(plan, promoted_base) {
+  dir.create(promoted_base, showWarnings = FALSE, recursive = TRUE)
 
-  dir.create(promoted_dir, showWarnings = FALSE, recursive = TRUE)
-
-  # Group promoted IDs by their source file
-  source_files <- unique(vapply(
-    promoted_ids,
-    function(vid) cand_vars[[vid]]$source_file,
-    character(1)
-  ))
-
-  for (src_file in source_files) {
-    if (!file.exists(src_file)) next
-
-    file_content  <- .read_yaml_safe(src_file) %||% list()
-    file_ids      <- names(file_content)
-    promoted_here <- intersect(file_ids, promoted_ids)
-    remaining     <- setdiff(file_ids, promoted_ids)
-
-    dest_file <- file.path(promoted_dir, basename(src_file))
-    .qt_write_yaml_bank(file_content[promoted_here], dest_file)
-
-    if (length(remaining) == 0) {
-      file.remove(src_file)
-    } else {
-      .qt_write_yaml_bank(file_content[remaining], src_file)
-    }
-  }
-
-  invisible(NULL)
-}
-
-
-# Write a promoted.yml tracking file recording what was promoted and when.
-#
-# @param plan List. The promotion plan returned by qt_promote_candidates.
-# @param promoted_dir Character string. Directory to write promoted.yml into.
-# @return Invisibly returns the path to the written file.
-# @keywords internal
-# @noRd
-.qt_write_promoted_yml <- function(plan, promoted_dir) {
   tracking <- list(
     survey_id      = plan$survey_id,
     promotion_date = format(Sys.Date(), "%Y-%m-%d"),
-    added_to_bank  = as.list(plan$added),
-    updated_qbank  = as.list(plan$update_qbank),
-    updated_mbank  = as.list(plan$update_mbank)
+    questions = list(
+      promoted  = as.list(plan$questions$promoted),
+      relegated = as.list(plan$questions$relegated)
+    ),
+    control   = list(promoted = as.list(plan$control$promoted)),
+    generated = list(promoted = as.list(plan$generated$promoted))
   )
 
-  out_file <- file.path(promoted_dir, "promoted.yml")
+  out_file <- file.path(promoted_base, "promoted.yml")
   .qt_write_yaml_bank(tracking, out_file)
   invisible(out_file)
 }
 
-
-# Report the promotion plan to the user via cli.
-#
-# @param plan List. The promotion plan.
-# @param dry_run Logical. If TRUE, prefix messages with "(dry run)".
-# @return Invisibly NULL.
+# Report the promotion plan via cli.
 # @keywords internal
 # @noRd
 .qt_report_promotion_plan <- function(plan, dry_run) {
-  mode_label <- if (dry_run) " (dry run)" else ""
-  cli::cli_h1("Candidate promotion: {plan$survey_id}{mode_label}")
+  mode <- if (dry_run) " (dry run)" else ""
+  cli::cli_h1("Candidate promotion: {plan$survey_id}{mode}")
 
-  if (length(plan$added) > 0) {
+  .qt_report_bank_result("Questions", plan$questions,
+                         show_relegated = TRUE)
+  .qt_report_bank_result("Control parameters", plan$control,
+                         show_relegated = FALSE)
+  .qt_report_bank_result("Generated variables", plan$generated,
+                         show_relegated = FALSE)
+
+  invisible(NULL)
+}
+
+# Report the finalization plan via cli.
+# @keywords internal
+# @noRd
+.qt_report_finalization_plan <- function(plan) {
+  cli::cli_h1("Survey finalization: {plan$survey_id}")
+
+  if (length(plan$questions$added) > 0) {
+    cli::cli_h2("Questions added to bank ({length(plan$questions$added)})")
+    for (vid in plan$questions$added) cli::cli_li("{.val {vid}}")
+  }
+  if (length(plan$questions$versioned) > 0) {
     cli::cli_h2(
-      "New variables to add to question bank ({length(plan$added)})"
-    )
-    for (vid in plan$added)
-      cli::cli_li("{.val {vid}}")
-  } else {
-    cli::cli_alert_info("No new candidate variables to add to bank.")
+      "Questions with new version entry ({length(plan$questions$versioned)})")
+    for (vid in plan$questions$versioned) cli::cli_li("{.val {vid}}")
+  }
+  if (length(plan$control$added) > 0) {
+    cli::cli_h2(
+      "Control parameters added ({length(plan$control$added)})")
+    for (vid in plan$control$added) cli::cli_li("{.val {vid}}")
+  }
+  if (length(plan$generated$added) > 0) {
+    cli::cli_h2(
+      "Generated variables added ({length(plan$generated$added)})")
+    for (vid in plan$generated$added) cli::cli_li("{.val {vid}}")
+  }
+  if (length(plan$surveys_used_updated) > 0) {
+    n <- length(plan$surveys_used_updated)
+    cli::cli_alert_success(
+      "surveys_used updated for {n} question{?s}/module{?s}.")
+  }
+  invisible(NULL)
+}
+
+# Helper: report one bank type's promotion result.
+# @keywords internal
+# @noRd
+.qt_report_bank_result <- function(label, result, show_relegated) {
+  n_promo <- length(result$promoted)
+  n_rel   <- if (show_relegated) length(result$relegated) else 0L
+
+  if (n_promo == 0 && n_rel == 0) {
+    cli::cli_alert_info("No {label} candidates found.")
+    return(invisible(NULL))
   }
 
-  if (length(plan$update_qbank) > 0) {
-    cli::cli_h2(
-      "Question bank: add {.val {plan$survey_id}} to surveys_used \\
-       ({length(plan$update_qbank)})"
-    )
-    for (vid in plan$update_qbank)
-      cli::cli_li("{.val {vid}}")
+  if (n_promo > 0) {
+    cli::cli_h2("{label}: {n_promo} promoted")
+    for (id in result$promoted) cli::cli_li("{.val {id}}")
   }
-
-  if (length(plan$update_mbank) > 0) {
-    cli::cli_h2(
-      "Module bank: add {.val {plan$survey_id}} to surveys_used \\
-       ({length(plan$update_mbank)})"
-    )
-    for (mid in plan$update_mbank)
-      cli::cli_li("{.val {mid}}")
+  if (show_relegated && n_rel > 0) {
+    cli::cli_h2("{label}: {n_rel} relegated to unused/")
+    for (id in result$relegated) cli::cli_li("{.val {id}}")
   }
-
   invisible(NULL)
 }
