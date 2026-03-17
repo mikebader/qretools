@@ -348,7 +348,8 @@ qt_read_value_labels <- function(config = qt_config(), path = NULL) {
   )
 }
 
-# Alias
+#' @rdname qt_read_value_labels
+#' @export
 qt_vlabs <- qt_read_value_labels
 
 #' Print qretools Value Labels
