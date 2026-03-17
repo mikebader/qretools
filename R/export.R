@@ -57,7 +57,7 @@
 #'
 #' @export
 qt_export_csv <- function(bank, file = NULL, survey = NULL,
-                          surveys_sep = ";", survey_cols = FALSE) {
+                          surveys_sep = ";", survey_cols = TRUE) {
   if (!inherits(bank, "qt_bank")) {
     stop(
       "'bank' must be a qt_qbank, qt_genbank, or qt_ctrlbank object",
