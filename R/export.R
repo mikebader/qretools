@@ -17,7 +17,12 @@
 #'   whose \code{surveys_used} field includes this survey ID are included. If
 #'   \code{NULL} (the default), all variables are included.
 #' @param surveys_sep Character string. Separator used when collapsing multiple
-#'   survey IDs into a single cell. Default: \code{";"}.
+#'   survey IDs into a single cell. Ignored when \code{survey_cols = TRUE}.
+#'   Default: \code{";"}.
+#' @param survey_cols Logical. If \code{TRUE}, each survey wave gets its own
+#'   indicator column (one column per unique survey ID found in the bank,
+#'   value \code{TRUE}/\code{FALSE}) instead of a single collapsed
+#'   \code{surveys_used} string. Default: \code{FALSE}.
 #'
 #' @return A data frame with columns:
 #'   \describe{
@@ -25,8 +30,10 @@
 #'     \item{title}{Short descriptive title}
 #'     \item{value_labels_name}{Name of the value label set, or \code{NA} if
 #'       the variable has no associated labels}
-#'     \item{surveys_used}{Survey IDs in which the variable was asked, collapsed
-#'       into a single string using \code{surveys_sep}}
+#'     \item{surveys_used}{(\code{survey_cols = FALSE} only) Survey IDs
+#'       collapsed into a single string using \code{surveys_sep}.}
+#'     \item{<survey_id>}{(\code{survey_cols = TRUE} only) One logical column
+#'       per survey wave, \code{TRUE} when the variable was used in that wave.}
 #'   }
 #'   If \code{file} is supplied the data frame is written to that path and
 #'   returned invisibly; otherwise it is returned visibly.
@@ -43,10 +50,14 @@
 #'
 #' # Filter to a single survey wave
 #' qt_export_csv(qbank, file = "bas-2024-variables.csv", survey = "bas-2024")
+#'
+#' # One column per survey instead of a delimited list
+#' qt_export_csv(qbank, survey_cols = TRUE)
 #' }
 #'
 #' @export
-qt_export_csv <- function(bank, file = NULL, survey = NULL, surveys_sep = ";") {
+qt_export_csv <- function(bank, file = NULL, survey = NULL,
+                          surveys_sep = ";", survey_cols = FALSE) {
   if (!inherits(bank, "qt_bank")) {
     stop(
       "'bank' must be a qt_qbank, qt_genbank, or qt_ctrlbank object",
@@ -70,9 +81,30 @@ qt_export_csv <- function(bank, file = NULL, survey = NULL, surveys_sep = ";") {
       variable_id       = character(),
       title             = character(),
       value_labels_name = character(),
-      surveys_used      = character(),
       stringsAsFactors  = FALSE
     )
+    if (!survey_cols)
+      df$surveys_used <- character()
+  } else if (survey_cols) {
+    # Collect all unique survey IDs across the (filtered) variables, sorted
+    all_surveys <- sort(unique(unlist(lapply(vars, `[[`, "surveys_used"))))
+
+    rows <- lapply(vars, function(v) {
+      row <- data.frame(
+        variable_id       = v$variable_id,
+        title             = v$title,
+        value_labels_name = if (!is.null(v$value_labels_name))
+                              v$value_labels_name
+                            else
+                              NA_character_,
+        stringsAsFactors  = FALSE
+      )
+      for (s in all_surveys)
+        row[[s]] <- s %in% v$surveys_used
+      row
+    })
+    df <- do.call(rbind, rows)
+    rownames(df) <- NULL
   } else {
     rows <- lapply(vars, function(v) {
       data.frame(
