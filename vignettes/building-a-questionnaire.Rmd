@@ -183,7 +183,7 @@ There are two ways to represent a "select all that apply" question.
 ### Approach 1 — separate indicator variables (recommended)
 
 This matches the convention used in the BAS question banks.  Each response
-option is its own variable with `storage_type: factor` and a yes/no value
+option is its own variable with `response_type: factor` and a yes/no value
 label set.  All share the same `question_text`.
 
 **In the question bank (`banks/questions/demographics.yml`):**
@@ -191,7 +191,7 @@ label set.  All share the same `question_text`.
 ```yaml
 dem_race_wh:
   title: "Race indicator: White"
-  storage_type: factor
+  response_type: factor
   question_text: "What is your racial or ethnic background? Select all that apply."
   surveys_used: [bas-2026]
   vargroup: dem
@@ -199,7 +199,7 @@ dem_race_wh:
 
 dem_race_bl:
   title: "Race indicator: Black or African American"
-  storage_type: factor
+  response_type: factor
   question_text: "What is your racial or ethnic background? Select all that apply."
   surveys_used: [bas-2026]
   vargroup: dem
@@ -207,7 +207,7 @@ dem_race_bl:
 
 dem_race_hisp:
   title: "Race indicator: Hispanic or Latino"
-  storage_type: factor
+  response_type: factor
   question_text: "What is your racial or ethnic background? Select all that apply."
   surveys_used: [bas-2026]
   vargroup: dem
@@ -230,7 +230,7 @@ qt_add_section("demographics", "About You",
 `hide_question = TRUE` suppresses the repeated question text on the second
 and subsequent items, showing it only once for the whole block.
 
-### Approach 2 — `multiple_response` storage type
+### Approach 2 — `select_all` response type
 
 Use this when you want a single question bank entry to document the whole
 select-all item.  The entry must list the indicator variables it creates
@@ -239,7 +239,7 @@ select-all item.  The entry must list the indicator variables it creates
 ```yaml
 dem_race_origin:
   title: Race or ethnic background (select all)
-  storage_type: multiple_response
+  response_type: select_all
   question_text: "What is your racial or ethnic background? Select all that apply."
   surveys_used: [bas-2026]
   vargroup: dem
@@ -310,7 +310,7 @@ whose key contains the literal string `{i}`:
 # banks/questions/neighborhoods.yml
 "feat_rating_{i}":
   title: "Rating of {i}"
-  storage_type: factor
+  response_type: factor
   question_text: "How would you rate {i} in your neighborhood?"
   surveys_used: [bas-2026]
   vargroup: nhd

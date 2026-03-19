@@ -1,6 +1,6 @@
 nhd_fut:
   title: Future of neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: Looking forward to the next five years, do you think that your neighborhood
     will generally become a better place to live, stay about the same, or become a
     worse place to live?
@@ -10,7 +10,7 @@ nhd_fut:
   value_label_id: place_to_live
 env_clmharm:
   title: Concern over climate change causing harm
-  storage_type: factor
+  response_type: factor
   question_text: How concerned are you, if at all, that global climate change will
     harm you  personally at some point in your lifetime? Are you very concerned, somewhat  concerned,
     not too concerned or not at all concerned?
@@ -20,7 +20,7 @@ env_clmharm:
   value_label_id: concern4
 env_clmcost:
   title: Financial effect of climate change in Baltimore
-  storage_type: factor
+  response_type: factor
   question_text: Some people believe that dealing with climate change will make people
     and businesses pay higher costs while others think that dealing with climate change
     will help people and businesses save money. Overall, in the next five years, do
@@ -32,7 +32,7 @@ env_clmcost:
   value_label_id: costs
 con_btrust:
   title: Trust in nearby businesses
-  storage_type: factor
+  response_type: factor
   question_text: How much of the time do you think you can trust the businesses in
     or near your  neighborhood to do what is right?
   surveys_used:
@@ -41,7 +41,7 @@ con_btrust:
   value_label_id: almost_always_business
 con_ntrust:
   title: Trust in non-profit organizations
-  storage_type: factor
+  response_type: factor
   question_text: How much of the time do you think you can trust the nonprofit organizations
     in  or near your neighborhood to do what is right?
   surveys_used:
@@ -50,7 +50,7 @@ con_ntrust:
   value_label_id: almost_always_npo
 con_bthnk:
   title: Thought about by nearby businesses
-  storage_type: factor
+  response_type: factor
   question_text: How often do you expect that businesses in or near your neighborhood
     think about people like you when they make business decisions?
   surveys_used:
@@ -59,7 +59,7 @@ con_bthnk:
   value_label_id: always5
 org_gthnk?:
   title: Thought about by Local Government
-  storage_type: factor
+  response_type: factor
   question_text: How often do you expect that the local government thinks about people
     like you  when they consider the programs they offer?
   surveys_used:
@@ -68,7 +68,7 @@ org_gthnk?:
   value_label_id: always5
 con_bsrv:
   title: Businesses serve needs
-  storage_type: factor
+  response_type: factor
   question_text: How well do businesses in or near your neighborhood serve your family’s
     needs?
   surveys_used:
@@ -77,7 +77,7 @@ con_bsrv:
   value_label_id: well4
 con_nsrv:
   title: Nonprofits serve needs
-  storage_type: factor
+  response_type: factor
   question_text: How well do nonprofit organizations in or near your neighborhood
     serve your  family’s needs?
   surveys_used:
@@ -86,7 +86,7 @@ con_nsrv:
   value_label_id: well4
 org_gsrv:
   title: Local government serves needs
-  storage_type: factor
+  response_type: factor
   question_text: How well do local government services in or near your neighborhood
     serve your  family’s needs?
   surveys_used:
@@ -95,7 +95,7 @@ org_gsrv:
   value_label_id: well4
 con_plcfear:
   title: Fear of police
-  storage_type: factor
+  response_type: factor
   question_text: How much fear do you have that you or your loved ones will be targeted
     by the  police for questioning or arrest?
   surveys_used:
@@ -105,7 +105,7 @@ con_plcfear:
   value_label_id: a_lot4
 con_plcfeara:
   title: Fear of police affecting everyday life
-  storage_type: factor
+  response_type: factor
   question_text: How much does that fear affect your everyday life?
   surveys_used:
   - bas-2023
@@ -114,7 +114,7 @@ con_plcfeara:
   value_label_id: a_lot4
 con_plcrespect:
   title: Police respect
-  storage_type: factor
+  response_type: factor
   question_text: How respectfully do you think the police in your area treat people?
   surveys_used:
   - bas-2023
@@ -123,7 +123,7 @@ con_plcrespect:
   value_label_id: respect
 con_plcfair:
   title: Police fairness
-  storage_type: factor
+  response_type: factor
   question_text: In your opinion, how fairly do the police in your area treat people?
   surveys_used:
   - bas-2023
@@ -132,7 +132,7 @@ con_plcfair:
   value_label_id: fair
 con_plcprvcrime:
   title: Police effectiveness
-  storage_type: factor
+  response_type: factor
   question_text: How effective are the police at preventing crime in your area?
   surveys_used:
   - bas-2023
@@ -141,7 +141,7 @@ con_plcprvcrime:
   value_label_id: effective
 con_plctrust:
   title: Police trust
-  storage_type: factor
+  response_type: factor
   question_text: How much do you trust the police in your area?
   surveys_used:
   - bas-2023
@@ -150,7 +150,7 @@ con_plctrust:
   value_label_id: trust
 con_plcrating:
   title: Police overall effectiveness
-  storage_type: factor
+  response_type: factor
   question_text: Taking everything into account, how would you rate the job the police
     are doing?
   surveys_used:
@@ -160,7 +160,7 @@ con_plcrating:
   value_label_id: job
 tsp_daily:
   title: 'Transportation insecurity: daily living affected'
-  storage_type: factor
+  response_type: factor
   question_text: In the past 30 days, has a lack of reliable  transportation kept
     you from medical appointments, meetings,  work or from getting things needed for
     daily living?
@@ -170,7 +170,7 @@ tsp_daily:
   value_label_id: tspfrequency3
 con_kbraff:
   title: Key Bridge collapse overall impact
-  storage_type: factor
+  response_type: factor
   question_text: "As you may know, the Francis Scott Key Bridge was hit by a container\
     \ ship and  collapsed in March. The next couple of questions ask you about the\
     \ impact and  your experiences based on the collapse of the bridge.  \n\nTo what\
@@ -183,7 +183,7 @@ con_kbraff:
   value_label_id: kbimpact4
 con_kbwork:
   title: Key Bridge collapse affected work commute
-  storage_type: factor
+  response_type: factor
   question_text: How much has the collapse of the Key Bridge affected your ability
     to get to  work or school?
   surveys_used:
@@ -192,7 +192,7 @@ con_kbwork:
   value_label_id: kbimpact4
 con_kbfrnd:
   title: Key Bridge collapse affected seeing people
-  storage_type: factor
+  response_type: factor
   question_text: How much has the collapse of the Key Bridge affected your ability
     to see friends  or family?
   surveys_used:
@@ -201,7 +201,7 @@ con_kbfrnd:
   value_label_id: kbimpact4
 con_kberrd:
   title: Key Bridge collapse affected errands
-  storage_type: factor
+  response_type: factor
   question_text: How much has the collapse of the Key Bridge affected your ability
     to run errands like going to the store?
   surveys_used:
@@ -210,7 +210,7 @@ con_kberrd:
   value_label_id: kbimpact4
 con_kbmedi:
   title: Key Bridge collapse affected medical care
-  storage_type: factor
+  response_type: factor
   question_text: How much has the collapse of the Key Bridge affected your ability  to
     get to doctor’s appointments or other medical care?
   surveys_used:
@@ -219,7 +219,7 @@ con_kbmedi:
   value_label_id: kbimpact4
 con_kbconfl:
   title: Confidence in local govt to rebuild Key Bridge
-  storage_type: factor
+  response_type: factor
   question_text: How much confidence do you have that __local governments in the area__
     will do  what is necessary to get the Key Bridge rebuilt quickly?
   surveys_used:
@@ -230,7 +230,7 @@ con_kbconfl:
     \ \nif in KBSPLIT condition #1 (`svy_kbsplit == 1`).\n"
 con_kbconfs:
   title: Confidence in state govt to rebuild Key Bridge
-  storage_type: factor
+  response_type: factor
   question_text: How much confidence do you have that the __government of the State  of
     Maryland__ will do what is necessary to get the Key Bridge rebuilt quickly?
   surveys_used:
@@ -239,7 +239,7 @@ con_kbconfs:
   value_label_id: kbconf5
 con_kbconff:
   title: Confidence in federal govt to rebuild Key Bridge
-  storage_type: factor
+  response_type: factor
   question_text: How much confidence do you have that the __federal government__ will
     do what  is necessary to get the Key Bridge rebuilt quickly?
   surveys_used:
@@ -248,7 +248,7 @@ con_kbconff:
   value_label_id: kbconf5
 con_kbhelpl:
   title: Local government rating of Key Bridge response
-  storage_type: factor
+  response_type: factor
   question_text: 'How would you rate the job done by __local governments in the area__
     to help  people affected by the Key Bridge collapse? Would you say that the job
     they  have done is:'
@@ -258,7 +258,7 @@ con_kbhelpl:
   value_label_id: kbhelp6
 con_kbhelps:
   title: State government rating of Key Bridge response
-  storage_type: factor
+  response_type: factor
   question_text: 'ow would you rate the job done by the __government of the State
     of Maryland__ to help people affected by the Key Bridge collapse? Would you say
     that the job they have done is:'
@@ -268,7 +268,7 @@ con_kbhelps:
   value_label_id: kbhelp6
 con_kbhelpf:
   title: Federal government rating of Key Bridge response
-  storage_type: factor
+  response_type: factor
   question_text: 'How would you rate the job done by the __federal government__ to
     help people  affected by the Key Bridge collapse? Would you say that the job they
     have done  is:'
@@ -278,7 +278,7 @@ con_kbhelpf:
   value_label_id: kbhelp6
 con_invblood:
   title: Donated blood
-  storage_type: factor
+  response_type: factor
   question_text: Now we have some questions about ways that people sometimes do things
     in their  communities. Which of the following have you done in the past 12 months,  that
     is since {{CURRENT MONTH}} 2022?  Donated blood
@@ -288,7 +288,7 @@ con_invblood:
   value_label_id: 'yes'
 con_invvolnp:
   title: Volunteer nonprofit or religious work
-  storage_type: factor
+  response_type: factor
   question_text: Now we have some questions about ways that people  sometimes do things
     in their communities. Which of the following have you done  in the past 12 months,
     that is since {{CURRENT MONTH}} 2022? Volunteered for a nonprofit or religious
@@ -299,7 +299,7 @@ con_invvolnp:
   value_label_id: 'yes'
 con_invvolpol:
   title: Political work or volunteering
-  storage_type: factor
+  response_type: factor
   question_text: Now we have some questions about ways that people sometimes do things
     in their communities. Which of the following have you done in the past 12 months,
     that is since {{CURRENT MONTH}} 2022? Volunteered for a nonprofit or religious
@@ -310,7 +310,7 @@ con_invvolpol:
   value_label_id: 'yes'
 con_invcontpub:
   title: Contacted a public official
-  storage_type: factor
+  response_type: factor
   question_text: Now we have some questions about ways that people sometimes do things
     in their  communities. Which of the following have you done in the past 12 months,  that
     is since {{CURRENT MONTH}} 2022? Contacted a public official
@@ -320,7 +320,7 @@ con_invcontpub:
   value_label_id: 'yes'
 con_invdonnp:
   title: Charitable contributions
-  storage_type: factor
+  response_type: factor
   question_text: Now we have some questions about ways that people sometimes do things
     in their  communities. Which of the following have you done in the past 12 months,
     that is since {{CURRENT MONTH}} 2022? Donated money to a nonprofit or religious
@@ -331,7 +331,7 @@ con_invdonnp:
   value_label_id: 'yes'
 con_invdonpol:
   title: Political Donation
-  storage_type: factor
+  response_type: factor
   question_text: Now we have some questions about ways that people sometimes do things
     in their  communities. Which of the following have you done in the past 12 months,
     that is since {{CURRENT MONTH}} 2022? Donated money to a candidate, campaign,
@@ -342,7 +342,7 @@ con_invdonpol:
   value_label_id: 'yes'
 con_invattevent:
   title: Cultural event attendance
-  storage_type: factor
+  response_type: factor
   question_text: Now we have some questions about ways that people sometimes do things
     in their  communities. Which of the following have you done in the past 12 months,
     that is since {{CURRENT MONTH}} 2022? Attended a cultural event like a concert,
@@ -353,7 +353,7 @@ con_invattevent:
   value_label_id: 'yes'
 fin_jobrsec:
   title: Job security
-  storage_type: factor
+  response_type: factor
   question_text: How secure is your job?
   surveys_used:
   - bas-2023
@@ -366,7 +366,7 @@ fin_jobrsec:
     \ \nvacation or strike.\"\n\n"
 fin_entself:
   title: Entrepreneur
-  storage_type: factor
+  response_type: factor
   question_text: There are many ways people define the term “entrepreneur.” For the
     following  questions about entrepreneurs, we are referring to people who own,
     manage, or  invest in a business of any size, including informal businesses that
@@ -381,7 +381,7 @@ fin_entself:
   value_label_id: 'yes'
 fin_entopp:
   title: Opportunity to be an entrepreneur
-  storage_type: factor
+  response_type: factor
   question_text: If you or someone you know wants to become an entrepreneur in the
     Baltimore  area, how much opportunity do you think there is?
   surveys_used:
@@ -391,7 +391,7 @@ fin_entopp:
   value_label_id: great_deal4
 fin_entbetter:
   title: Best path to financial success
-  storage_type: factor
+  response_type: factor
   question_text: 'Which do you think is a better path to financial success: being
     an entrepreneur  or working for an established business?'
   surveys_used:
@@ -401,7 +401,7 @@ fin_entbetter:
   value_label_id: entrepreneur
 fin_gigjob:
   title: Gig job
-  storage_type: factor
+  response_type: factor
   question_text: Sometimes people take on-demand jobs, sometimes called “gig” jobs.
     Have you ever earned money by taking on an “on-demand” or “gig” job? For example,
     have you  ever earned money through online or mobile apps such as Uber, DoorDash,  Instacart,
@@ -416,7 +416,7 @@ fin_gigjob:
     \ food\nsecurity.\n"
 fin_gigprop:
   title: Proportion of income from gig jobs
-  storage_type: factor
+  response_type: factor
   question_text: In the last 30 days, how much of your income came from all of your
     gig jobs  combined?
   surveys_used:
@@ -427,7 +427,7 @@ fin_gigprop:
     \ \nmoney this way\" in response to question `bas23_fin_gigjob`\n"
 fin_gigneed:
   title: Pay bills without gig job
-  storage_type: factor
+  response_type: factor
   question_text: Thinking about the last 30 days, how difficult would it have been
     to pay all of  your bills if you did not have any gig jobs?
   surveys_used:
@@ -436,7 +436,7 @@ fin_gigneed:
   value_label_id: bills
 hlt_srphfut:
   title: Overall self-rated future health
-  storage_type: factor
+  response_type: factor
   question_text: Next year, would you predict that your overall health will be better,
     about the  same, or worse?
   surveys_used:
@@ -446,7 +446,7 @@ hlt_srphfut:
   value_label_id: better3
 hlt_srmhfut:
   title: Self-rated future mental health
-  storage_type: factor
+  response_type: factor
   question_text: Next year, would you predict that your mental health will be better,
     about the  same, or worse?
   surveys_used:
@@ -455,7 +455,7 @@ hlt_srmhfut:
   value_label_id: better3
 hlt_gad21:
   title: Feeling nervous/anxious within last two weeks
-  storage_type: factor
+  response_type: factor
   question_text: Over the last two weeks, how often have you been bothered by feeling
     nervous,  anxious, or on edge?
   surveys_used:
@@ -469,7 +469,7 @@ hlt_gad21:
     \ 988. You can call 24 hours a day, 7 days a week. \n\n"
 hlt_gad22:
   title: Uncontrollable worrying within last two weeks
-  storage_type: factor
+  response_type: factor
   question_text: Over the last two weeks, how often have you been bothered by not
     being able to  stop or control worrying?
   surveys_used:
@@ -483,7 +483,7 @@ hlt_gad22:
     \ 988. You can call 24 hours a day, 7 days a week. \n\n"
 hlt_ch4sat:
   title: Change in quality of life
-  storage_type: factor
+  response_type: factor
   question_text: For the next set of questions, we would like you to consider how
     you think that  your life has changed over the past four years, that is how has
     your life  changed since {{FULL NAME OF CURRENT MONTH}} 2019. For each area of
@@ -497,7 +497,7 @@ hlt_ch4sat:
   description: Better if hlt_ch4sat (1,2). Worse if hlt_ch4sat (4,5)
 hlt_ch4satcv:
   title: Change in quality of life due to pandemic
-  storage_type: factor
+  response_type: factor
   question_text: Do you think that your life got {{CHGSATDESC}} as a result of the
     coronavirus  pandemic?
   surveys_used:
@@ -510,7 +510,7 @@ hlt_ch4satcv:
     `bas23_hlt_ch4sat`.\n"
 hlt_ch4wrkcv:
   title: Change in work situation due to pandemic
-  storage_type: factor
+  response_type: factor
   question_text: Do you think that your work situation got {{CHGWRKDESC}} as a result
     of the  coronavirus pandemic?
   surveys_used:
@@ -523,7 +523,7 @@ hlt_ch4wrkcv:
     `bas23_hlt_ch4wrk`.\n"
 hlt_ch4rel:
   title: Change in relationships with friends
-  storage_type: factor
+  response_type: factor
   question_text: How have your relationships with friends changed in the past four
     years?
   surveys_used:
@@ -532,7 +532,7 @@ hlt_ch4rel:
   value_label_id: better5
 hlt_ch4relcv:
   title: Relationships with friends due to pandemic
-  storage_type: factor
+  response_type: factor
   question_text: Do you think that your relationships with friends got {{CHGRELDESC}}
     as a result of the coronavirus pandemic?
   surveys_used:
@@ -545,7 +545,7 @@ hlt_ch4relcv:
     `bas23_hlt_ch4rel`.\n"
 hlt_ch4fam:
   title: Change in relationships with family
-  storage_type: factor
+  response_type: factor
   question_text: How have your relationships with family changed in the past four
     years?
   surveys_used:
@@ -554,7 +554,7 @@ hlt_ch4fam:
   value_label_id: better5
 hlt_ch4famcv:
   title: Relationships with family due to pandemic
-  storage_type: factor
+  response_type: factor
   question_text: Do you think that your relationships with your family got {{CHGFAMDESC}}
     as a  result of the coronavirus pandemic?
   surveys_used:
@@ -567,7 +567,7 @@ hlt_ch4famcv:
     `bas23_hlt_ch4fam`.\n"
 hlt_ch4deathcv:
   title: Experienced death of loved one due to pandemic
-  storage_type: factor
+  response_type: factor
   question_text: Did you experience the death or loss of a loved one as a result of
     the pandemic?
   surveys_used:
@@ -580,7 +580,7 @@ hlt_ch4deathcv:
     \ day, 7 days a week.\n\n"
 hlt_knaddict:
   title: Know people who are addicted to illegal drugs
-  storage_type: factor
+  response_type: factor
   question_text: 'Drug use in the United States is more common than most people think.
     We want to  know about how drug use has affected you.
 
@@ -593,7 +593,7 @@ hlt_knaddict:
   value_label_id: amount
 hlt_oddeath:
   title: Death of loved one due to drug overdose
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever experienced the death or loss of a loved one as the
     result of a  drug overdose?
   surveys_used:
@@ -606,7 +606,7 @@ hlt_oddeath:
     \ 7 days a week.\n\n"
 hlt_heatefot_os:
   title: 'Heat Effect: Other Effects -- Specify'
-  storage_type: character
+  response_type: character
   question_text: In the past two weeks, have you experienced any of the following
     due to the  heat?  __Experienced other effects (please specify)__
   surveys_used:
@@ -616,7 +616,7 @@ hlt_heatefot_os:
     \ \nvalues stored as a character string containing respondent's exact typed answer.\n"
 dem_race3:
   title: Race (Black, White, Other Race)
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023
@@ -629,7 +629,7 @@ dem_race3:
     \ \nidentity question. \n"
 dem_race5:
   title: Race (Multiracial and race alone)
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023
@@ -641,7 +641,7 @@ dem_race5:
     \ alone, or Asian alone  based on their response to the racial identity \nquestion.\n"
 dem_raceeth4:
   title: Race/ethnicity
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023
@@ -660,7 +660,7 @@ dem_raceeth4:
     title: Race/ethnicity (four category)
 dem_raceeth6:
   title: Race/ethnicity (multiracial, race alone, and Latinx)
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023
@@ -680,7 +680,7 @@ dem_raceeth6:
     title: Race/ethnicity (six category)
 dem_multi:
   title: 'Race/ethnicity indicator: Multiracial'
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023
@@ -697,7 +697,7 @@ dem_multi:
     value_label_id: yesno01
 dem_nchild:
   title: Total number of children in household
-  storage_type: integer
+  response_type: integer
   question_text: ''
   surveys_used:
   - bas-2023
@@ -720,7 +720,7 @@ dem_nchild:
     \ in `dem_childyng`, `dem_childmid`, \n  `dem_childold`\n\n"
 dem_age:
   title: Age
-  storage_type: integer
+  response_type: integer
   question_text: ''
   surveys_used:
   - bas-2023
@@ -734,7 +734,7 @@ dem_age:
     \ re-coded to be \nitem-missing (`-8`)\n\n"
 dem_income:
   title: Income
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023

@@ -1,6 +1,6 @@
 hlt_srph:
   title: Physical Self-Rated Health
-  storage_type: factor
+  response_type: factor
   question_text: In general, how would you rate your physical health?
   surveys_used:
   - bas-2023
@@ -15,7 +15,7 @@ hlt_srph:
     value_label_id: healthrate5
 hlt_srmh:
   title: Self-Rated Mental Health
-  storage_type: factor
+  response_type: factor
   question_text: In general, how would you rate your mental health?
   surveys_used:
   - bas-2023
@@ -30,7 +30,7 @@ hlt_srmh:
     value_label_id: healthrate5
 hlt_medhome:
   title: Have a personal health care provider
-  storage_type: factor
+  response_type: factor
   question_text: Do you have one person you think of as your personal doctor or health
     care  provider?
   surveys_used:
@@ -48,7 +48,7 @@ hlt_medhome:
     value_label_id: yesno2
 hlt_phq21:
   title: Feeling down/depressed within last two weeks
-  storage_type: factor
+  response_type: factor
   question_text: Over the last two weeks, how often have you been bothered by feeling
     down, depressed, or hopeless?
   surveys_used:
@@ -71,7 +71,7 @@ hlt_phq21:
     value_label_id: phq4
 hlt_phq22:
   title: Little interest/pleasure within last two weeks
-  storage_type: factor
+  response_type: factor
   question_text: Over the last two weeks, how often have you been bothered by little
     interest or pleasure in doing things?
   surveys_used:
@@ -94,7 +94,7 @@ hlt_phq22:
     value_label_id: phq4
 hlt_khom:
   title: Know victims of homicide
-  storage_type: integer
+  response_type: integer
   question_text: Over your lifetime, how many people have you known personally who
     were victims  of homicide? Please tell us the total number of people that died  by
     homicide.
@@ -104,7 +104,7 @@ hlt_khom:
   source: Adapted from GSS cideknew
 hlt_khomgun:
   title: Homicide caused by gun or firearm
-  storage_type: factor
+  response_type: factor
   question_text: Thinking of the homicide victims that you  knew personally, were
     any of the victims killed with a gun or firearm?
   surveys_used:
@@ -113,7 +113,7 @@ hlt_khomgun:
   value_label_id: yesno2
 hlt_ksui:
   title: Know people that died by suicide
-  storage_type: integer
+  response_type: integer
   question_text: 'The next questions deal with a difficult topic that may be  sensitive
     for you. It is not clearly understood how a relative or friend''s death by suicide
     may affect one''s life afterwards. Please answer these  questions as best as you
@@ -128,7 +128,7 @@ hlt_ksui:
   source: GSS suinum
 hlt_ksuigun:
   title: Suicide using gun or firearm
-  storage_type: factor
+  response_type: factor
   question_text: Thinking of the people you have known personally who died by suicide,
     did any  use a gun or firearm to end their life?
   surveys_used:
@@ -137,7 +137,7 @@ hlt_ksuigun:
   value_label_id: yesno2
 hlt_kinjgun:
   title: Know people injured by gun or firearm
-  storage_type: integer
+  response_type: integer
   question_text: Over your lifetime, how many people have you personally known who  were
     injured, but not killed, by a gun or firearm? Please include people who  injured
     themselves but do not include people who were injured while serving in  the military.
@@ -151,7 +151,7 @@ hlt_kinjgun:
     \ a day, 7 days a week.\n"
 hlt_annexam:
   title: Annual Medical Exam
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2023, have you gone
     to see a  doctor or other medical provider for an annual exam?
   surveys_used:
@@ -167,7 +167,7 @@ hlt_annexam:
       to see a      doctor or other medical provider for an annual exam?
 hlt_rested:
   title: Well-rested
-  storage_type: factor
+  response_type: factor
   question_text: During the past two weeks, how often did you wake up feeling well-rested?
   surveys_used:
   - bas-2024
@@ -176,7 +176,7 @@ hlt_rested:
   value_label_id: rested
 hlt_pamodd:
   title: Moderate-intensity physical activity
-  storage_type: factor
+  response_type: factor
   question_text: "The next two questions are about physical activities such as  exercise,\
     \ sports, or physically active hobbies that you may do in your  leisure time.\n\
     \nModerate-intensity activities cause moderate increases in breathing or heart\
@@ -189,7 +189,7 @@ hlt_pamodd:
   value_label_id: hltfrequency5
 hlt_pamodh:
   title: Moderate-intensity minutes of exercise
-  storage_type: integer
+  response_type: integer
   question_text: On average, how many minutes did you exercise on each day that you
     did moderate intensity leisure-time activities?
   surveys_used:
@@ -197,7 +197,7 @@ hlt_pamodh:
   vargroup: hlt
 hlt_pavigd:
   title: Vigorous-intensity physical activity
-  storage_type: factor
+  response_type: factor
   question_text: Over the past two weeks, how many days did you do  __vigorous-intensity__
     leisure-time physical activities? Vigorous-intensity  activities cause large increases
     in breathing or heart rate.
@@ -207,7 +207,7 @@ hlt_pavigd:
   value_label_id: hltfrequency5
 hlt_pavigh:
   title: Vigorous-intensity minutes of exercise
-  storage_type: integer
+  response_type: integer
   question_text: On average, how many minutes did you exercise on each day that you
     did vigorous  intensity leisure-time activities?
   surveys_used:
@@ -215,7 +215,7 @@ hlt_pavigh:
   vargroup: hlt
 hlt_heatslp:
   title: 'Heat effect: interrupted sleep'
-  storage_type: factor
+  response_type: factor
   question_text: In the past two weeks, how many days have you had trouble falling
     asleep or      staying asleep because it was too hot?
   surveys_used:
@@ -224,7 +224,7 @@ hlt_heatslp:
   value_label_id: heatslp5
 hlt_heatefwk:
   title: 'Heat Effect: Unable to Work'
-  storage_type: factor
+  response_type: factor
   question_text: In the past two weeks, have you experienced any of the following
     due to the  heat?  __Were unable to work__
   surveys_used:
@@ -233,7 +233,7 @@ hlt_heatefwk:
   value_label_id: yesno01
 hlt_heateflt:
   title: 'Heat Effect: Feeling Tired'
-  storage_type: factor
+  response_type: factor
   question_text: In the past two weeks, have you experienced any of the following
     due to the  heat?  __Felt more tired or lethargic than normal__
   surveys_used:
@@ -242,7 +242,7 @@ hlt_heateflt:
   value_label_id: yesno01
 hlt_heatefbr:
   title: 'Heat Effect: Difficulty Breathing'
-  storage_type: factor
+  response_type: factor
   question_text: In the past two weeks, have you experienced any of the following
     due to the  heat?  __Had trouble breathing__
   surveys_used:
@@ -251,7 +251,7 @@ hlt_heatefbr:
   value_label_id: yesno01
 hlt_heatefpa:
   title: 'Heat effect: Avoided Physical Activity'
-  storage_type: factor
+  response_type: factor
   question_text: In the past two weeks, have you experienced any of the following
     due to the  heat?  __Avoided being physically active__
   surveys_used:
@@ -260,7 +260,7 @@ hlt_heatefpa:
   value_label_id: yesno01
 hlt_heatefff:
   title: 'Heat Effect: Canceled Plans'
-  storage_type: factor
+  response_type: factor
   question_text: In the past two weeks, have you experienced any of the following
     due to the  heat?  __Did not get together with friends or family__
   surveys_used:
@@ -269,7 +269,7 @@ hlt_heatefff:
   value_label_id: yesno01
 hlt_heatefir:
   title: 'Heat Effect: Irritability'
-  storage_type: factor
+  response_type: factor
   question_text: In the past two weeks, have you experienced any of the following
     due to the  heat?  __Felt more irritable than normal__
   surveys_used:
@@ -278,7 +278,7 @@ hlt_heatefir:
   value_label_id: yesno01
 hlt_heatefdz:
   title: 'Heat Effect: Dizziness'
-  storage_type: factor
+  response_type: factor
   question_text: In the past two weeks, have you experienced any of the following
     due to the  heat?  __Felt dizzy or lightheaded__
   surveys_used:
@@ -287,7 +287,7 @@ hlt_heatefdz:
   value_label_id: yesno01
 hlt_heatefot:
   title: 'Heat Effect: Other Effects'
-  storage_type: factor
+  response_type: factor
   question_text: In the past two weeks, have you experienced any of the following
     due to the  heat?  __Experienced other effects__
   surveys_used:
@@ -296,7 +296,7 @@ hlt_heatefot:
   value_label_id: yesno01
 hlt_ediaghyp:
   title: 'Ever diagnosed: hypertension'
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever been told by a doctor or other health professional
     that you had any of the following conditions? __Hypertension, also called high
     blood pressure__
@@ -315,7 +315,7 @@ hlt_ediaghyp:
     title: 'Ever Diagnosed: Hypertension'
 hlt_ediagchl:
   title: 'Ever diagnosed: high cholesterol'
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever been told by a doctor or other health professional
     that you had any of the following conditions? __High cholesterol__
   surveys_used:
@@ -333,7 +333,7 @@ hlt_ediagchl:
     title: 'Ever Diagnosed: High Cholesterol'
 hlt_ediagchd:
   title: 'Ever diagnosed: coronary heart disease'
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever been told by a doctor or other health professional
     that you had any of the following conditions? __Coronary heart disease__
   surveys_used:
@@ -351,7 +351,7 @@ hlt_ediagchd:
     title: 'Ever Diagnosed: Coronary Heart Disease'
 hlt_ediagasm:
   title: 'Ever diagnosed: asthma'
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever been told by a doctor or other health professional
     that you had any of the following conditions? __Asthma__
   surveys_used:
@@ -368,7 +368,7 @@ hlt_ediagasm:
     title: 'Ever Diagnosed: Asthma'
 hlt_ediagpdb:
   title: 'Ever diagnosed: pre-diabetes'
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever been told by a doctor or other health professional
     that you had any of the following conditions? __Pre-diabetes or borderline diabetes__
   surveys_used:
@@ -386,7 +386,7 @@ hlt_ediagpdb:
     title: 'Ever Diagnosed: Pre-Diabetes'
 hlt_ediagdib:
   title: 'Ever diagnosed: diabetes'
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever been told by a doctor or other health professional
     that you had any of the following conditions? __Diabetes (not including prediabetes
     or borderline diabetes__
@@ -405,7 +405,7 @@ hlt_ediagdib:
     title: 'Ever Diagnosed: Diabetes'
 hlt_ediaglng:
   title: 'Ever diagnosed: COPD or other lung disease'
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever been told by a doctor or other health professional
     that you had any of the following conditions? __Chronic Obstructive Pulmonary
     Disease, COPD, emphysema, or chronic bronchitis__
@@ -424,7 +424,7 @@ hlt_ediaglng:
     title: 'Ever Diagnosed: COPD or Other Lung Disease'
 hlt_ediagdep:
   title: 'Ever diagnosed: depression'
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever been told by a doctor or other health professional
     that you had any of the following conditions? __Depression__
   surveys_used:
@@ -441,7 +441,7 @@ hlt_ediagdep:
     title: 'Ever Diagnosed: Depression'
 hlt_ediaganx:
   title: 'Ever diagnosed: anxiety'
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever been told by a doctor or other health professional
     that you had any of the following conditions? __Anxiety__
   surveys_used:
@@ -458,7 +458,7 @@ hlt_ediaganx:
     title: 'Ever Diagnosed: Anxiety'
 hlt_ediagnon:
   title: 'Ever Diagnosed: None Mentioned'
-  storage_type: factor
+  response_type: factor
   question_text: Have you ever been told by a doctor or other health professional
     that you had  any of the following conditions? Please select all that apply.  __None
     of the above__
@@ -468,7 +468,7 @@ hlt_ediagnon:
   value_label_id: yesno01
 hlt_asat12:
   title: Asthma attack
-  storage_type: factor
+  response_type: factor
   question_text: During the __past 12 months__, have you had an episode of asthma
     or an asthma  attack?
   surveys_used:
@@ -478,7 +478,7 @@ hlt_asat12:
   value_label_id: yesno2
 att_vacceff:
   title: Vaccine Effectiveness
-  storage_type: factor
+  response_type: factor
   question_text: 'Please tell us how much you agree or disagree with the following
     statement:      Overall, I think vaccines are effective.'
   surveys_used:
@@ -487,7 +487,7 @@ att_vacceff:
   value_label_id: vacc5
 att_vacckid:
   title: Vaccine Requirement Beliefs
-  storage_type: factor
+  response_type: factor
   question_text: 'Please tell us how much you agree or disagree with the following
     statement:      Children should be required to get vaccines before enrolling in
     school.'
