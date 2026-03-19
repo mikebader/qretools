@@ -12,7 +12,7 @@ JURISDICTION:
   storage_type: factor
   description: |
     Geographic jurisdiction in which the respondent was sampled.
-  value_labels_name: jurisdiction
+  value_label_id: jurisdiction
   surveys_used:
   - bas-example
   vargroup: svy
@@ -31,7 +31,7 @@ svy_smonth:
   storage_type: factor
   description: |
     Month that the survey was started.
-  value_labels_name: svymonth
+  value_label_id: svymonth
   surveys_used:
   - bas-example
   vargroup: svy
@@ -61,7 +61,7 @@ svy_cmonth:
   storage_type: factor
   description: |
     Month that the survey was completed.
-  value_labels_name: svymonth
+  value_label_id: svymonth
   surveys_used:
   - bas-example
   vargroup: svy
@@ -93,7 +93,7 @@ svy_rpord:
     Condition that respondent was assigned for the order of questions about the
     amount rich and poor families make. Variable indicates which question was
     asked first.
-  value_labels_name: rpord
+  value_label_id: rpord
   surveys_used:
   - bas-example
   vargroup: svy

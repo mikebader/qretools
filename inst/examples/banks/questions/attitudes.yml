@@ -6,7 +6,7 @@ clm_inflpol:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: influence5
+  value_label_id: influence5
 clm_infleat:
   title: Climate Change Influences Diet Choices
   storage_type: factor
@@ -14,7 +14,7 @@ clm_infleat:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: influence5
+  value_label_id: influence5
 clm_infltsp:
   title: Climate Change Influences Transportation
   storage_type: factor
@@ -23,7 +23,7 @@ clm_infltsp:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: influence5
+  value_label_id: influence5
 att_schrspnd:
   title: State Spending on Predominantly Black Schools
   storage_type: factor
@@ -36,7 +36,7 @@ att_schrspnd:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: spending3
+  value_label_id: spending3
   note: "\nThe order of att_schrspnd and att_schrmv was randomized by respondent (see\
     \ \n`svy_schpolo`).\n"
 att_schrspndl:
@@ -46,7 +46,7 @@ att_schrspndl:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: spendless
+  value_label_id: spendless
   note: '
 
     If att_schrspnd = 1, the respondent is asked att_schrspndl. If att_schrspnd
@@ -63,7 +63,7 @@ att_schrspndm:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: spendmore
+  value_label_id: spendmore
   note: '
 
     If att_schrspnd = 1, the respondent is asked att_schrspndl. If att_schrspnd
@@ -86,7 +86,7 @@ att_schrmv:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: spending3
+  value_label_id: spending3
   note: "\nThe order of att_schrspnd and att_schrmv was randomized by respondent (see\
     \ \n`svy_schpolo`).\n"
 att_schrmvl:
@@ -96,7 +96,7 @@ att_schrmvl:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: spendless
+  value_label_id: spendless
   note: '
 
     If att_schrmvl = 1, the respondent is asked att_schrmvl. If att_schrmvl
@@ -113,7 +113,7 @@ att_schrmvm:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: spendmore
+  value_label_id: spendmore
   note: '
 
     If att_schrmvl = 1, the respondent is asked att_schrmvl. If att_schrmvl
@@ -131,7 +131,7 @@ att_scheqop:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: sch4
+  value_label_id: sch4
 att_schatto:
   title: Importance of Racially Integrated Schools
   storage_type: factor
@@ -140,7 +140,7 @@ att_schatto:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: sch4
+  value_label_id: sch4
 att_lmtgov:
   title: More or Less Government
   storage_type: factor
@@ -150,7 +150,7 @@ att_lmtgov:
   - bas-2024
   vargroup: att
   source: ANES limitgov_regulate
-  value_labels_name: lmtgov
+  value_label_id: lmtgov
   note: '
 
     The answer options of att_lmtgov were asked randomly by respondent in either
@@ -170,7 +170,7 @@ att_schintb:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: yesno2
+  value_label_id: yesno2
   note: "\nThe order of att_schintb and att_schintw was randomized by respondent (see\
     \ \n`svy_schinto`).\n"
 att_schintw:
@@ -185,7 +185,7 @@ att_schintw:
   surveys_used:
   - bas-2024
   vargroup: att
-  value_labels_name: yesno2
+  value_label_id: yesno2
   note: "\nThe order of att_schintb and att_schintw was randomized by respondent (see\
     \ \n`svy_schinto`). \n"
 att_donecess:
@@ -198,7 +198,7 @@ att_donecess:
   - bas-2024
   vargroup: att
   source: ANES egal_donecess
-  value_labels_name: agree5
+  value_label_id: agree5
 att_wryless:
   title: Worry Less About Equality
   storage_type: factor
@@ -209,7 +209,7 @@ att_wryless:
   - bas-2024
   vargroup: att
   source: ANES egal_worryless
-  value_labels_name: agree5
+  value_label_id: agree5
 att_rnobus:
   title: Concern For Unfair Treatment of Others
   storage_type: factor
@@ -220,7 +220,7 @@ att_rnobus:
   - bas-2024
   vargroup: att
   source: Question wording from MTF (2002) V5255
-  value_labels_name: agree5
+  value_label_id: agree5
 att_toofar:
   title: Push Less for Equal Rights
   storage_type: factor
@@ -230,7 +230,7 @@ att_toofar:
   - bas-2024
   vargroup: att
   source: ANES egal_worryless
-  value_labels_name: agree5
+  value_label_id: agree5
 att_racerel:
   title: Worry About Race Relations
   storage_type: factor
@@ -242,7 +242,7 @@ att_racerel:
   source: 'MTF (2000) V5215, GSS racdif3
 
     '
-  value_labels_name: racerel
+  value_label_id: racerel
 att_racedif1:
   title: Racial Differences Due to Discrimination
   storage_type: factor
@@ -254,7 +254,7 @@ att_racedif1:
   source: 'GSS racdif1
 
     '
-  value_labels_name: yesno2
+  value_label_id: yesno2
 att_racedif3:
   title: Racial Differences Due to Lack of Education
   storage_type: factor
@@ -267,7 +267,7 @@ att_racedif3:
   source: 'GSS racdif3
 
     '
-  value_labels_name: yesno2
+  value_label_id: yesno2
 att_linkblk:
   title: Life Affected By What Happens to Black People
   storage_type: factor
@@ -279,7 +279,7 @@ att_linkblk:
   source: 'ANES link_black/link_blackamt (Combined into one question)
 
     '
-  value_labels_name: racelink4
+  value_label_id: racelink4
 att_linkwht:
   title: Life Affected By What Happens to White People
   storage_type: factor
@@ -291,7 +291,7 @@ att_linkwht:
   source: 'ANES link_white/link_whiteamt (Combined into one question)
 
     '
-  value_labels_name: racelink4
+  value_label_id: racelink4
 com_attach_a:
   title: Community attachment (wording A)
   storage_type: factor
@@ -299,7 +299,7 @@ com_attach_a:
   surveys_used:
   - bas-example
   vargroup: com
-  value_labels_name: agree5
+  value_label_id: agree5
   note: |
     Version A wording used in experimental split on exp_condition.
 com_attach_b:
@@ -309,6 +309,6 @@ com_attach_b:
   surveys_used:
   - bas-example
   vargroup: com
-  value_labels_name: agree5
+  value_label_id: agree5
   note: |
     Version B wording used in experimental split on exp_condition.
