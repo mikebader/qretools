@@ -44,7 +44,7 @@ summary.qt_qvar <- function(x, ...) {
   cli::cli_text("{.strong {x$variable_id}}: {x$title}")
   cli::cli_text("Variable type: {x$storage_type}")
   if (x$storage_type == "factor") {
-    cli::cli_text("Factor label: {.val {x$value_labels_name}}")
+    cli::cli_text("Factor label: {.val {x$value_label_id}}")
   }
   if(!is.null(x$question_text) && nzchar(x$question_text)) {
     full <- paste("Question text:", x$question_text)

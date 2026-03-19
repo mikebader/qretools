@@ -7,7 +7,7 @@ fin_jobempl:
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: employment
+  value_label_id: employment
   note: "\nRespondents who reported \"Other\" were presented with opportunity to specify\n\
     employment status (responses are reported in variable \n`bas23_fin_jobemployed_os`).\
     \ \n\nA number of respondents reported being on disability; a category for disability\n\
@@ -21,7 +21,7 @@ fin_jobsect:
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: sector
+  value_label_id: sector
   note: "\nThis question was presented to respondent if theier answer to the employment\
     \ \nstatus question (before recoding) was one of: \"Working full-time\", \"Working\
     \ \npart-time\", or \"With a job but not at work because of temporary illness,\
@@ -35,7 +35,7 @@ fin_jobeasy:
   - bas-2023
   vargroup: fin
   source: ISSP 2015 Q12 and GSS jobeasy
-  value_labels_name: easy5
+  value_label_id: easy5
   note: "\nThis question was presented to respondent if theier answer to the employment\
     \ \nstatus question (before recoding) was one of: \"Working full-time\", \"Working\
     \ \npart-time\", or \"With a job but not at work because of temporary illness,\
@@ -49,7 +49,7 @@ fin_jobworry:
   - bas-2023
   vargroup: fin
   source: ISSP 2015 Q28 and GSS worryjob
-  value_labels_name: worry
+  value_label_id: worry
   note: "\nThis question was presented to respondent if theier answer to the employment\
     \ \nstatus question (before recoding) was one of: \"Working full-time\", \"Working\
     \ \npart-time\", or \"With a job but not at work because of temporary illness,\
@@ -96,7 +96,7 @@ fin_econba:
   source: "\n    Adapted from Gallup. 2025. Gallup Poll. Question 9: 31122385.00008.\
     \ \n    Cornell University, Ithaca, NY: Roper Center for Public Opinion Research.\
     \ \n    (https://doi.org/10.25940/ROPER-31122385).\n    "
-  value_labels_name: econ4
+  value_label_id: econ4
   note: "\n    Respondents were randomized into two categories based on the value\
     \ of \n    BALTUSORD. If BALTUSORD=1, questions were asked in the order: fin_econba,\
     \ \n    fin_efutba, fin_econus, fin_efutus. If BALTUSORD=2, questions were asked\
@@ -116,7 +116,7 @@ fin_efutba:
     \ and \n    Gallup. 2025. Gallup Poll. Question 10: 31122385.00009. Cornell University,\
     \ \n    Ithaca, NY: Roper Center for Public Opinion Research. \n    (DOI:10.25940/ROPER-31122385).\n\
     \    "
-  value_labels_name: efut5
+  value_label_id: efut5
   note: "\n    Respondents were randomized into two categories based on the value\
     \ of \n    BALTUSORD. If BALTUSORD=1, questions were asked in the order: fin_econba,\
     \ \n    fin_efutba, fin_econus, fin_efutus. If BALTUSORD=2, questions were asked\
@@ -132,7 +132,7 @@ fin_econus:
   source: "\n    Adapted from Gallup. 2025. Gallup Poll. Question 9: 31122385.00008.\
     \ Cornell \n    University, Ithaca, NY: Roper Center for Public Opinion Research.\
     \ \n    (https://doi.org/10.25940/ROPER-31122385).\n    "
-  value_labels_name: econ4
+  value_label_id: econ4
   note: "\n    Respondents were randomized into two categories based on the value\
     \ of \n    BALTUSORD. If BALTUSORD=1, questions were asked in the order: fin_econba,\
     \ \n    fin_efutba, fin_econus, fin_efutus. If BALTUSORD=2, questions were asked\
@@ -152,7 +152,7 @@ fin_efutus:
     \ and \n    Gallup. 2025. Gallup Poll. Question 10: 31122385.00009. Cornell University,\
     \ \n    Ithaca, NY: Roper Center for Public Opinion Research. \n    (DOI:10.25940/ROPER-31122385).\n\
     \    "
-  value_labels_name: efut5
+  value_label_id: efut5
   note: "\n    Respondents were randomized into two categories based on the value\
     \ of \n    BALTUSORD. If BALTUSORD=1, questions were asked in the order: fin_econba,\
     \ \n    fin_efutba, fin_econus, fin_efutus. If BALTUSORD=2, questions were asked\
@@ -165,7 +165,7 @@ fsi_runout:
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: true3
+  value_label_id: true3
 fsi_notlast:
   title: 'Food insecurity: no money for food'
   storage_type: factor
@@ -174,7 +174,7 @@ fsi_notlast:
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: true3
+  value_label_id: true3
 fsi_nobal:
   title: 'Food insecurity: can''t afford balanced meals'
   storage_type: factor
@@ -184,7 +184,7 @@ fsi_nobal:
   vargroup: fin
   source: 'Adapted from U.S. Household Food Security Survey Module: Six-Item Short
     Form HH4'
-  value_labels_name: true3
+  value_label_id: true3
 fsi_cutsize:
   title: 'Food insecurity: skipped meals'
   storage_type: factor
@@ -195,7 +195,7 @@ fsi_cutsize:
   - bas-2023
   vargroup: fin
   source: 'U.S. Household Food Security Survey Module: Six-Item Short Form AD1'
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   note: "\nIf the respondent answered 'yes' to this question, they were directed to\
     \ a \nquestion asking how often they would cut meal sizes due to insecurity. If\
     \ they \nanswered 'no' to this question, they were not asked the next question\
@@ -209,7 +209,7 @@ fsi_eatless:
   - bas-2023
   vargroup: fin
   source: 'U.S. Household Food Security Survey Module: Six-Item Short Form AD2'
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 fsi_hungry:
   title: 'Food insecurity: ever hungry'
   storage_type: factor
@@ -219,7 +219,7 @@ fsi_hungry:
   - bas-2023
   vargroup: fin
   source: 'U.S. Household Food Security Survey Module: Six-Item Short Form AD3'
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 fin_med:
   title: Medical Cost Affordability
   storage_type: factor
@@ -228,7 +228,7 @@ fin_med:
   - bas-2025
   vargroup: fin
   source: KFF Health Care Debt Survey, March 2022, Q81.
-  value_labels_name: med4
+  value_label_id: med4
 fin_futfood:
   title: 'Financial Future: Food'
   storage_type: factor
@@ -237,7 +237,7 @@ fin_futfood:
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: finfut5
+  value_label_id: finfut5
 fin_futhome:
   title: 'Financial Future: Housing'
   storage_type: factor
@@ -246,7 +246,7 @@ fin_futhome:
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: finfut5
+  value_label_id: finfut5
 fin_fututil:
   title: 'Financial Future: Utilities'
   storage_type: factor
@@ -255,7 +255,7 @@ fin_fututil:
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: finfut5
+  value_label_id: finfut5
 fin_futmed:
   title: 'Financial Future: Medical'
   storage_type: factor
@@ -264,7 +264,7 @@ fin_futmed:
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: finfut5
+  value_label_id: finfut5
 fin_futtsp:
   title: 'Financial Future: Transportation'
   storage_type: factor
@@ -273,7 +273,7 @@ fin_futtsp:
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: finfut5
+  value_label_id: finfut5
 fin_housworr:
   title: 'Housing Insecurity: Affordability Concern'
   storage_type: factor
@@ -288,7 +288,7 @@ fin_housworr:
     \ Using \n    American Housing Survey Data. Washington, D.C.: United States Department\
     \ of \n    Housing and Urban Development Office of Policy Development and Research.\n\
     \    "
-  value_labels_name: housworr5
+  value_label_id: housworr5
   note: "\n    This question referred to rent, mortgage, or housing payments based\
     \ on the \n    respondent's answer when they were asked if they rented their home,\
     \ owned \n    it, or had some other kind of payment arrangement (dem_own).\n \
@@ -307,7 +307,7 @@ fin_housdiff:
     \ Using \n    American Housing Survey Data. Washington, D.C.: United States Department\
     \ of \n    Housing and Urban Development Office of Policy Development and Research.\n\
     \    "
-  value_labels_name: housdiff5
+  value_label_id: housdiff5
   note: " \n    This question referred to rent, mortgage, or housing payments based\
     \ on the \n    respondent's answer when they were asked if they rented their home,\
     \ owned \n    it, or had some other kind of payment arrangement (dem_own).\n \
@@ -321,7 +321,7 @@ fin_housfmv:
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: housworr5
+  value_label_id: housworr5
   note: "\n    {{CMONTHNM}} was filled in with the month in which the respondent asnwered\
     \ \n    the survey in.\n    "
 fin_utillate:
@@ -333,6 +333,6 @@ fin_utillate:
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: utillate4
+  value_label_id: utillate4
   note: "\n    {{CMONTHNM}} was filled in with the month in which the respondent asnwered\
     \ \n    the survey in.\n    "

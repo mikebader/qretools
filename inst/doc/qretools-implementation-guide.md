@@ -100,7 +100,7 @@ variable_role: substantive  # substantive | parameter | administrative | generat
 ### For `storage_type: factor`
 
 ```yaml
-value_labels_name: satisfied5   # Must exist in value-labels/
+value_label_id: satisfied5   # Must exist in value-labels/
 ```
 
 ### Optional Fields
@@ -124,12 +124,12 @@ versions:
   - version: 1
     years: [2021, 2022]
     question_text: "Original wording..."
-    value_labels_name: satisfied4
+    value_label_id: satisfied4
     changes_from_previous: []
   - version: 2
     years: [2023, 2024, 2025]
     question_text: "Revised wording..."
-    value_labels_name: satisfied5
+    value_label_id: satisfied5
     changes_from_previous:
       - type: response_scale
         description: "Changed from 4-point to 5-point scale"
@@ -168,12 +168,12 @@ variable_parts:
     part_label: "Cost"
     part_text: "Too expensive"
     type: integer
-    value_labels_name: yesno
+    value_label_id: yesno
   tsp_pubreas_time:
     part_label: "Time"
     part_text: "Takes too long"
     type: integer
-    value_labels_name: yesno
+    value_label_id: yesno
 ```
 
 ---
@@ -311,13 +311,13 @@ versions:
   - version: 1
     years: [2021, 2022]
     question_text: "Original wording..."
-    value_labels_name: satisfied4
+    value_label_id: satisfied4
     ddi_version_date: "2021-03-01"
     changes_from_previous: []
   - version: 2
     years: [2023, 2024, 2025]
     question_text: "Revised wording..."
-    value_labels_name: satisfied5
+    value_label_id: satisfied5
     ddi_version_date: "2023-02-15"
     changes_from_previous:
       - type: response_scale

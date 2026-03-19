@@ -56,8 +56,8 @@ for (entry in params$entries) {
   if (!is.null(entry$value_labels) && length(entry$value_labels) > 0) {
     vl <- entry$value_labels
     cat("**Value labels**")
-    if (!is.null(entry$value_labels_name)) {
-      cat(" (`", entry$value_labels_name, "`)", sep = "")
+    if (!is.null(entry$value_label_id)) {
+      cat(" (`", entry$value_label_id, "`)", sep = "")
     }
     cat(":\n\n")
     cat("| Value | Label |\n")
