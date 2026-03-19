@@ -41,7 +41,7 @@
 #'   \describe{
 #'     \item{variable_id}{Variable identifier.}
 #'     \item{title}{Short descriptive title.}
-#'     \item{value_labels_name}{Value label set name, or \code{NA}.}
+#'     \item{value_label_id}{Value label set name, or \code{NA}.}
 #'     \item{surveys_used}{(\code{survey_cols = FALSE}) Collapsed survey IDs.}
 #'     \item{<survey_id>}{(\code{survey_cols = TRUE}) One logical column per
 #'       survey wave.}
@@ -52,7 +52,7 @@
 #'     \item{question_text}{The question as shown to respondents.}
 #'     \item{variable_ids}{Variable IDs that this question produces, joined
 #'       with \code{surveys_sep}. Single-variable questions show one ID.}
-#'     \item{value_labels_name}{First non-\code{NA} value label set name
+#'     \item{value_label_id}{First non-\code{NA} value label set name
 #'       found among the grouped variables, or \code{NA}.}
 #'     \item{surveys_used}{(\code{survey_cols = FALSE}) Union of survey IDs
 #'       across all grouped variables, collapsed with \code{surveys_sep}.}
@@ -124,7 +124,7 @@ qt_export_csv <- function(bank, file = NULL, survey = NULL,
 .qt_export_variable_rows <- function(vars, surveys_sep, survey_cols) {
   if (length(vars) == 0) {
     df <- data.frame(variable_id = character(), title = character(),
-                     value_labels_name = character(),
+                     value_label_id = character(),
                      stringsAsFactors = FALSE)
     if (!survey_cols) df$surveys_used <- character()
     return(df)
@@ -137,7 +137,7 @@ qt_export_csv <- function(bank, file = NULL, survey = NULL,
     row <- data.frame(
       variable_id       = v$variable_id,
       title             = v$title,
-      value_labels_name = v$value_labels_name %||% NA_character_,
+      value_label_id = v$value_label_id %||% NA_character_,
       stringsAsFactors  = FALSE
     )
     if (survey_cols) {
@@ -162,7 +162,7 @@ qt_export_csv <- function(bank, file = NULL, survey = NULL,
 .qt_export_question_rows <- function(vars, surveys_sep, survey_cols) {
   if (length(vars) == 0) {
     df <- data.frame(question_text = character(), variable_ids = character(),
-                     value_labels_name = character(),
+                     value_label_id = character(),
                      stringsAsFactors = FALSE)
     if (!survey_cols) df$surveys_used <- character()
     return(df)
@@ -194,12 +194,12 @@ qt_export_csv <- function(bank, file = NULL, survey = NULL,
     group_vars  <- vars[g$ids]
     grp_surveys <- sort(unique(unlist(lapply(group_vars, `[[`, "surveys_used"))))
     first_vlabs <- Filter(Negate(is.null),
-                          lapply(group_vars, `[[`, "value_labels_name"))
+                          lapply(group_vars, `[[`, "value_label_id"))
 
     row <- data.frame(
       question_text     = g$qt,
       variable_ids      = paste(g$ids, collapse = surveys_sep),
-      value_labels_name = if (length(first_vlabs) > 0)
+      value_label_id = if (length(first_vlabs) > 0)
                             first_vlabs[[1]] else NA_character_,
       stringsAsFactors  = FALSE
     )
