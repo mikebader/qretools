@@ -1,6 +1,6 @@
 nhd_nyrs:
   title: Years in neighborhood
-  storage_type: integer
+  response_type: integer
   question_text: How many years have you lived in your current neighborhood? Enter
     0 if less than 1 year.
   surveys_used:
@@ -17,7 +17,7 @@ nhd_nyrs:
     title: Years in Neighborhood
 nhd_blks:
   title: Blocks in neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: How many blocks are in the area that you think of as your neighborhood?
   surveys_used:
   - bas-2023
@@ -33,7 +33,7 @@ nhd_blks:
     title: Blocks in Neighborhood
 nhd_sat:
   title: Neighborhood satisfaction
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with your neighborhood as a place to live?
   surveys_used:
   - bas-2023
@@ -50,7 +50,7 @@ nhd_sat:
     value_labels_name: satisfied5
 nhd_chg:
   title: Change in neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: Looking back over the past five years or so, would you say that your  neighborhood
     generally has become a better place to live, has stayed the same,  or has become
     a worse place to live?
@@ -70,7 +70,7 @@ nhd_chg:
     value_labels_name: nhdchange
 nhd_nbknow:
   title: Know neighbors' names
-  storage_type: factor
+  response_type: factor
   question_text: Thinking about the people who live __on your street__. How many of
     them do you  think you know by name?
   surveys_used:
@@ -79,7 +79,7 @@ nhd_nbknow:
   value_labels_name: nbknow
 nhd_cohes1:
   title: Neighbors willingness to help
-  storage_type: factor
+  response_type: factor
   question_text: People in your neighborhood are willing to help their neighbors.
   surveys_used:
   - bas-2023
@@ -94,7 +94,7 @@ nhd_cohes1:
     title: Neighbors Williingness to Help
 nhd_cohes2:
   title: Close-knit neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: This is a close-knit neighborhood.
   surveys_used:
   - bas-2023
@@ -109,7 +109,7 @@ nhd_cohes2:
     title: Close-knit Neighborhood
 nhd_cohes3:
   title: Trust in neighbors
-  storage_type: factor
+  response_type: factor
   question_text: People in this neighborhood can be trusted.
   surveys_used:
   - bas-2023
@@ -124,7 +124,7 @@ nhd_cohes3:
     title: Trust in Neighbors
 nhd_cohes4:
   title: Neighbors do not get along
-  storage_type: factor
+  response_type: factor
   question_text: People in this neighborhood generally don't get along with each other.
   surveys_used:
   - bas-2023
@@ -141,7 +141,7 @@ nhd_cohes4:
     title: Neighbors Do Not Get Along
 nhd_cohes5:
   title: Neighbors do not share same values
-  storage_type: factor
+  response_type: factor
   question_text: People in this neighborhood do not share the same values.
   surveys_used:
   - bas-2023
@@ -156,7 +156,7 @@ nhd_cohes5:
     title: Neighbors Do Not Share Same Values
 nhd_newres:
   title: Neighborhood is Welcoming
-  storage_type: factor
+  response_type: factor
   question_text: How welcoming is your neighborhood to new residents who move in?
   surveys_used:
   - bas-2025
@@ -164,7 +164,7 @@ nhd_newres:
   value_labels_name: welcome5
 nhd_schqual:
   title: Quality of public schools
-  storage_type: factor
+  response_type: factor
   question_text: What would be your best guess about the quality of the public schools
     in your  neighborhood?
   surveys_used:
@@ -193,7 +193,7 @@ nhd_schqual:
     title: Quality of Public Schools
 nhd_schchg:
   title: Change in public schools
-  storage_type: factor
+  response_type: factor
   question_text: During the past five years, do you think that the public schools
     in your  neighborhood have gotten better, stayed about the same, or gotten worse?
   surveys_used:
@@ -218,7 +218,7 @@ nhd_schchg:
     title: Change in Public Schools
 nhd_schre:
   title: Public school rating reason
-  storage_type: factor
+  response_type: factor
   question_text: Some people think about different things when rating the quality
     of schools.  Which of the following is the most important reason that you answered
     that the  quality of public schools in your neighborhood was "{{SCHQUAL}}"?
@@ -233,7 +233,7 @@ nhd_schre:
     \ \nthe quality of public schools in your neighborhood?\"\n"
 nhd_schre_os:
   title: Public school rating reason--other
-  storage_type: character
+  response_type: character
   question_text: ''
   surveys_used:
   - bas-2024
@@ -250,7 +250,7 @@ nhd_schre_os:
     neighborhood.'
 nhd_safe:
   title: Neighborhood safety satisfaction
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with yoru feeling of personal safety in your
     neighborhood?
   surveys_used:
@@ -269,7 +269,7 @@ nhd_safe:
     value_labels_name: satisfied5
 nhd_safechg:
   title: Change in feeling of safety in neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: During the past five years has your feeling of personal safety in
     your  neighborhood gotten better, stayed about the same, or gotten worse?
   surveys_used:
@@ -294,7 +294,7 @@ nhd_safechg:
     title: Change in Feeling of Safety in Neighborhood
 nhd_walksafe:
   title: Feel safe walking after dark
-  storage_type: factor
+  response_type: factor
   question_text: How safe is it to walk around alone in your neighborhood after dark?
   surveys_used:
   - bas-2024
@@ -309,7 +309,7 @@ nhd_walksafe:
     title: Feel Safe Walking After Dark
 nhd_sidewlkq:
   title: Condition of sidewalks
-  storage_type: factor
+  response_type: factor
   question_text: Thinking about the sidewalks in your neighborhood, overall, how would
     you rate  the condition of the sidewalks?
   surveys_used:
@@ -318,7 +318,7 @@ nhd_sidewlkq:
   value_labels_name: sidewlkq
 nhd_wratt:
   title: Worry About Being Attacked
-  storage_type: factor
+  response_type: factor
   question_text: How worried are you of being attacked in your neighborhood?
   surveys_used:
   - bas-2025
@@ -327,7 +327,7 @@ nhd_wratt:
   value_labels_name: worry5
 nhd_wrbkhm:
   title: Worry About Break-in at Home
-  storage_type: factor
+  response_type: factor
   question_text: How worried are you that someone will break into your home?
   surveys_used:
   - bas-2025
@@ -336,7 +336,7 @@ nhd_wrbkhm:
   value_labels_name: worry5
 nhd_pbycrime:
   title: Youth Crime in Neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: 'How much of a problem is it in your neighborhood that young people
     are  committing crime? Would you say it is:'
   surveys_used:
@@ -345,7 +345,7 @@ nhd_pbycrime:
   value_labels_name: problem5
 nhd_pbvbld:
   title: Vacant houses or storefronts
-  storage_type: factor
+  response_type: factor
   question_text: How much of a problem are vacant or deserted houses or storefronts?
   surveys_used:
   - bas-2024
@@ -362,7 +362,7 @@ nhd_pbvbld:
     value_labels_name: problem5
 nhd_pdvlot:
   title: Vacant lots
-  storage_type: factor
+  response_type: factor
   question_text: How much of a problem are vacant lots?
   surveys_used:
   - bas-2024
@@ -370,7 +370,7 @@ nhd_pdvlot:
   value_labels_name: problem4
 nhd_pdlit:
   title: Litter in neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: How much of a problem is litter, broken glass or trash on the sidewalks
     and  streets?
   surveys_used:
@@ -380,7 +380,7 @@ nhd_pdlit:
   value_labels_name: problem4
 nhd_pbnoplc:
   title: Police Non-response in Neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: How much of a problem is it that police do not respond to crime in
     your  neighborhood?
   surveys_used:
@@ -389,7 +389,7 @@ nhd_pbnoplc:
   value_labels_name: problem5
 nhd_pbdrugs:
   title: Drug Use in Neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: How much of a problem is the use of illegal illicit drugs in your
     neighborhood?
   surveys_used:
@@ -398,7 +398,7 @@ nhd_pbdrugs:
   value_labels_name: problem5
 nhd_pbod:
   title: Drug Overdoses in Neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: How much of a problem are drug overdoses in your neighborhood?
   surveys_used:
   - bas-2025
@@ -406,7 +406,7 @@ nhd_pbod:
   value_labels_name: problem5
 nhd_pbdsale:
   title: Drug Sales in Neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: How much of a problem is the sale of illicit drugs in your neighborhood?
   surveys_used:
   - bas-2025
@@ -414,7 +414,7 @@ nhd_pbdsale:
   value_labels_name: problem5
 nhd_sansat:
   title: Satisfaction with sanitation services
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with __sanitation services__ like garbage collection,  street
     cleaning, and litter removal in your neighborhood?
   surveys_used:
@@ -431,7 +431,7 @@ nhd_sansat:
     title: Satisfaction With Sanitation Services
 nhd_ptrsat:
   title: Neighborhood Public Transit Satisfaction
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with the quality of the __public transportation__,
     like  busses and trains, in your neighborhood? We are interested in your opinion  whether
     or not you use public transportation.
@@ -450,7 +450,7 @@ nhd_ptrsat:
     title: Satisfaction With Public Transportation
 nhd_plcsat:
   title: Satisfaction with policing
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with __policing__ in your neighborhood?
   surveys_used:
   - bas-2024
@@ -465,7 +465,7 @@ nhd_plcsat:
     title: Satisfaction With Policing
 nhd_schsat:
   title: Satisfaction with public schools
-  storage_type: factor
+  response_type: factor
   question_text: "How satisfied are you with __public schools__ in your neighborhood?\
     \ \n\nWe are interested in your opinion whether or not you have children."
   surveys_used:
@@ -482,7 +482,7 @@ nhd_schsat:
     title: Satisfaction With Public Schools
 nhd_emgsat:
   title: Emergency Service Response in Neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with the responses of emergency services such
     as fire and  ambulances in your neighborhood?
   surveys_used:
@@ -491,7 +491,7 @@ nhd_emgsat:
   value_labels_name: satisfied5
 nhd_pkasat:
   title: Satisfaction With Parks
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with the availability of parks in your neighborhood?  We
     are interested in your opinion whether you use the facilities or not.
   surveys_used:
@@ -500,7 +500,7 @@ nhd_pkasat:
   value_labels_name: pkasat
 nhd_pkqsat:
   title: Quality of Parks
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with the quality of parks in your neighborhood?  Again,
     we are interested in your opinion whether you use the facilities or not.
   surveys_used:
@@ -509,7 +509,7 @@ nhd_pkqsat:
   value_labels_name: satisfied5
 nhd_mvlkly:
   title: Likelihood of moving
-  storage_type: factor
+  response_type: factor
   question_text: Within the next three years, how likely is it that you will move
     away from this  home?
   surveys_used:
@@ -519,7 +519,7 @@ nhd_mvlkly:
   value_labels_name: mvlkly
 nhd_mvlklywh:
   title: Likely destination of move
-  storage_type: factor
+  response_type: factor
   question_text: If you do move in the next three years, even if you do not think
     it is likely  you will move, where do you think you will move to?
   surveys_used:
@@ -529,7 +529,7 @@ nhd_mvlklywh:
   value_labels_name: mvlklywh
 nhd_mvprefwh:
   title: Preferred location
-  storage_type: factor
+  response_type: factor
   question_text: If you had a choice where to live three years from now, where would
     you prefer  to live?
   surveys_used:
@@ -538,7 +538,7 @@ nhd_mvprefwh:
   value_labels_name: mvprefwh
 nhd_stayworr:
   title: Worry about affordability of neighborhood
-  storage_type: factor
+  response_type: factor
   question_text: Thinking to the next three years, how much doy ou worry that you
     will not be  able to afford to stay in your current neighborhood?
   surveys_used:
@@ -552,7 +552,7 @@ nhd_stayworr:
     '
 nhd_homeeasy:
   title: Difficulty finding comparable home
-  storage_type: factor
+  response_type: factor
   question_text: If you had to move for some reason, how difficult or easy do you
     think it would  be for you to find another home at least as good as your current
     one in a place  you want to live?
@@ -562,7 +562,7 @@ nhd_homeeasy:
   value_labels_name: difficult5
 nhd_prob_main:
   title: Main neighborhood problem
-  storage_type: character
+  response_type: character
   question_text: In your own words, what is the biggest problem in your neighborhood
     right now?
   surveys_used:
@@ -570,14 +570,14 @@ nhd_prob_main:
   vargroup: nhd
 nhd_prob_duration:
   title: Duration of main neighborhood problem
-  storage_type: integer
+  response_type: integer
   question_text: Approximately how many years has this been a problem in your neighborhood?
   surveys_used:
   - bas-example
   vargroup: nhd
 nhd_svc_schools:
   title: Satisfaction with neighborhood school services
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with the quality of public school services
     in your neighborhood?
   surveys_used:
@@ -586,7 +586,7 @@ nhd_svc_schools:
   value_labels_name: satisfied5
 nhd_svc_parks:
   title: Satisfaction with neighborhood parks
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with the quality of parks and recreational
     facilities in your neighborhood?
   surveys_used:
@@ -595,7 +595,7 @@ nhd_svc_parks:
   value_labels_name: satisfied5
 nhd_svc_transit:
   title: Satisfaction with neighborhood transit
-  storage_type: factor
+  response_type: factor
   question_text: How satisfied are you with the quality of public transit serving
     your neighborhood?
   surveys_used:
@@ -604,7 +604,7 @@ nhd_svc_transit:
   value_labels_name: satisfied5
 "feat_rating_{i}":
   title: "Rating of {i}"
-  storage_type: factor
+  response_type: factor
   question_text: "How would you rate {i} in your neighborhood?"
   surveys_used:
   - bas-example
@@ -616,7 +616,7 @@ nhd_svc_transit:
     feat_rating_2, feat_rating_3.
 "feat_improve_{i}":
   title: "Improvement needed for {i}"
-  storage_type: factor
+  response_type: factor
   question_text: "How much does {i} in your neighborhood need improvement?"
   surveys_used:
   - bas-example

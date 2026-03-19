@@ -1,6 +1,6 @@
 dem_own:
   title: Home owner or renter
-  storage_type: factor
+  response_type: factor
   question_text: Do you rent your home, own it, or do you have some other arrangment?
   surveys_used:
   - bas-2023
@@ -20,7 +20,7 @@ dem_own:
     title: Home Owner or Renter
 dem_houslate:
   title: Housing payments
-  storage_type: factor
+  response_type: factor
   question_text: In the past 12 months, how often has your household been late on
     monthly  housing payments (mortgage or rent) or has only made a partial housing
     payment?
@@ -47,7 +47,7 @@ dem_houslate:
       rent) or has only made a partial housing payment?
 dem_hmacc:
   title: 'Type air conditioning: central air'
-  storage_type: factor
+  response_type: factor
   question_text: Which types of air conditioning, if any, do you have in your home?  __Please
     select all of the types of units you have.__
   surveys_used:
@@ -62,7 +62,7 @@ dem_hmacc:
     title: 'Type Air Conditioning: Central Air'
 dem_hmacw:
   title: 'Type air conditioning: window unit'
-  storage_type: factor
+  response_type: factor
   question_text: Which types of air conditioning, if any, do you have in your home?  __Please
     select all of the types of units you have.__
   surveys_used:
@@ -77,7 +77,7 @@ dem_hmacw:
     title: 'Type Air Conditioning: Window Unit'
 dem_hmaco:
   title: 'Type air conditioning: other type'
-  storage_type: factor
+  response_type: factor
   question_text: Which types of air conditioning, if any, do you have in your home?  __Please
     select all of the types of units you have.__
   surveys_used:
@@ -92,7 +92,7 @@ dem_hmaco:
     title: 'Type Air Conditioning: Other Type'
 dem_hmacn:
   title: 'Type air conditioning: no air conditioning'
-  storage_type: factor
+  response_type: factor
   question_text: Which types of air conditioning, if any, do you have in your home?  __Please
     select all of the types of units you have.__
   surveys_used:
@@ -114,7 +114,7 @@ dem_hmacn:
     title: 'Type Air Conditioning: No Air Conditioning'
 dem_openwin:
   title: Open windows in last 24 hours
-  storage_type: factor
+  response_type: factor
   question_text: In the __past 24 hours__, were any of the windows open in your home
     for any time
   surveys_used:
@@ -129,7 +129,7 @@ dem_openwin:
     title: Open Windows in Last 24 Hours
 dem_hmnet:
   title: Internet service present
-  storage_type: factor
+  response_type: factor
   question_text: Do you currently subscribe to internet service installed at your
     __home__ (other than data plans on mobile devices)?
   surveys_used:
@@ -148,7 +148,7 @@ dem_hmnet:
     '
 dem_hmnettyp:
   title: Type of internet service
-  storage_type: factor
+  response_type: factor
   question_text: Is the home internet service you subscribe to…
   surveys_used:
   - bas-2024
@@ -165,7 +165,7 @@ dem_hmnettyp:
     value_labels_name: hmnettyp25
 dem_hmgun:
   title: Gun in home
-  storage_type: factor
+  response_type: factor
   question_text: Do you or someone in your household have a gun in your home?
   surveys_used:
   - bas-2024
@@ -174,7 +174,7 @@ dem_hmgun:
   value_labels_name: yesno2
 dem_hmgunsf:
   title: Gun in Storage
-  storage_type: factor
+  response_type: factor
   question_text: '[IF DEM_HMGUN=1] Thinking about the guns in your home, are all,
     some, or none kept in a locked location such as a gun safe or cabinet, gun case,
     gun rack?'
@@ -184,7 +184,7 @@ dem_hmgunsf:
   value_labels_name: gun3
 dem_hmgunlk:
   title: Gun Lock
-  storage_type: factor
+  response_type: factor
   question_text: '[IF DEM_HMGUNSF <> 1] Thinking of guns not in a locked location,
     how many of those guns have a trigger lock or other lock?'
   surveys_used:
@@ -193,7 +193,7 @@ dem_hmgunlk:
   value_labels_name: gun3
 dem_adults:
   title: Number of adults in household
-  storage_type: integer
+  response_type: integer
   question_text: In the past 30 days, how many adults lived in your household at least
     half of  the time, including yourself?
   surveys_used:
@@ -215,7 +215,7 @@ dem_adults:
       least half of the time, including yourself?
 dem_hhemp:
   title: Other household adults employed
-  storage_type: factor
+  response_type: factor
   question_text: Other than yourself, are any of the other adults who lived here currently
     employed either full or part time?
   surveys_used:
@@ -235,7 +235,7 @@ dem_hhemp:
     title: Other Household Adults Employed
 dem_child:
   title: Children in household
-  storage_type: factor
+  response_type: factor
   question_text: In the past 30 days, have you had any children under the age of 18
     living in  your home for at lesat some of the time?
   surveys_used:
@@ -260,7 +260,7 @@ dem_child:
     title: Children in Household
 dem_childyng:
   title: Number of children in household, under age 5
-  storage_type: integer
+  response_type: integer
   question_text: In the past 30 days, how many children ages 0-4 lived in your household
     at least  some of the time?
   surveys_used:
@@ -283,7 +283,7 @@ dem_childyng:
     title: Number of Children in Household, Under Age 5
 dem_childmid:
   title: Number of children in household, ages 5-11
-  storage_type: integer
+  response_type: integer
   question_text: In the past 30 days, how many children ages 5-11 lived in your household
     at  least some of the time?
   surveys_used:
@@ -306,7 +306,7 @@ dem_childmid:
     title: Number of Children in Household, ages 5-11
 dem_childold:
   title: Number of children in household, ages 12-17
-  storage_type: integer
+  response_type: integer
   question_text: In the past 30 days, how many children ages 12-17 lived in your household
     at  least some of the time?
   surveys_used:
@@ -329,7 +329,7 @@ dem_childold:
     title: Number of Children in Household, Ages 12-17
 dem_hhdisabl:
   title: Household members with disability
-  storage_type: factor
+  response_type: factor
   question_text: Do you or any member of your household have a disability? This could
     be any type of disability including physical, mental, intellectual, developmental
   surveys_used:
@@ -344,7 +344,7 @@ dem_hhdisabl:
     title: Household Members With Disability
 dem_edattain:
   title: Educational attainment
-  storage_type: factor
+  response_type: factor
   question_text: What is the highest degree or level of school you have completed?
   surveys_used:
   - bas-2023
@@ -359,7 +359,7 @@ dem_edattain:
     value_labels_name: edattain
 dem_inths:
   title: High school racial integration
-  storage_type: factor
+  response_type: factor
   question_text: 'Think about the high school you attended. If you attended more than
     one high school, think about the last one you attended. Would you say that the
     students who attended that school were:'
@@ -369,7 +369,7 @@ dem_inths:
   value_labels_name: inths
 dem_married:
   title: Marital status
-  storage_type: factor
+  response_type: factor
   question_text: Are you now married, widowed, divorced, separated, or have you never
     been  married?
   surveys_used:
@@ -393,7 +393,7 @@ dem_married:
     title: Marital Status
 dem_yearborn:
   title: Respondent's birth year
-  storage_type: integer
+  response_type: integer
   question_text: In what year were you born?
   surveys_used:
   - bas-2023
@@ -421,7 +421,7 @@ dem_yearborn:
     title: Respondent's Birth Year
 dem_gender:
   title: Gender
-  storage_type: factor
+  response_type: factor
   question_text: What is your current gender?
   surveys_used:
   - bas-2023
@@ -431,7 +431,7 @@ dem_gender:
   value_labels_name: gender
 dem_sexlty:
   title: Sexuality
-  storage_type: factor
+  response_type: factor
   question_text: Do you personally think of yourself as...
   surveys_used:
   - bas-2023
@@ -447,7 +447,7 @@ dem_sexlty:
     value_labels_name: sexlty
 dem_latx:
   title: 'Race/ethnicity indicator: Latinx'
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023
@@ -471,7 +471,7 @@ dem_latx:
     value_labels_name: yesno2
 dem_race_wh:
   title: 'Race/ethnicity indicator: White'
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023
@@ -488,7 +488,7 @@ dem_race_wh:
     value_labels_name: yesno01
 dem_race_bl:
   title: 'Race/ethnicity indicator: Black'
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023
@@ -505,7 +505,7 @@ dem_race_bl:
     value_labels_name: yesno01
 dem_race_am:
   title: 'Race/ethnicity indicator: American Indian'
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023
@@ -522,7 +522,7 @@ dem_race_am:
     value_labels_name: yesno01
 dem_race_as:
   title: 'Race/ethnicity indicator: Asian'
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2023
@@ -539,7 +539,7 @@ dem_race_as:
     value_labels_name: yesno01
 dem_fborn:
   title: Nativity
-  storage_type: factor
+  response_type: factor
   question_text: Where were you born?
   surveys_used:
   - bas-2025
@@ -547,7 +547,7 @@ dem_fborn:
   value_labels_name: nativity3
 dem_fbornm:
   title: Mother Nativity
-  storage_type: factor
+  response_type: factor
   question_text: Where was your mother born?
   surveys_used:
   - bas-2025
@@ -555,7 +555,7 @@ dem_fbornm:
   value_labels_name: nativity3
 dem_religion:
   title: Religion
-  storage_type: factor
+  response_type: factor
   question_text: What is your religious preference?
   surveys_used:
   - bas-2023
@@ -565,7 +565,7 @@ dem_religion:
   value_labels_name: religion
 dem_denom:
   title: Religion Denomination - Protestant
-  storage_type: factor
+  response_type: factor
   question_text: What specific denominaton is that, if any?
   surveys_used:
   - bas-2025
@@ -575,7 +575,7 @@ dem_denom:
   note: "\nThis question is shown if the respondent answered 1 for DEM_RELIGION \n"
 dem_jewtrad:
   title: Religion -- Jewish Tradition
-  storage_type: factor
+  response_type: factor
   question_text: Do you consider yourself Orthodox, Conservative, Reform, or none
     of these?
   surveys_used:
@@ -586,7 +586,7 @@ dem_jewtrad:
   note: "\nThis question is shown if the respondent answered 4 for DEM_RELIGION \n"
 dem_attrel:
   title: Religious attendance
-  storage_type: factor
+  response_type: factor
   question_text: How often do you attend religious services?
   surveys_used:
   - bas-2023
@@ -605,7 +605,7 @@ dem_attrel:
     title: Religious Attendance
 dem_income_70k:
   title: High/low income
-  storage_type: factor
+  response_type: factor
   question_text: 'During 2022, in which of these groups did your total family income,
     from all sources, fall before taxes?
 
@@ -640,7 +640,7 @@ dem_income_70k:
     title: High/Low Income
 dem_income_lo:
   title: Low income level
-  storage_type: factor
+  response_type: factor
   question_text: During 2022, in which of these groups did your total family income,
     from all sources, fall before taxes?
   surveys_used:
@@ -664,7 +664,7 @@ dem_income_lo:
     title: Low Income Level
 dem_income_hi:
   title: High income level
-  storage_type: factor
+  response_type: factor
   question_text: During 2022, in which of these groups did your total family income,
     from all sources, fall before taxes?
   surveys_used:
@@ -689,7 +689,7 @@ dem_income_hi:
     value_labels_name: income_hi25
 prg_snap:
   title: Received SNAP benefits
-  storage_type: factor
+  response_type: factor
   question_text: 'The next question is about public benefits you or your family may
     have received in the past 12 months. Did you or anyone in your family receive
     the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
@@ -721,7 +721,7 @@ prg_snap:
     value_labels_name: yesno2
 prg_med:
   title: Received Medicaid or similar benefits
-  storage_type: factor
+  response_type: factor
   question_text: 'The next question is about public benefits you or your family may
     have received in the past 12 months. Did you or anyone in your family receive
     the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
@@ -753,7 +753,7 @@ prg_med:
     value_labels_name: yesno2
 prg_housing:
   title: Received governmental housing benefits
-  storage_type: factor
+  response_type: factor
   question_text: 'The next question is about public benefits you or your family may
     have received in the past 12 months. Did you or anyone in your family receive
     the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
@@ -785,7 +785,7 @@ prg_housing:
     value_labels_name: yesno2
 prg_ssi:
   title: Received SSI benefits
-  storage_type: factor
+  response_type: factor
   question_text: 'The next question is about public benefits you or your family may
     have received in the past 12 months. Did you or anyone in your family receive
     the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
@@ -817,7 +817,7 @@ prg_ssi:
     value_labels_name: yesno2
 prg_ssdi:
   title: Received SSDI benefits
-  storage_type: factor
+  response_type: factor
   question_text: 'The next question is about public benefits you or your family may
     have received in the past 12 months. Did you or anyone in your family receive
     the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
@@ -849,7 +849,7 @@ prg_ssdi:
     value_labels_name: yesno2
 prg_tanf:
   title: Received TANF benefits
-  storage_type: factor
+  response_type: factor
   question_text: 'The next question is about public benefits you or your family may
     have received in the past 12 months. Did you or anyone in your family receive
     the following benefits at any time since {{NAME OF CURRENT MONTH}} 2022? Please
@@ -879,7 +879,7 @@ prg_tanf:
     value_labels_name: yesno2
 inv_votreg:
   title: Registered to vote
-  storage_type: factor
+  response_type: factor
   question_text: Some people register to vote and some people do not. Are you  registered
     to vote __at your current address__?
   surveys_used:
@@ -888,7 +888,7 @@ inv_votreg:
   value_labels_name: votereg
 inv_voteupc:
   title: Likely to vote in 2024 general election
-  storage_type: factor
+  response_type: factor
   question_text: "There is an election in November 2024 where voters will have the\
     \  opportunity to vote for president, senator for the state of Maryland, members\
     \  of Congress, and local offices. \n\nHow likely are you to vote in the November\
@@ -899,7 +899,7 @@ inv_voteupc:
   value_labels_name: voteupc
 dem_voter:
   title: General election 2022 voting
-  storage_type: factor
+  response_type: factor
   question_text: Last year, in November 2022, Wes Moore ran against Dan Cox to be
     governor of  Maryland. Do you remember for sure whether or not you voted in that
     election?”
@@ -919,7 +919,7 @@ dem_voter:
     value_labels_name: votereg
 dem_voteelig:
   title: Eligible to vote
-  storage_type: factor
+  response_type: factor
   question_text: To the best of your knowledge, were you eligible to vote in the election
     in  November 2022?
   surveys_used:
@@ -939,7 +939,7 @@ dem_voteelig:
     value_labels_name: yesno2
 dem_ideo:
   title: Political ideology
-  storage_type: factor
+  response_type: factor
   question_text: In general, would you describe your political views as...
   surveys_used:
   - bas-2023
@@ -959,7 +959,7 @@ dem_ideo:
     title: Political Ideology
 dem_pparty:
   title: Political party
-  storage_type: factor
+  response_type: factor
   question_text: In politics today, do you consider yourself a...
   surveys_used:
   - bas-2023
@@ -979,7 +979,7 @@ dem_pparty:
     title: Political Party
 dem_race:
   title: Race or ethnic identity
-  storage_type: factor
+  response_type: factor
   question_text: Which of the following best describes your race or ethnic identity?
   surveys_used:
   - bas-example
@@ -987,28 +987,28 @@ dem_race:
   value_labels_name: race5
 dem_children_n:
   title: Number of children in household
-  storage_type: integer
+  response_type: integer
   question_text: How many children under the age of 18 currently live in your household?
   surveys_used:
   - bas-example
   vargroup: dem
 dem_children_age_youngest:
   title: Age of youngest child in household
-  storage_type: integer
+  response_type: integer
   question_text: How old is the youngest child living in your household?
   surveys_used:
   - bas-example
   vargroup: dem
 dem_email:
   title: Email address
-  storage_type: character
+  response_type: character
   question_text: May we have your email address to contact you about future surveys?
   surveys_used:
   - bas-example
   vargroup: dem
 dem_phone:
   title: Phone number
-  storage_type: character
+  response_type: character
   question_text: May we have your phone number to contact you about future surveys?
   surveys_used:
   - bas-example

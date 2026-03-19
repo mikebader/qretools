@@ -76,7 +76,7 @@ project-root/
 
 ### Canonical field names
 
-- Use `storage_type:` (not `type:`) to avoid collision with R's `type()` function
+- Use `response_type:` (not `type:`) to specify how the question collects responses
 - Use `surveys_used:` with survey ID strings (not `years_used:` with integers), because surveys are not always annual
 
 ### Required Fields (every question)
@@ -84,7 +84,7 @@ project-root/
 ```yaml
 variable_id: nhd_sat
 title: Neighborhood Satisfaction
-storage_type: factor      # integer | numeric | factor | character | composite | multiple_response
+response_type: factor     # factor | character | integer | number | ranking | select_all | loop
 vargroup: nhd
 question_text: "How satisfied are you with your neighborhood as a place to live?"
 surveys_used: [bas-2023, bas-2024, bas-2025]
@@ -97,7 +97,7 @@ source: "Original"        # or citation
 variable_role: substantive  # substantive | parameter | administrative | generated | weight
 ```
 
-### For `storage_type: factor`
+### For `response_type: factor`
 
 ```yaml
 value_labels_name: satisfied5   # Must exist in value-labels/
@@ -437,7 +437,7 @@ These were intentionally deferred — do not implement without discussing:
 - Do not edit `banks/` files during questionnaire design phase
 - Do not include missing value codes in individual value label sets
 - Do not use `display_logic` — use `if_condition`
-- Do not use `type:` or `years_used:` — use `storage_type:` and `surveys_used:`
+- Do not use `type:` or `years_used:` — use `response_type:` and `surveys_used:`
 - Do not make `rotation_set` a string — it must be an array
 - Do not store candidates in `banks/` — they go in `surveys/bas-YYYY/design/candidates/`
 - Do not duplicate question definitions between bank and candidates

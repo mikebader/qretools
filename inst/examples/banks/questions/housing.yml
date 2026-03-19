@@ -1,6 +1,6 @@
 hsg_tenure:
   title: Housing tenure
-  storage_type: factor
+  response_type: factor
   question_text: Do you rent your home, own it, or do you have some other arrangement?
   surveys_used:
   - bas-example
@@ -8,14 +8,14 @@ hsg_tenure:
   value_labels_name: own
 hsg_own_years:
   title: Years owned home
-  storage_type: integer
+  response_type: integer
   question_text: For approximately how many years have you owned your current home?
   surveys_used:
   - bas-example
   vargroup: hsg
 hsg_own_value:
   title: Estimated home value
-  storage_type: integer
+  response_type: integer
   question_text: What is your best estimate of what your home would sell for today,
     in dollars?
   surveys_used:
@@ -23,7 +23,7 @@ hsg_own_value:
   vargroup: hsg
 hsg_rent_monthly:
   title: Monthly rent
-  storage_type: integer
+  response_type: integer
   question_text: How much do you pay per month in rent, not including any utilities?
   surveys_used:
   - bas-example
