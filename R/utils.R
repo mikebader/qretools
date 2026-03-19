@@ -204,12 +204,12 @@
   for (variable_id in names(variables)) {
     var <- variables[[variable_id]]
 
-    # Factor must have value_labels_name OR value_label_id
+    # Factor must have value_label_id OR value_labels_name (legacy)
     type_val <- var$storage_type %||% var$variable_type
-    has_value_labels <- !is.null(var$value_labels_name) || !is.null(var$value_label_id)
+    has_value_labels <- !is.null(var$value_label_id) || !is.null(var$value_labels_name)
     if (!is.null(type_val) && type_val == "factor" && !has_value_labels) {
       errors <- c(errors,
-                  sprintf("Variable '%s': type='factor' requires value_labels_name or value_label_id",
+                  sprintf("Variable '%s': type='factor' requires value_label_id",
                           variable_id))
     }
 
@@ -280,8 +280,8 @@
     for (variable_id in names(variables)) {
       var <- variables[[variable_id]]
 
-      # Accept value_labels_name or value_label_id (schema alias)
-      label_name <- var$value_labels_name %||% var$value_label_id
+      # Accept value_label_id or value_labels_name (legacy alias)
+      label_name <- var$value_label_id %||% var$value_labels_name
       if (!is.null(label_name)) {
         if (!label_name %in% names(value_labels$labels)) {
           missing_labels <- c(missing_labels,

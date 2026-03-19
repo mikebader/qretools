@@ -56,7 +56,7 @@
 #' - `surveys_used`: Survey instances where fielded (string vector, e.g., c("bas-2023", "bas-2024"))
 #'
 #' **Additional requirements by type:**
-#' - Factor variables: `value_labels_name` (reference to value label set)
+#' - Factor variables: `value_label_id` (reference to value label set)
 #' - Control variables: `variable_role` must be "parameter"
 #' - Generated variables: `variable_role` must be "generated", requires `derivation_method`
 #' - Restricted variables: `restriction_reason` required if `restricted_access = TRUE`
@@ -71,7 +71,7 @@
 #'   storage_type = "factor",
 #'   vargroup = "nhd",
 #'   question_text = "How satisfied are you with your neighborhood?",
-#'   value_labels_name = "satisfied5",
+#'   value_label_id = "satisfied5",
 #'   surveys_used = c("bas-2023", "bas-2024", "bas-2025")
 #' )
 #' q_var <- qt_make_qvar(q_data)
@@ -95,7 +95,7 @@
 #'   storage_type = "factor",
 #'   vargroup = "dem",
 #'   question_text = "Household income (combined)",
-#'   value_labels_name = "comb_income",
+#'   value_label_id = "comb_income",
 #'   variable_role = "generated",
 #'   derived_from = c("dem_income_lo", "dem_income_hi"),
 #'   derivation_method = "Combines low/high income based on 70k filter",
@@ -135,18 +135,18 @@ qt_make_qvar <- function(var_data) {
     ), call. = FALSE)
   }
 
-  # Conditional validation: factor variables must have value_labels_name or value_label_id
+  # Conditional validation: factor variables must have value_label_id or value_labels_name (legacy)
   is_factor <- var_data$storage_type == "factor"
-  has_value_labels <- !is.null(var_data$value_labels_name) || !is.null(var_data$value_label_id)
+  has_value_labels <- !is.null(var_data$value_label_id) || !is.null(var_data$value_labels_name)
   if (is_factor && !has_value_labels) {
     stop(sprintf(
-      "Factor variable '%s' must specify 'value_labels_name' or 'value_label_id'",
+      "Factor variable '%s' must specify 'value_label_id'",
       var_data$variable_id
     ), call. = FALSE)
   }
-  # Normalize value_label_id → value_labels_name for internal consistency
-  if (is.null(var_data$value_labels_name) && !is.null(var_data$value_label_id)) {
-    var_data$value_labels_name <- var_data$value_label_id
+  # Normalize value_labels_name (legacy) → value_label_id for internal consistency
+  if (is.null(var_data$value_label_id) && !is.null(var_data$value_labels_name)) {
+    var_data$value_label_id <- var_data$value_labels_name
   }
 
   # Conditional validation: restricted access requires restriction_reason
@@ -241,17 +241,18 @@ qt_make_ctrlvar <- function(var_data) {
     var_data$variable_role <- "parameter"
   }
 
-  # Conditional validation: factor variables must have value_labels_name or value_label_id
+  # Conditional validation: factor variables must have value_label_id or value_labels_name (legacy)
   is_factor <- var_data$storage_type == "factor"
-  has_value_labels <- !is.null(var_data$value_labels_name) || !is.null(var_data$value_label_id)
+  has_value_labels <- !is.null(var_data$value_label_id) || !is.null(var_data$value_labels_name)
   if (is_factor && !has_value_labels) {
     stop(sprintf(
-      "Factor parameter '%s' must specify 'value_labels_name' or 'value_label_id'",
+      "Factor parameter '%s' must specify 'value_label_id'",
       var_data$variable_id
     ), call. = FALSE)
   }
-  if (is.null(var_data$value_labels_name) && !is.null(var_data$value_label_id)) {
-    var_data$value_labels_name <- var_data$value_label_id
+  # Normalize value_labels_name (legacy) → value_label_id for internal consistency
+  if (is.null(var_data$value_label_id) && !is.null(var_data$value_labels_name)) {
+    var_data$value_label_id <- var_data$value_labels_name
   }
 
   # Conditional validation: restricted access requires restriction_reason
@@ -325,17 +326,18 @@ qt_make_genvar <- function(var_data) {
     var_data$variable_role <- "generated"
   }
 
-  # Conditional validation: factor variables must have value_labels_name or value_label_id
+  # Conditional validation: factor variables must have value_label_id or value_labels_name (legacy)
   is_factor <- var_data$storage_type == "factor"
-  has_value_labels <- !is.null(var_data$value_labels_name) || !is.null(var_data$value_label_id)
+  has_value_labels <- !is.null(var_data$value_label_id) || !is.null(var_data$value_labels_name)
   if (is_factor && !has_value_labels) {
     stop(sprintf(
-      "Factor variable '%s' must specify 'value_labels_name' or 'value_label_id'",
+      "Factor variable '%s' must specify 'value_label_id'",
       var_data$variable_id
     ), call. = FALSE)
   }
-  if (is.null(var_data$value_labels_name) && !is.null(var_data$value_label_id)) {
-    var_data$value_labels_name <- var_data$value_label_id
+  # Normalize value_labels_name (legacy) → value_label_id for internal consistency
+  if (is.null(var_data$value_label_id) && !is.null(var_data$value_labels_name)) {
+    var_data$value_label_id <- var_data$value_labels_name
   }
 
   # Conditional validation: restricted access requires restriction_reason

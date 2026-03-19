@@ -8,7 +8,7 @@ con_gentrust:
   - bas-2025
   vargroup: con
   source: GSS cantrust
-  value_labels_name: always4
+  value_label_id: always4
   versions:
   - version_id: '2025'
     surveys_used:
@@ -16,7 +16,7 @@ con_gentrust:
     question_text: Before we move onto the next set of questions, we want to know,
       generally     speaking, how often do you feel people can be trusted?
     title: General Trust
-    value_labels_name: gentrust
+    value_label_id: gentrust
 tsp_appt:
   title: 'Transportation Insecurity: Reschedule Appointment'
   storage_type: factor
@@ -27,7 +27,7 @@ tsp_appt:
   - bas-2024
   - bas-2025
   vargroup: con
-  value_labels_name: often3
+  value_label_id: often3
   versions:
   - version_id: '2024'
     surveys_used:
@@ -35,7 +35,7 @@ tsp_appt:
     question_text: In the past 30 days, how often did you have to reschedule  an appointment
       because of a problem with transportation?
     title: 'Transportation insecurity: reschedule appointment'
-    value_labels_name: tspfrequency3
+    value_label_id: tspfrequency3
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -52,14 +52,14 @@ tsp_skipgo:
   - bas-2024
   - bas-2025
   vargroup: con
-  value_labels_name: often3
+  value_label_id: often3
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: In the past 30 days, how often did you skip going somewhere  because
       of a problem with transportation?
-    value_labels_name: tspfrequency3
+    value_label_id: tspfrequency3
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -76,7 +76,7 @@ tsp_noleave:
   - bas-2024
   - bas-2025
   vargroup: con
-  value_labels_name: often3
+  value_label_id: often3
   versions:
   - version_id: '2024'
     surveys_used:
@@ -84,7 +84,7 @@ tsp_noleave:
     question_text: In the past 30 days, how often were you not able to leave the house
       when you wanted to because of a problem with transportation?
     title: 'Transportation insecurity: not leave house'
-    value_labels_name: tspfrequency3
+    value_label_id: tspfrequency3
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -101,14 +101,14 @@ tsp_feeldown:
   - bas-2024
   - bas-2025
   vargroup: con
-  value_labels_name: often3
+  value_label_id: often3
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: In the past 30 days, how often did you feel down  because you did
       not have the transportation you needed?
-    value_labels_name: tspfrequency3
+    value_label_id: tspfrequency3
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -125,14 +125,14 @@ tsp_inconv:
   - bas-2024
   - bas-2025
   vargroup: con
-  value_labels_name: often3
+  value_label_id: often3
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: In the past 30 days, how often did you worry about  inconveniencing
       your friends, family, or neighbors because you  needed help with transportation?
-    value_labels_name: tspfrequency3
+    value_label_id: tspfrequency3
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -149,14 +149,14 @@ tsp_affrel:
   - bas-2024
   - bas-2025
   vargroup: con
-  value_labels_name: often3
+  value_label_id: often3
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: In the past 30 days, how often did problems with  transportation
       affect your relationships with others?
-    value_labels_name: tspfrequency3
+    value_label_id: tspfrequency3
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -172,7 +172,7 @@ tsp_afford:
   - bas-2025
   vargroup: tsp
   source: DMACS Wave 18 transport_afford_d18
-  value_labels_name: yesno2
+  value_label_id: yesno2
   versions:
   - version_id: '2025'
     surveys_used:
@@ -187,7 +187,7 @@ con_dggthnk:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: gthink
+  value_label_id: gthink
 con_dgtreat:
   title: Find Care to Overcome Drug Problem
   storage_type: factor
@@ -197,7 +197,7 @@ con_dgtreat:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: dgtreat
+  value_label_id: dgtreat
 con_dgtrqual:
   title: Quality of Drug Treatment Facilities
   storage_type: factor
@@ -205,7 +205,7 @@ con_dgtrqual:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: dgtrqual
+  value_label_id: dgtrqual
 con_use988md:
   title: 'Use 988: Telemedicine Treatment'
   storage_type: factor
@@ -216,7 +216,7 @@ con_use988md:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: yesno01
+  value_label_id: yesno01
 con_use988mh:
   title: 'Use 988: Mental Health Crisis'
   storage_type: factor
@@ -227,7 +227,7 @@ con_use988mh:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: yesno01
+  value_label_id: yesno01
 con_use988dp:
   title: 'Use 988: Help for a Drug Problem'
   storage_type: factor
@@ -238,7 +238,7 @@ con_use988dp:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: yesno01
+  value_label_id: yesno01
 con_use988ht:
   title: 'Use 988: Feeling Down or Depressed'
   storage_type: factor
@@ -249,7 +249,7 @@ con_use988ht:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: yesno01
+  value_label_id: yesno01
 con_use988sl:
   title: 'Use 988: Sleeping Outside'
   storage_type: factor
@@ -260,7 +260,7 @@ con_use988sl:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: yesno01
+  value_label_id: yesno01
 con_use988od:
   title: 'Use 988: Drug Overdose'
   storage_type: factor
@@ -271,7 +271,7 @@ con_use988od:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: yesno01
+  value_label_id: yesno01
 con_use988tk:
   title: 'Use 988: Talking or Yelling to Themselves'
   storage_type: factor
@@ -282,7 +282,7 @@ con_use988tk:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: yesno01
+  value_label_id: yesno01
 con_use988no:
   title: 'Use 988: Have not Heard of 988'
   storage_type: factor
@@ -293,7 +293,7 @@ con_use988no:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: yesno01
+  value_label_id: yesno01
 con_pbycrime:
   title: Young People Committing Crime in Jurisdiction
   storage_type: factor
@@ -302,7 +302,7 @@ con_pbycrime:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: problem5
+  value_label_id: problem5
 con_pbvbld:
   title: Vacant Buildings in Jurisdiction
   storage_type: factor
@@ -310,7 +310,7 @@ con_pbvbld:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: problem5
+  value_label_id: problem5
 con_pbnoplc:
   title: Police Non-response in Jurisdiction
   storage_type: factor
@@ -319,7 +319,7 @@ con_pbnoplc:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: problem5
+  value_label_id: problem5
 con_pbdrugs:
   title: Drug Use in Jurisdiction
   storage_type: factor
@@ -327,7 +327,7 @@ con_pbdrugs:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: problem5
+  value_label_id: problem5
 con_pbod:
   title: Drug Overdoses in Jurisdiction
   storage_type: factor
@@ -335,7 +335,7 @@ con_pbod:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: problem5
+  value_label_id: problem5
 con_pbdsale:
   title: Drug Sales in Neighborhood
   storage_type: factor
@@ -343,7 +343,7 @@ con_pbdsale:
   surveys_used:
   - bas-2025
   vargroup: con
-  value_labels_name: problem5
+  value_label_id: problem5
 con_kbdate1:
   title: Anticipated time to rebuild Key Bridge
   storage_type: factor
@@ -352,7 +352,7 @@ con_kbdate1:
   - bas-2024
   - bas-2025
   vargroup: con
-  value_labels_name: kbdate1
+  value_label_id: kbdate1
   versions:
   - version_id: '2025'
     surveys_used:
@@ -372,7 +372,7 @@ con_kbdate2:
   - bas-2024
   - bas-2025
   vargroup: con
-  value_labels_name: kbdate2
+  value_label_id: kbdate2
   versions:
   - version_id: '2025'
     surveys_used:
