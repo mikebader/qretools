@@ -27,7 +27,12 @@ id: string                        # REQUIRED - Unique identifier
                                   # ranking
       - id: string                # REQUIRED - Unique identifer-name of
                                   #            created variable
-        part_label: string        # REQUIRED - Label for this part
+        option_title: string      # Subordinate title appended to parent title
+                                  #   for codebook documentation. Composed as
+                                  #   "{parent.title}: {option_title}". Defaults
+                                  #   to option_text if omitted.
+        option_text: string       # Text shown to respondent for this option.
+                                  #   Default for option_title when omitted.
         storage_type: enum        # REQUIRED - Storage type of created variable
                                   #   (select_all parts → boolean;
                                   #    ranking parts → integer)
@@ -43,7 +48,7 @@ id: string                        # REQUIRED - Unique identifier
     loop_template:                # Required if response_type = loop
         variable_template: string # REQUIRED - Variable name with {i} placeholder
                                   #            (e.g., "hhm_age_{i}")
-        part_label: string        # REQUIRED - Label including {i} placeholder
+        option_title: string      # REQUIRED - Label including {i} placeholder
         storage_type: enum        # REQUIRED - Storage type of loop variable
                                   #   (one of: factor, character, integer,
                                   #   numeric, multiple_response - NOT loop)
