@@ -3,16 +3,13 @@
 
 id: string                        # REQUIRED - Unique identifier
     title: string                 # REQUIRED - Short descriptive title
-    storage_type: enum            # REQUIRED - Storage type of the variable.
-                                  #            One of: factor, character,
-                                  #            integer, numeric, composite,
-                                  #            multiple_response, logical,
-                                  #            boolean
-                                  # NOTE: response_type is accepted as a legacy
-                                  #   alias and is mapped to storage_type values
-                                  #   (factor→factor, character→character,
-                                  #   integer→integer, number→numeric,
-                                  #   ranking→integer, select_all→multiple_response)
+    response_type: enum           # REQUIRED - Form of responses. One of:
+                                  #   factor, character, integer, number,
+                                  #   ranking, select_all, loop
+                                  # NOTE: select_all and loop produce multiple
+                                  #   created variables via creates_variables /
+                                  #   loop_template; they have no single
+                                  #   storage_type at the top level.
     question_text: string         # REQUIRED - Full question as asked
     surveys_used: array[chr]      # REQUIRED - Surveys when question is fielded
     restricted_access: enum       # REQUIRED - Exclude from public (default:
@@ -21,18 +18,18 @@ id: string                        # REQUIRED - Unique identifier
                                   # but allow user to override? see note)
 
     # Conditionally required
-    value_label_id: string        # Required if storage_type == factor
-    character_length: int         # Required if storage_type == character
-    selection_number: int         # Required if storage_type is multiple_response
-                                  # or integer (ranking) - number of
-                                  # selections/rankings allowed
-    creates_variables:            # Required if storage_type is multiple_response
-                                  # or composite (ranking)
+    value_label_id: string        # Required if response_type == factor
+    character_length: int         # Required if response_type == character
+    selection_number: int         # Required if response_type is select_all or
+                                  # ranking - number of selections/rankings
+                                  # allowed
+    creates_variables:            # Required if response_type is select_all or
+                                  # ranking
       - id: string                # REQUIRED - Unique identifer-name of
                                   #            created variable
         part_label: string        # REQUIRED - Label for this part
-        storage_type: enum        # REQUIRED - storage type of created variable
-                                  #   (multiple_response parts → boolean;
+        storage_type: enum        # REQUIRED - Storage type of created variable
+                                  #   (select_all parts → boolean;
                                   #    ranking parts → integer)
         value_label_id: string    # Required if storage_type is boolean or factor
         note: string              # Part-specific notes
@@ -43,8 +40,7 @@ id: string                        # REQUIRED - Unique identifier
                                   # "Specify")
             character_length: int # Allowed length of fill
             note: string          # "Specify"-specific notes
-    loop_template:                # Required if storage_type = loop (legacy
-                                  # response_type = loop)
+    loop_template:                # Required if response_type = loop
         variable_template: string # REQUIRED - Variable name with {i} placeholder
                                   #            (e.g., "hhm_age_{i}")
         part_label: string        # REQUIRED - Label including {i} placeholder
@@ -63,10 +59,11 @@ id: string                        # REQUIRED - Unique identifier
     string_label: string          # Text to display before response for string
                                   #   variables (e.g., Adress ___________)
 
-    # Optional - Legacy aliases (accepted but normalized internally)
-    response_type: enum           # Legacy alias for storage_type; accepted for
-                                  # backward compatibility and mapped to
-                                  # storage_type values (see NOTE above)
+    # Optional - Storage & Documentation
+    storage_type: enum            # Override inferred storage type when it
+                                  # differs from the response_type default
+                                  # (see mapping below). Rarely needed for
+                                  # simple response types.
     note: string                  # Implementation notes
     instruction: string           # Instructions to respondent
     help_text: string             # Optional help text
@@ -90,12 +87,12 @@ id: string                        # REQUIRED - Unique identifier
     # Optional - Content
     media: file-path              # Any media (e.g., images)
 
-# LEGACY ALIAS MAPPING
-# response_type (legacy) → storage_type (canonical):
+# response_type → storage_type DEFAULTS
+# (storage_type is inferred from response_type unless explicitly overridden)
 #   factor      → factor
 #   character   → character
 #   integer     → integer
 #   number      → numeric
 #   ranking     → integer (for each created variable)
-#   select_all  → multiple_response (for each created variable)
-#   loop        → requires explicit storage_type
+#   select_all  → boolean (for each created variable)
+#   loop        → must be specified in loop_template.storage_type

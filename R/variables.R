@@ -60,7 +60,7 @@
 #' - Control variables: `variable_role` must be "parameter"
 #' - Generated variables: `variable_role` must be "generated", requires `derivation_method`
 #' - Restricted variables: `restriction_reason` required if `restricted_access = TRUE`
-#' - Multi-part questions: `creates_variables` and `variable_parts` required if storage_type is "composite" or "multiple_response"
+#' - Multi-part questions: `creates_variables` and `variable_parts` required if response_type is "select_all", "ranking", or "loop"
 #'
 #' @examples
 #' \dontrun{
@@ -68,7 +68,7 @@
 #' q_data <- list(
 #'   variable_id = "nhd_sat",
 #'   title = "Neighborhood Satisfaction",
-#'   storage_type = "factor",
+#'   response_type = "factor",
 #'   vargroup = "nhd",
 #'   question_text = "How satisfied are you with your neighborhood?",
 #'   value_label_id = "satisfied5",
@@ -92,7 +92,7 @@
 #' gen_data <- list(
 #'   variable_id = "dem_income",
 #'   title = "Household Income",
-#'   storage_type = "factor",
+#'   storage_type = "factor",  # generated variables use storage_type directly
 #'   vargroup = "dem",
 #'   question_text = "Household income (combined)",
 #'   value_label_id = "comb_income",
