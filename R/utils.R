@@ -191,8 +191,16 @@
 
   for (variable_id in names(variables)) {
     var <- variables[[variable_id]]
-    # Accept storage_type or variable_type (schema alias for gen/ctrl banks)
+    # Resolve effective storage type: storage_type is canonical; variable_type
+    # is the alias used in control/generated banks; response_type is the legacy
+    # alias used in question banks and is mapped to storage_type values.
     type_val <- var$storage_type %||% var$variable_type
+    if (is.null(type_val) && !is.null(var$response_type)) {
+      type_val <- tryCatch(
+        .qt_response_to_storage(var$response_type),
+        error = function(e) var$response_type  # keep raw value so invalid-type check fires
+      )
+    }
     if (!is.null(type_val) && !type_val %in% valid_types) {
       errors <- c(errors,
                   sprintf("Variable '%s': Invalid type '%s'. Must be one of: %s",
@@ -206,6 +214,9 @@
 
     # Factor must have value_label_id OR value_labels_name (legacy)
     type_val <- var$storage_type %||% var$variable_type
+    if (is.null(type_val) && !is.null(var$response_type)) {
+      type_val <- tryCatch(.qt_response_to_storage(var$response_type), error = function(e) NULL)
+    }
     has_value_labels <- !is.null(var$value_label_id) || !is.null(var$value_labels_name)
     if (!is.null(type_val) && type_val == "factor" && !has_value_labels) {
       errors <- c(errors,
