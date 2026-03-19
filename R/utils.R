@@ -230,21 +230,29 @@
                   sprintf("Variable '%s': restricted_access=true requires restriction_reason", variable_id))
     }
 
-    # creates_variables requires variable_parts
+    # creates_variables: accept inline (named list) and split (char vector + variable_parts)
+    # Inline:  creates_variables is a named mapping  { var_id: {part_label: ..., ...}, ... }
+    # Split:   creates_variables is a char vector of IDs; variable_parts holds definitions
     if (!is.null(var$creates_variables)) {
-      if (is.null(var$variable_parts)) {
-        errors <- c(errors,
-                    sprintf("Variable '%s': creates_variables specified but variable_parts missing", variable_id))
+      cv <- var$creates_variables
+      if (is.list(cv) && !is.null(names(cv)) && length(cv) > 0) {
+        # Inline format: definitions are embedded; variable_parts not required
       } else {
-        # Check all created variables are defined
-        created <- var$creates_variables
-        defined <- names(var$variable_parts)
-        missing <- setdiff(created, defined)
-
-        if (length(missing) > 0) {
+        # Split format: variable_parts must be present and cover all IDs
+        if (is.null(var$variable_parts)) {
           errors <- c(errors,
-                      sprintf("Variable '%s': Variables in creates_variables not defined in variable_parts: %s",
-                              variable_id, paste(missing, collapse = ", ")))
+                      sprintf("Variable '%s': creates_variables specified but variable_parts missing",
+                              variable_id))
+        } else {
+          created <- unlist(cv)
+          defined <- names(var$variable_parts)
+          missing_parts <- setdiff(created, defined)
+          if (length(missing_parts) > 0) {
+            errors <- c(errors,
+                        sprintf(
+                          "Variable '%s': Variables in creates_variables not defined in variable_parts: %s",
+                          variable_id, paste(missing_parts, collapse = ", ")))
+          }
         }
       }
     }

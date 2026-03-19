@@ -158,6 +158,8 @@ qt_make_qvar <- function(var_data) {
   }
 
   # Conditional validation: multi-part questions
+  # creates_variables may be an inline named mapping (compact format) or a
+  # character vector paired with a separate variable_parts mapping.
   if (var_data$storage_type %in% c("composite", "multiple_response")) {
     if (is.null(var_data$creates_variables)) {
       stop(sprintf(
@@ -165,9 +167,11 @@ qt_make_qvar <- function(var_data) {
         var_data$variable_id, var_data$storage_type
       ), call. = FALSE)
     }
-    if (is.null(var_data$variable_parts)) {
+    cv <- var_data$creates_variables
+    is_inline <- is.list(cv) && !is.null(names(cv)) && length(cv) > 0
+    if (!is_inline && is.null(var_data$variable_parts)) {
       stop(sprintf(
-        "Multi-part variable '%s' must specify 'variable_parts'",
+        "Multi-part variable '%s' must specify 'variable_parts' (or use the inline creates_variables mapping format)",
         var_data$variable_id
       ), call. = FALSE)
     }
