@@ -195,7 +195,7 @@ dem_race_wh:
   question_text: "What is your racial or ethnic background? Select all that apply."
   surveys_used: [bas-2026]
   vargroup: dem
-  value_labels_name: yesno01
+  value_label_id: yesno01
 
 dem_race_bl:
   title: "Race indicator: Black or African American"
@@ -203,7 +203,7 @@ dem_race_bl:
   question_text: "What is your racial or ethnic background? Select all that apply."
   surveys_used: [bas-2026]
   vargroup: dem
-  value_labels_name: yesno01
+  value_label_id: yesno01
 
 dem_race_hisp:
   title: "Race indicator: Hispanic or Latino"
@@ -211,7 +211,7 @@ dem_race_hisp:
   question_text: "What is your racial or ethnic background? Select all that apply."
   surveys_used: [bas-2026]
   vargroup: dem
-  value_labels_name: yesno01
+  value_label_id: yesno01
 ```
 
 **In the questionnaire,** group them with `qt_add_display_together()` so the
@@ -314,7 +314,7 @@ whose key contains the literal string `{i}`:
   question_text: "How would you rate {i} in your neighborhood?"
   surveys_used: [bas-2026]
   vargroup: nhd
-  value_labels_name: excellent5
+  value_label_id: excellent5
 ```
 
 In the questionnaire:

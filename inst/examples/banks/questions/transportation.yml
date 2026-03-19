@@ -7,7 +7,7 @@ tsp_ssfapref:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspjurisdiction4
+  value_label_id: tspjurisdiction4
 tsp_ssfades:
   title: Support street redesign for active transport
   response_type: factor
@@ -17,7 +17,7 @@ tsp_ssfades:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspjurisdiction4
+  value_label_id: tspjurisdiction4
 tsp_ssfatopk:
   title: Support parking removal for active transport
   response_type: factor
@@ -28,7 +28,7 @@ tsp_ssfatopk:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspjurisdiction4
+  value_label_id: tspjurisdiction4
 tsp_ssfatotl:
   title: Support travel lane removal for active transport
   response_type: factor
@@ -39,7 +39,7 @@ tsp_ssfatotl:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspjurisdiction4
+  value_label_id: tspjurisdiction4
 tsp_ssfatosl:
   title: Support slower cars for active transport
   response_type: factor
@@ -50,7 +50,7 @@ tsp_ssfatosl:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspjurisdiction4
+  value_label_id: tspjurisdiction4
 tsp_cstknow:
   title: Jurisdiction has complete street policy
   response_type: factor
@@ -59,7 +59,7 @@ tsp_cstknow:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: cstknow
+  value_label_id: cstknow
   note: "\nThis question was prefaced with one of the two statements (prefaces were\
     \ randomly\nassigned). \n\nPreface 1 (asked if `svy_cstsplt` = 1):\n\n> This question\
     \ asks about a policy called “Complete Streets.” Complete Streets \n> requires\
@@ -81,7 +81,7 @@ tsp_cstfo:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: cstfo
+  value_label_id: cstfo
   note: "\nThis question was prefaced with one of the two statements (prefaces were\
     \ randomly\nassigned). \n\nPreface 1 (asked if `svy_cstsplt` = 1):\n\n> This question\
     \ asks about a policy called “Complete Streets.” Complete Streets \n> requires\
@@ -101,7 +101,7 @@ tsp_cstfoa:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: cstfoa
+  value_label_id: cstfoa
 tsp_cstop:
   title: Opinion of Complete Street policy
   response_type: factor
@@ -109,7 +109,7 @@ tsp_cstop:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: cstop
+  value_label_id: cstop
   note: "\nQuestions used to construct this variable were prefaced with one of the\
     \ two \nstatements (prefaces were randomly assigned). \n\nPreface 1 (asked if\
     \ `svy_cstsplt` = 1):\n\n> This question asks about a policy called “Complete\
@@ -133,7 +133,7 @@ tsp_vehcat:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspvehcat
+  value_label_id: tspvehcat
   description: '
 
     Number of vehicles owned, leased, or available for regular use by the people
@@ -153,7 +153,7 @@ tsp_vehrelus:
   - bas-2024
   vargroup: tsp
   source: DMACS Wave 18 vehicle_usual_rely_d18
-  value_labels_name: yesno2
+  value_label_id: yesno2
 tsp_bikeown:
   title: Bike owned
   response_type: factor
@@ -161,7 +161,7 @@ tsp_bikeown:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno2
+  value_label_id: yesno2
 tsp_modewalk:
   title: 'Transport mode: walk'
   response_type: factor
@@ -171,7 +171,7 @@ tsp_modewalk:
   - bas-2024
   vargroup: tsp
   source: DMACS Wave 18 transport_mode_walk_d18
-  value_labels_name: tspfrequency4
+  value_label_id: tspfrequency4
 tsp_modebike:
   title: 'Transport mode: bike'
   response_type: factor
@@ -181,7 +181,7 @@ tsp_modebike:
   - bas-2024
   vargroup: tsp
   source: DMACS Wave 18 transport_mode_bike_d18
-  value_labels_name: tspfrequency4
+  value_label_id: tspfrequency4
 tsp_modeownv:
   title: 'Transport mode: drive own vehicle'
   response_type: factor
@@ -192,7 +192,7 @@ tsp_modeownv:
   - bas-2024
   vargroup: tsp
   source: "DMACS Wave 18 transport_mode_owncar_d18 (modified \nquestion wording)"
-  value_labels_name: tspfrequency4
+  value_label_id: tspfrequency4
 tsp_moderide:
   title: 'Transport mode: carpool'
   response_type: factor
@@ -203,7 +203,7 @@ tsp_moderide:
   - bas-2024
   vargroup: tsp
   source: "DMACS Wave 18 transport_mode_getride_d18 (modified \nquestion wording)"
-  value_labels_name: tspfrequency4
+  value_label_id: tspfrequency4
 tsp_modebus:
   title: 'Transport mode: public transit'
   response_type: factor
@@ -213,7 +213,7 @@ tsp_modebus:
   - bas-2024
   vargroup: tsp
   source: "DMACS Wave 18 transport_mode_bus_d18 (modified \nquestion wording)"
-  value_labels_name: tspfrequency4
+  value_label_id: tspfrequency4
 tsp_pubmore:
   title: Preferred to use public transit more
   response_type: factor
@@ -222,7 +222,7 @@ tsp_pubmore:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno2
+  value_label_id: yesno2
 tsp_pubmrrob:
   title: 'Reason public transit not used: physical harm'
   response_type: factor
@@ -233,7 +233,7 @@ tsp_pubmrrob:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -251,7 +251,7 @@ tsp_pubmrhar:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -269,7 +269,7 @@ tsp_pubmrnop:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -287,7 +287,7 @@ tsp_pubmrplc:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -305,7 +305,7 @@ tsp_pubmrphy:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -323,7 +323,7 @@ tsp_pubmrcar:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -341,7 +341,7 @@ tsp_pubmrrel:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -359,7 +359,7 @@ tsp_pubmrtim:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -377,7 +377,7 @@ tsp_pubmrwea:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -393,4 +393,4 @@ tsp_hltappt:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: hltappt
+  value_label_id: hltappt

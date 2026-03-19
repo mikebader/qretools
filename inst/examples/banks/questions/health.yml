@@ -7,12 +7,12 @@ hlt_srph:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: excellent5
+  value_label_id: excellent5
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
-    value_labels_name: healthrate5
+    value_label_id: healthrate5
 hlt_srmh:
   title: Self-Rated Mental Health
   response_type: factor
@@ -22,12 +22,12 @@ hlt_srmh:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: excellent5
+  value_label_id: excellent5
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
-    value_labels_name: healthrate5
+    value_label_id: healthrate5
 hlt_medhome:
   title: Have a personal health care provider
   response_type: factor
@@ -37,7 +37,7 @@ hlt_medhome:
   - bas-2023
   - bas-2025
   vargroup: hlt
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   versions:
   - version_id: '2025'
     surveys_used:
@@ -45,7 +45,7 @@ hlt_medhome:
     question_text: Do you have one person you think of as your personal doctor or
       health care      provider?
     title: Have a Personal Health Care Provider
-    value_labels_name: yesno2
+    value_label_id: yesno2
 hlt_phq21:
   title: Feeling down/depressed within last two weeks
   response_type: factor
@@ -56,7 +56,7 @@ hlt_phq21:
   - bas-2024
   vargroup: hlt
   source: PHQ-2 Q1
-  value_labels_name: days
+  value_label_id: days
   note: "\nIf the respondent answered 'more than half the days' or 'nearly every day',\
     \ the \nfollowing message was displayed on their screen: \n\n> If you are experiencing\
     \ emotional distress and wish to talk to a trained \nprofessional, you may call\
@@ -68,7 +68,7 @@ hlt_phq21:
     question_text: Over the last two weeks, how often have you been bothered by feeling
       down,  depressed or hopeless?
     title: Feeling down
-    value_labels_name: phq4
+    value_label_id: phq4
 hlt_phq22:
   title: Little interest/pleasure within last two weeks
   response_type: factor
@@ -79,7 +79,7 @@ hlt_phq22:
   - bas-2024
   vargroup: hlt
   source: PHQ-2 Q2
-  value_labels_name: days
+  value_label_id: days
   note: "\nIf the respondent answered 'more than half the days' or 'nearly every day',\
     \ the \nfollowing message was displayed on their screen: \n\n> If you are experiencing\
     \ emotional distress and wish to talk to a trained \nprofessional, you may call\
@@ -91,7 +91,7 @@ hlt_phq22:
     question_text: Over the last two weeks, how often have you been bothered by  little
       interest or pleasure in doing things?
     title: Little interest
-    value_labels_name: phq4
+    value_label_id: phq4
 hlt_khom:
   title: Know victims of homicide
   response_type: integer
@@ -110,7 +110,7 @@ hlt_khomgun:
   surveys_used:
   - bas-2024
   vargroup: hlt
-  value_labels_name: yesno2
+  value_label_id: yesno2
 hlt_ksui:
   title: Know people that died by suicide
   response_type: integer
@@ -134,7 +134,7 @@ hlt_ksuigun:
   surveys_used:
   - bas-2024
   vargroup: hlt
-  value_labels_name: yesno2
+  value_label_id: yesno2
 hlt_kinjgun:
   title: Know people injured by gun or firearm
   response_type: integer
@@ -158,7 +158,7 @@ hlt_annexam:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno2
+  value_label_id: yesno2
   versions:
   - version_id: '2025'
     surveys_used:
@@ -173,7 +173,7 @@ hlt_rested:
   - bas-2024
   vargroup: hlt
   source: NHIS SLPREST_A
-  value_labels_name: rested
+  value_label_id: rested
 hlt_pamodd:
   title: Moderate-intensity physical activity
   response_type: factor
@@ -186,7 +186,7 @@ hlt_pamodd:
   surveys_used:
   - bas-2024
   vargroup: hlt
-  value_labels_name: hltfrequency5
+  value_label_id: hltfrequency5
 hlt_pamodh:
   title: Moderate-intensity minutes of exercise
   response_type: integer
@@ -204,7 +204,7 @@ hlt_pavigd:
   surveys_used:
   - bas-2024
   vargroup: hlt
-  value_labels_name: hltfrequency5
+  value_label_id: hltfrequency5
 hlt_pavigh:
   title: Vigorous-intensity minutes of exercise
   response_type: integer
@@ -221,7 +221,7 @@ hlt_heatslp:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: heatslp5
+  value_label_id: heatslp5
 hlt_heatefwk:
   title: 'Heat Effect: Unable to Work'
   response_type: factor
@@ -230,7 +230,7 @@ hlt_heatefwk:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
 hlt_heateflt:
   title: 'Heat Effect: Feeling Tired'
   response_type: factor
@@ -239,7 +239,7 @@ hlt_heateflt:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
 hlt_heatefbr:
   title: 'Heat Effect: Difficulty Breathing'
   response_type: factor
@@ -248,7 +248,7 @@ hlt_heatefbr:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
 hlt_heatefpa:
   title: 'Heat effect: Avoided Physical Activity'
   response_type: factor
@@ -257,7 +257,7 @@ hlt_heatefpa:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
 hlt_heatefff:
   title: 'Heat Effect: Canceled Plans'
   response_type: factor
@@ -266,7 +266,7 @@ hlt_heatefff:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
 hlt_heatefir:
   title: 'Heat Effect: Irritability'
   response_type: factor
@@ -275,7 +275,7 @@ hlt_heatefir:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
 hlt_heatefdz:
   title: 'Heat Effect: Dizziness'
   response_type: factor
@@ -284,7 +284,7 @@ hlt_heatefdz:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
 hlt_heatefot:
   title: 'Heat Effect: Other Effects'
   response_type: factor
@@ -293,7 +293,7 @@ hlt_heatefot:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
 hlt_ediaghyp:
   title: 'Ever diagnosed: hypertension'
   response_type: factor
@@ -304,7 +304,7 @@ hlt_ediaghyp:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -322,7 +322,7 @@ hlt_ediagchl:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -340,7 +340,7 @@ hlt_ediagchd:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -358,7 +358,7 @@ hlt_ediagasm:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -375,7 +375,7 @@ hlt_ediagpdb:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -394,7 +394,7 @@ hlt_ediagdib:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -413,7 +413,7 @@ hlt_ediaglng:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -431,7 +431,7 @@ hlt_ediagdep:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -448,7 +448,7 @@ hlt_ediaganx:
   - bas-2024
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -465,7 +465,7 @@ hlt_ediagnon:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: yesno01
+  value_label_id: yesno01
 hlt_asat12:
   title: Asthma attack
   response_type: factor
@@ -475,7 +475,7 @@ hlt_asat12:
   - bas-2024
   vargroup: hlt
   source: NHIS ASEV_A
-  value_labels_name: yesno2
+  value_label_id: yesno2
 att_vacceff:
   title: Vaccine Effectiveness
   response_type: factor
@@ -484,7 +484,7 @@ att_vacceff:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: vacc5
+  value_label_id: vacc5
 att_vacckid:
   title: Vaccine Requirement Beliefs
   response_type: factor
@@ -494,4 +494,4 @@ att_vacckid:
   surveys_used:
   - bas-2025
   vargroup: hlt
-  value_labels_name: vacc5
+  value_label_id: vacc5

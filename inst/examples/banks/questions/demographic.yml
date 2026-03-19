@@ -7,13 +7,13 @@ dem_own:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: rent
+  value_label_id: rent
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: Do you rent your home, own it, or do you have some other arrangement?
-    value_labels_name: own
+    value_label_id: own
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -30,7 +30,7 @@ dem_houslate:
   - bas-2025
   vargroup: dem
   source: Adapted from DMACS freq_late_housing_d15
-  value_labels_name: housing_payment
+  value_label_id: housing_payment
   versions:
   - version_id: '2024'
     surveys_used:
@@ -38,7 +38,7 @@ dem_houslate:
     question_text: In the __past 12 months__, that is since {{CMONTHNM}} 2023 how
       often has your household been late on monthly housing payments (mortgage or
       rent) or has only made a partial housing payment?
-    value_labels_name: houslate
+    value_label_id: houslate
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -54,7 +54,7 @@ dem_hmacc:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -69,7 +69,7 @@ dem_hmacw:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -84,7 +84,7 @@ dem_hmaco:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: yesno01
+  value_label_id: yesno01
   versions:
   - version_id: '2025'
     surveys_used:
@@ -99,7 +99,7 @@ dem_hmacn:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     If this option is selected, clear responses to other questions regarding home
@@ -121,7 +121,7 @@ dem_openwin:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: yesno2
+  value_label_id: yesno2
   versions:
   - version_id: '2025'
     surveys_used:
@@ -136,7 +136,7 @@ dem_hmnet:
   - bas-2024
   vargroup: dem
   source: Pew Research Center NPORS (2023) HOME4NW2
-  value_labels_name: yesno2
+  value_label_id: yesno2
   note: '
 
     If respondent answers ''Yes'' to this question, they are prompted to a question
@@ -154,7 +154,7 @@ dem_hmnettyp:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: hmnettyp
+  value_label_id: hmnettyp
   versions:
   - version_id: '2025'
     surveys_used:
@@ -162,7 +162,7 @@ dem_hmnettyp:
     question_text: Do you currently subscribe to internet service installed at your
       __home__ (other than data plans on mobile devices)?
     title: Type of Interner Service
-    value_labels_name: hmnettyp25
+    value_label_id: hmnettyp25
 dem_hmgun:
   title: Gun in home
   response_type: factor
@@ -171,7 +171,7 @@ dem_hmgun:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: yesno2
+  value_label_id: yesno2
 dem_hmgunsf:
   title: Gun in Storage
   response_type: factor
@@ -181,7 +181,7 @@ dem_hmgunsf:
   surveys_used:
   - bas-2025
   vargroup: dem
-  value_labels_name: gun3
+  value_label_id: gun3
 dem_hmgunlk:
   title: Gun Lock
   response_type: factor
@@ -190,7 +190,7 @@ dem_hmgunlk:
   surveys_used:
   - bas-2025
   vargroup: dem
-  value_labels_name: gun3
+  value_label_id: gun3
 dem_adults:
   title: Number of adults in household
   response_type: integer
@@ -222,7 +222,7 @@ dem_hhemp:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: yesno2
+  value_label_id: yesno2
   note: '
 
     Question only asked if more than one adult lived in household
@@ -243,7 +243,7 @@ dem_child:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   note: "\nIf a respondent left his question blank or answered 'no', the survey skipped\
     \ the\nfollowing questions about childrens' age, going straight to the question\
     \ asking \nabout the respondent's birthyear.\n"
@@ -253,7 +253,7 @@ dem_child:
     - bas-2024
     question_text: In the __past 30 days__, have you had any children under the age
       of 18 living in your home for at least some of the time?
-    value_labels_name: yesno2
+    value_label_id: yesno2
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -336,7 +336,7 @@ dem_hhdisabl:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: yesno2
+  value_label_id: yesno2
   versions:
   - version_id: '2025'
     surveys_used:
@@ -351,12 +351,12 @@ dem_edattain:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: highest_degree
+  value_label_id: highest_degree
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
-    value_labels_name: edattain
+    value_label_id: edattain
 dem_inths:
   title: High school racial integration
   response_type: factor
@@ -366,7 +366,7 @@ dem_inths:
   surveys_used:
   - bas-2024
   vargroup: dem
-  value_labels_name: inths
+  value_label_id: inths
 dem_married:
   title: Marital status
   response_type: factor
@@ -377,14 +377,14 @@ dem_married:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: marital_status
+  value_label_id: marital_status
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: Are you now married, widowed, divorced, separated, or have you
       never been married
-    value_labels_name: married
+    value_label_id: married
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -428,7 +428,7 @@ dem_gender:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: gender
+  value_label_id: gender
 dem_sexlty:
   title: Sexuality
   response_type: factor
@@ -438,13 +438,13 @@ dem_sexlty:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: sexuality
+  value_label_id: sexuality
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: Do you personally think of yourself as…
-    value_labels_name: sexlty
+    value_label_id: sexlty
 dem_latx:
   title: 'Race/ethnicity indicator: Latinx'
   response_type: factor
@@ -454,7 +454,7 @@ dem_latx:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   description: "\nA binary indicator for any respondent who identified as being of\
     \ 'Hispanic, \nLatino, or Spanish origin' on the survey or specified  'some other\
     \ race' for \ntheir racial identity that was then recoded into this category.\n"
@@ -462,13 +462,13 @@ dem_latx:
   - version_id: '2024'
     surveys_used:
     - bas-2024
-    value_labels_name: yesno01
+    value_label_id: yesno01
   - version_id: '2025'
     surveys_used:
     - bas-2025
     question_text: Are you of Hispanic, Latino, or Spanish origin?
     title: Reported Hispanic Ethincity
-    value_labels_name: yesno2
+    value_label_id: yesno2
 dem_race_wh:
   title: 'Race/ethnicity indicator: White'
   response_type: factor
@@ -477,7 +477,7 @@ dem_race_wh:
   - bas-2023
   - bas-2024
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   description: "\nA binary indicator for any respondent who identified as 'White'\
     \ on the survey \nor specified 'some other race' that was then recoded into this\
     \ category.\n"
@@ -485,7 +485,7 @@ dem_race_wh:
   - version_id: '2024'
     surveys_used:
     - bas-2024
-    value_labels_name: yesno01
+    value_label_id: yesno01
 dem_race_bl:
   title: 'Race/ethnicity indicator: Black'
   response_type: factor
@@ -494,7 +494,7 @@ dem_race_bl:
   - bas-2023
   - bas-2024
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   description: "\nA binary indicator for any respondent who identified as 'Black or\
     \ African \nAmerican' on the survey or specified 'some other race' that was then\
     \ recoded \ninto this category.\n"
@@ -502,7 +502,7 @@ dem_race_bl:
   - version_id: '2024'
     surveys_used:
     - bas-2024
-    value_labels_name: yesno01
+    value_label_id: yesno01
 dem_race_am:
   title: 'Race/ethnicity indicator: American Indian'
   response_type: factor
@@ -511,7 +511,7 @@ dem_race_am:
   - bas-2023
   - bas-2024
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   description: "\nA binary indicator for any respondent who identified as 'American\
     \ Indian or \nAlaska Native' on the survey or specified 'some other race' that\
     \ was then \nrecoded into this category.\n"
@@ -519,7 +519,7 @@ dem_race_am:
   - version_id: '2024'
     surveys_used:
     - bas-2024
-    value_labels_name: yesno01
+    value_label_id: yesno01
 dem_race_as:
   title: 'Race/ethnicity indicator: Asian'
   response_type: factor
@@ -528,7 +528,7 @@ dem_race_as:
   - bas-2023
   - bas-2024
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   description: "\nA binary indicator for any respondent who identified as 'Asian,\
     \ Asian American, \nNative Hawaiian or other Pacific Islander' on the survey or\
     \ specified \n'some other race' that was then recoded into this category.\n"
@@ -536,7 +536,7 @@ dem_race_as:
   - version_id: '2024'
     surveys_used:
     - bas-2024
-    value_labels_name: yesno01
+    value_label_id: yesno01
 dem_fborn:
   title: Nativity
   response_type: factor
@@ -544,7 +544,7 @@ dem_fborn:
   surveys_used:
   - bas-2025
   vargroup: dem
-  value_labels_name: nativity3
+  value_label_id: nativity3
 dem_fbornm:
   title: Mother Nativity
   response_type: factor
@@ -552,7 +552,7 @@ dem_fbornm:
   surveys_used:
   - bas-2025
   vargroup: dem
-  value_labels_name: nativity3
+  value_label_id: nativity3
 dem_religion:
   title: Religion
   response_type: factor
@@ -562,7 +562,7 @@ dem_religion:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: religion
+  value_label_id: religion
 dem_denom:
   title: Religion Denomination - Protestant
   response_type: factor
@@ -571,7 +571,7 @@ dem_denom:
   - bas-2025
   vargroup: dem
   source: Modified GSS relig/tmpdenom
-  value_labels_name: denom
+  value_label_id: denom
   note: "\nThis question is shown if the respondent answered 1 for DEM_RELIGION \n"
 dem_jewtrad:
   title: Religion -- Jewish Tradition
@@ -582,7 +582,7 @@ dem_jewtrad:
   - bas-2025
   vargroup: dem
   source: Modified GSS relig/jew
-  value_labels_name: jewtrad
+  value_label_id: jewtrad
   note: "\nThis question is shown if the respondent answered 4 for DEM_RELIGION \n"
 dem_attrel:
   title: Religious attendance
@@ -593,12 +593,12 @@ dem_attrel:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: attend_religion
+  value_label_id: attend_religion
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
-    value_labels_name: attrel
+    value_label_id: attrel
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -618,7 +618,7 @@ dem_income_70k:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: income_70k
+  value_label_id: income_70k
   note: "\nIf the responent answered 'Under $70,000,' they were shown the 'dem_income_lo'\n\
     question; if the respondent answered '$70,000 or more,' they were shown the \n\
     'dem_income_hi' question. If a respondent left this blank, the survey skipped\
@@ -648,14 +648,14 @@ dem_income_lo:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: low_income
+  value_label_id: low_income
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: During 2023, in which of these groups did your total family income,
       from all sources, fall before taxes?
-    value_labels_name: income_lo
+    value_label_id: income_lo
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -672,21 +672,21 @@ dem_income_hi:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: high_income
+  value_label_id: high_income
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: During 2023, in which of these groups did your total family income,
       from all sources, fall before taxes?
-    value_labels_name: income_hi
+    value_label_id: income_hi
   - version_id: '2025'
     surveys_used:
     - bas-2025
     question_text: During 2024, in which of these groups did your total family income,
       from all sources, fall before taxes?
     title: High Income Level
-    value_labels_name: income_hi25
+    value_label_id: income_hi25
 prg_snap:
   title: Received SNAP benefits
   response_type: factor
@@ -704,7 +704,7 @@ prg_snap:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   versions:
   - version_id: '2024'
     surveys_used:
@@ -718,7 +718,7 @@ prg_snap:
 
       The Supplemental Nutrition Assistance Program, or SNAP (formerly known as the
       Food Stamp Program)'
-    value_labels_name: yesno2
+    value_label_id: yesno2
 prg_med:
   title: Received Medicaid or similar benefits
   response_type: factor
@@ -736,7 +736,7 @@ prg_med:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   versions:
   - version_id: '2024'
     surveys_used:
@@ -750,7 +750,7 @@ prg_med:
 
       Medicaid, Medical Assistance, the Maryland Children’s Health Program or any
       kind of state or government-sponsored assistance plan based on income or a disability'
-    value_labels_name: yesno2
+    value_label_id: yesno2
 prg_housing:
   title: Received governmental housing benefits
   response_type: factor
@@ -768,7 +768,7 @@ prg_housing:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   versions:
   - version_id: '2024'
     surveys_used:
@@ -782,7 +782,7 @@ prg_housing:
 
       A federal, state, or local government housing program that lowers your rent,
       such as a housing voucher or public housing'
-    value_labels_name: yesno2
+    value_label_id: yesno2
 prg_ssi:
   title: Received SSI benefits
   response_type: factor
@@ -800,7 +800,7 @@ prg_ssi:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   versions:
   - version_id: '2024'
     surveys_used:
@@ -814,7 +814,7 @@ prg_ssi:
 
       Supplemental Security Income (SSI), which provides cash assistance to low-income,
       aged (age 65 or older), blind, and disabled persons'
-    value_labels_name: yesno2
+    value_label_id: yesno2
 prg_ssdi:
   title: Received SSDI benefits
   response_type: factor
@@ -832,7 +832,7 @@ prg_ssdi:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   versions:
   - version_id: '2024'
     surveys_used:
@@ -846,7 +846,7 @@ prg_ssdi:
 
       Social Security Disability Income (SSDI), which provides cash assistance to
       disabled adults with longer work histories'
-    value_labels_name: yesno2
+    value_label_id: yesno2
 prg_tanf:
   title: Received TANF benefits
   response_type: factor
@@ -863,7 +863,7 @@ prg_tanf:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   versions:
   - version_id: '2024'
     surveys_used:
@@ -876,7 +876,7 @@ prg_tanf:
 
 
       Temporary Assistance for Needy Families (TANF), sometimes known as cash welfare'
-    value_labels_name: yesno2
+    value_label_id: yesno2
 inv_votreg:
   title: Registered to vote
   response_type: factor
@@ -885,7 +885,7 @@ inv_votreg:
   surveys_used:
   - bas-2024
   vargroup: dem
-  value_labels_name: votereg
+  value_label_id: votereg
 inv_voteupc:
   title: Likely to vote in 2024 general election
   response_type: factor
@@ -896,7 +896,7 @@ inv_voteupc:
   surveys_used:
   - bas-2024
   vargroup: dem
-  value_labels_name: voteupc
+  value_label_id: voteupc
 dem_voter:
   title: General election 2022 voting
   response_type: factor
@@ -907,7 +907,7 @@ dem_voter:
   - bas-2023
   - bas-2025
   vargroup: con
-  value_labels_name: voted
+  value_label_id: voted
   versions:
   - version_id: '2025'
     surveys_used:
@@ -916,7 +916,7 @@ dem_voter:
       senator for the state of Maryland, members of Congress, and local offices. Do
       you remember for sure whether or not you voted in that election?
     title: General Election 2024 Voting
-    value_labels_name: votereg
+    value_label_id: votereg
 dem_voteelig:
   title: Eligible to vote
   response_type: factor
@@ -926,7 +926,7 @@ dem_voteelig:
   - bas-2023
   - bas-2025
   vargroup: con
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   note: "\nThis question was only asked of respondents who responded to question \n\
     `bas23_con_invvoter` with either \"I thought about voting this time-but didn't\"\
     \ \nor \"I did not vote in the election\". \n"
@@ -936,7 +936,7 @@ dem_voteelig:
     - bas-2025
     question_text: To the best of your knowledge, were you eligible to vote in the
       election in November 2024?
-    value_labels_name: yesno2
+    value_label_id: yesno2
 dem_ideo:
   title: Political ideology
   response_type: factor
@@ -946,13 +946,13 @@ dem_ideo:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: ideology
+  value_label_id: ideology
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: In general, would you describe your political views as…
-    value_labels_name: ideo
+    value_label_id: ideo
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -966,13 +966,13 @@ dem_pparty:
   - bas-2024
   - bas-2025
   vargroup: dem
-  value_labels_name: political_party
+  value_label_id: political_party
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: In politics today, do you consider yourself a…
-    value_labels_name: pparty
+    value_label_id: pparty
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -984,7 +984,7 @@ dem_race:
   surveys_used:
   - bas-example
   vargroup: dem
-  value_labels_name: race5
+  value_label_id: race5
 dem_children_n:
   title: Number of children in household
   response_type: integer

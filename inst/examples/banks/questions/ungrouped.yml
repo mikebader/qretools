@@ -7,7 +7,7 @@ nhd_fut:
   surveys_used:
   - bas-2023
   vargroup: nhd
-  value_labels_name: place_to_live
+  value_label_id: place_to_live
 env_clmharm:
   title: Concern over climate change causing harm
   response_type: factor
@@ -17,7 +17,7 @@ env_clmharm:
   surveys_used:
   - bas-2023
   vargroup: env
-  value_labels_name: concern4
+  value_label_id: concern4
 env_clmcost:
   title: Financial effect of climate change in Baltimore
   response_type: factor
@@ -29,7 +29,7 @@ env_clmcost:
   surveys_used:
   - bas-2023
   vargroup: env
-  value_labels_name: costs
+  value_label_id: costs
 con_btrust:
   title: Trust in nearby businesses
   response_type: factor
@@ -38,7 +38,7 @@ con_btrust:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: almost_always_business
+  value_label_id: almost_always_business
 con_ntrust:
   title: Trust in non-profit organizations
   response_type: factor
@@ -47,7 +47,7 @@ con_ntrust:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: almost_always_npo
+  value_label_id: almost_always_npo
 con_bthnk:
   title: Thought about by nearby businesses
   response_type: factor
@@ -56,7 +56,7 @@ con_bthnk:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: always5
+  value_label_id: always5
 org_gthnk?:
   title: Thought about by Local Government
   response_type: factor
@@ -65,7 +65,7 @@ org_gthnk?:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: always5
+  value_label_id: always5
 con_bsrv:
   title: Businesses serve needs
   response_type: factor
@@ -74,7 +74,7 @@ con_bsrv:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: well4
+  value_label_id: well4
 con_nsrv:
   title: Nonprofits serve needs
   response_type: factor
@@ -83,7 +83,7 @@ con_nsrv:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: well4
+  value_label_id: well4
 org_gsrv:
   title: Local government serves needs
   response_type: factor
@@ -92,7 +92,7 @@ org_gsrv:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: well4
+  value_label_id: well4
 con_plcfear:
   title: Fear of police
   response_type: factor
@@ -102,7 +102,7 @@ con_plcfear:
   - bas-2023
   vargroup: con
   source: DCAS 2018 Q37
-  value_labels_name: a_lot4
+  value_label_id: a_lot4
 con_plcfeara:
   title: Fear of police affecting everyday life
   response_type: factor
@@ -111,7 +111,7 @@ con_plcfeara:
   - bas-2023
   vargroup: con
   source: DCAS 2018 Q37
-  value_labels_name: a_lot4
+  value_label_id: a_lot4
 con_plcrespect:
   title: Police respect
   response_type: factor
@@ -120,7 +120,7 @@ con_plcrespect:
   - bas-2023
   vargroup: con
   source: NCVS-R PQ3a
-  value_labels_name: respect
+  value_label_id: respect
 con_plcfair:
   title: Police fairness
   response_type: factor
@@ -129,7 +129,7 @@ con_plcfair:
   - bas-2023
   vargroup: con
   source: NCVS-R PQ3c
-  value_labels_name: fair
+  value_label_id: fair
 con_plcprvcrime:
   title: Police effectiveness
   response_type: factor
@@ -138,7 +138,7 @@ con_plcprvcrime:
   - bas-2023
   vargroup: con
   source: NCVS-R PQ3d
-  value_labels_name: effective
+  value_label_id: effective
 con_plctrust:
   title: Police trust
   response_type: factor
@@ -147,7 +147,7 @@ con_plctrust:
   - bas-2023
   vargroup: con
   source: NCVS-R PQ3e
-  value_labels_name: trust
+  value_label_id: trust
 con_plcrating:
   title: Police overall effectiveness
   response_type: factor
@@ -157,7 +157,7 @@ con_plcrating:
   - bas-2023
   vargroup: con
   source: NCVS-R PQ3f
-  value_labels_name: job
+  value_label_id: job
 tsp_daily:
   title: 'Transportation insecurity: daily living affected'
   response_type: factor
@@ -167,7 +167,7 @@ tsp_daily:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspfrequency3
+  value_label_id: tspfrequency3
 con_kbraff:
   title: Key Bridge collapse overall impact
   response_type: factor
@@ -180,7 +180,7 @@ con_kbraff:
   - bas-2024
   vargroup: con
   source: Goucher Poll (April 2024); Modified to be past tense
-  value_labels_name: kbimpact4
+  value_label_id: kbimpact4
 con_kbwork:
   title: Key Bridge collapse affected work commute
   response_type: factor
@@ -189,7 +189,7 @@ con_kbwork:
   surveys_used:
   - bas-2024
   vargroup: con
-  value_labels_name: kbimpact4
+  value_label_id: kbimpact4
 con_kbfrnd:
   title: Key Bridge collapse affected seeing people
   response_type: factor
@@ -198,7 +198,7 @@ con_kbfrnd:
   surveys_used:
   - bas-2024
   vargroup: con
-  value_labels_name: kbimpact4
+  value_label_id: kbimpact4
 con_kberrd:
   title: Key Bridge collapse affected errands
   response_type: factor
@@ -207,7 +207,7 @@ con_kberrd:
   surveys_used:
   - bas-2024
   vargroup: con
-  value_labels_name: kbimpact4
+  value_label_id: kbimpact4
 con_kbmedi:
   title: Key Bridge collapse affected medical care
   response_type: factor
@@ -216,7 +216,7 @@ con_kbmedi:
   surveys_used:
   - bas-2024
   vargroup: con
-  value_labels_name: kbimpact4
+  value_label_id: kbimpact4
 con_kbconfl:
   title: Confidence in local govt to rebuild Key Bridge
   response_type: factor
@@ -225,7 +225,7 @@ con_kbconfl:
   surveys_used:
   - bas-2024
   vargroup: con
-  value_labels_name: kbconf5
+  value_label_id: kbconf5
   note: "\nRespondent was asked this question if they were randomized into this condition\
     \ \nif in KBSPLIT condition #1 (`svy_kbsplit == 1`).\n"
 con_kbconfs:
@@ -236,7 +236,7 @@ con_kbconfs:
   surveys_used:
   - bas-2024
   vargroup: con
-  value_labels_name: kbconf5
+  value_label_id: kbconf5
 con_kbconff:
   title: Confidence in federal govt to rebuild Key Bridge
   response_type: factor
@@ -245,7 +245,7 @@ con_kbconff:
   surveys_used:
   - bas-2024
   vargroup: con
-  value_labels_name: kbconf5
+  value_label_id: kbconf5
 con_kbhelpl:
   title: Local government rating of Key Bridge response
   response_type: factor
@@ -255,7 +255,7 @@ con_kbhelpl:
   surveys_used:
   - bas-2024
   vargroup: con
-  value_labels_name: kbhelp6
+  value_label_id: kbhelp6
 con_kbhelps:
   title: State government rating of Key Bridge response
   response_type: factor
@@ -265,7 +265,7 @@ con_kbhelps:
   surveys_used:
   - bas-2024
   vargroup: con
-  value_labels_name: kbhelp6
+  value_label_id: kbhelp6
 con_kbhelpf:
   title: Federal government rating of Key Bridge response
   response_type: factor
@@ -275,7 +275,7 @@ con_kbhelpf:
   surveys_used:
   - bas-2024
   vargroup: con
-  value_labels_name: kbhelp6
+  value_label_id: kbhelp6
 con_invblood:
   title: Donated blood
   response_type: factor
@@ -285,7 +285,7 @@ con_invblood:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 con_invvolnp:
   title: Volunteer nonprofit or religious work
   response_type: factor
@@ -296,7 +296,7 @@ con_invvolnp:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 con_invvolpol:
   title: Political work or volunteering
   response_type: factor
@@ -307,7 +307,7 @@ con_invvolpol:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 con_invcontpub:
   title: Contacted a public official
   response_type: factor
@@ -317,7 +317,7 @@ con_invcontpub:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 con_invdonnp:
   title: Charitable contributions
   response_type: factor
@@ -328,7 +328,7 @@ con_invdonnp:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 con_invdonpol:
   title: Political Donation
   response_type: factor
@@ -339,7 +339,7 @@ con_invdonpol:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 con_invattevent:
   title: Cultural event attendance
   response_type: factor
@@ -350,7 +350,7 @@ con_invattevent:
   surveys_used:
   - bas-2023
   vargroup: con
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 fin_jobrsec:
   title: Job security
   response_type: factor
@@ -359,7 +359,7 @@ fin_jobrsec:
   - bas-2023
   vargroup: fin
   source: ISSP 2015 Q12 and GSS rsecjob
-  value_labels_name: secure
+  value_label_id: secure
   note: "\nThis question was presented to respondent if theier answer to the employment\
     \ \nstatus question (before recoding) was one of: \"Working full-time\", \"Working\
     \ \npart-time\", or \"With a job but not at work because of temporary illness,\
@@ -378,7 +378,7 @@ fin_entself:
   - bas-2023
   vargroup: fin
   source: DMACS 2015 entrep_ourdef_d15
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 fin_entopp:
   title: Opportunity to be an entrepreneur
   response_type: factor
@@ -388,7 +388,7 @@ fin_entopp:
   - bas-2023
   vargroup: fin
   source: DMACS 2015 entrep_opp_d15
-  value_labels_name: great_deal4
+  value_label_id: great_deal4
 fin_entbetter:
   title: Best path to financial success
   response_type: factor
@@ -398,7 +398,7 @@ fin_entbetter:
   - bas-2023
   vargroup: fin
   source: DMACS 2015 entrep_or_estab_d15
-  value_labels_name: entrepreneur
+  value_label_id: entrepreneur
 fin_gigjob:
   title: Gig job
   response_type: factor
@@ -409,7 +409,7 @@ fin_gigjob:
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: earned_money
+  value_label_id: earned_money
   note: "\nIf a respondent reports having earned money through a gig job in the past\
     \ 30 \ndays, they will be taken to a question about the proportion of their income\
     \ from\ngig jobs. Otherwise, the survey skips to a question about the respondent's\
@@ -422,7 +422,7 @@ fin_gigprop:
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: income_amount
+  value_label_id: income_amount
   note: "\nThis question was skipped for respondents who reported \"I have never earned\
     \ \nmoney this way\" in response to question `bas23_fin_gigjob`\n"
 fin_gigneed:
@@ -433,7 +433,7 @@ fin_gigneed:
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: bills
+  value_label_id: bills
 hlt_srphfut:
   title: Overall self-rated future health
   response_type: factor
@@ -443,7 +443,7 @@ hlt_srphfut:
   - bas-2023
   vargroup: hlt
   source: https://doi.org/10.1093/gerona/62.12.1428
-  value_labels_name: better3
+  value_label_id: better3
 hlt_srmhfut:
   title: Self-rated future mental health
   response_type: factor
@@ -452,7 +452,7 @@ hlt_srmhfut:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: better3
+  value_label_id: better3
 hlt_gad21:
   title: Feeling nervous/anxious within last two weeks
   response_type: factor
@@ -462,7 +462,7 @@ hlt_gad21:
   - bas-2023
   vargroup: hlt
   source: GAD-2 Q1
-  value_labels_name: days
+  value_label_id: days
   note: "\nIf the respondent answered 'more than half the days' or 'nearly every day',\
     \ the \nfollowing message was displayed on their screen: \n\n> If you are experiencing\
     \ emotional distress and wish to talk to a trained \nprofessional, you may call\
@@ -476,7 +476,7 @@ hlt_gad22:
   - bas-2023
   vargroup: hlt
   source: GAD-2 Q2
-  value_labels_name: days
+  value_label_id: days
   note: "\nIf the respondent answered 'more than half the days' or 'nearly every day',\
     \ the \nfollowing message was displayed on their screen: \n\n> If you are experiencing\
     \ emotional distress and wish to talk to a trained \nprofessional, you may call\
@@ -493,7 +493,7 @@ hlt_ch4sat:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: better5
+  value_label_id: better5
   description: Better if hlt_ch4sat (1,2). Worse if hlt_ch4sat (4,5)
 hlt_ch4satcv:
   title: Change in quality of life due to pandemic
@@ -503,7 +503,7 @@ hlt_ch4satcv:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: pandemic
+  value_label_id: pandemic
   note: "\nOnly respondents who did not answer \"Stayed about the same\" on question\
     \ \n`bas23_hlt_ch4sat` were asked this question. The text {{CHGSATDESC}} was filled\
     \ \nwith either \"better\" or \"worse\" based on their response to question\n\
@@ -516,7 +516,7 @@ hlt_ch4wrkcv:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: pandemic
+  value_label_id: pandemic
   note: "\nOnly respondents who did not answer \"Stayed about the same\" on question\
     \ \n`bas23_hlt_ch4wrk` were asked this question. The text {{CHGWRKDESC}} was filled\
     \ \nwith either \"better\" or \"worse\" based on their response to question\n\
@@ -529,7 +529,7 @@ hlt_ch4rel:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: better5
+  value_label_id: better5
 hlt_ch4relcv:
   title: Relationships with friends due to pandemic
   response_type: factor
@@ -538,7 +538,7 @@ hlt_ch4relcv:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: pandemic
+  value_label_id: pandemic
   note: "\nOnly respondents who did not answer \"Stayed about the same\" on question\
     \ \n`bas23_hlt_ch4rel` were asked this question. The text {{CHGRELDESC}} was filled\
     \ \nwith either \"better\" or \"worse\" based on their response to question\n\
@@ -551,7 +551,7 @@ hlt_ch4fam:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: better5
+  value_label_id: better5
 hlt_ch4famcv:
   title: Relationships with family due to pandemic
   response_type: factor
@@ -560,7 +560,7 @@ hlt_ch4famcv:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: pandemic
+  value_label_id: pandemic
   note: "\nOnly respondents who did not answer \"Stayed about the same\" on question\
     \ \n`bas23_hlt_ch4fam` were asked this question. The text {{CHGFAMDESC}} was filled\
     \ \nwith either \"better\" or \"worse\" based on their response to question\n\
@@ -573,7 +573,7 @@ hlt_ch4deathcv:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   note: "\nIf the respondent answered yes, the following message was displayed on\
     \ their \nscreen: \n\n> If you are experiencing emotional distress and wish to\
     \ talk to a trained \nprofessional, you may call 988. You can call 24 hours a\
@@ -590,7 +590,7 @@ hlt_knaddict:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: amount
+  value_label_id: amount
 hlt_oddeath:
   title: Death of loved one due to drug overdose
   response_type: factor
@@ -599,7 +599,7 @@ hlt_oddeath:
   surveys_used:
   - bas-2023
   vargroup: hlt
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   note: "\nIf the respondent answered yes, the following message was displayedon their\
     \ \nscreen: \n\n> If you are experiencing emotional distress and wish to talk\
     \ to a trained \nprofessional, you may call 988. You can call 24 hours a day,\
@@ -622,7 +622,7 @@ dem_race3:
   - bas-2023
   - bas-2024
   vargroup: dem
-  value_labels_name: race3
+  value_label_id: race3
   description: "\nA mutually exclusive set of three racial categories that identifies\
     \ each\nrespondent as Black alone or in combination with another race, White alone,\
     \ or \nanother race alone or in combination based on their responses to the racial\
@@ -635,7 +635,7 @@ dem_race5:
   - bas-2023
   - bas-2024
   vargroup: dem
-  value_labels_name: race5
+  value_label_id: race5
   description: "\nA mutually exclusive set of five racial categories that identifies\
     \ each \nrespondent as multiracial, Black alone, White alone, American \nIndian\
     \ alone, or Asian alone  based on their response to the racial identity \nquestion.\n"
@@ -647,7 +647,7 @@ dem_raceeth4:
   - bas-2023
   - bas-2024
   vargroup: dem
-  value_labels_name: raceeth4
+  value_label_id: raceeth4
   description: "\nA mutually exclusive set of four race/ethnicity categories that\
     \ identifies each \nrespondent as Latinx (of any race), non-Latinx Black alone\
     \ or in combination\nwith any other race, non-Latinx White alone, non-Latinx other\
@@ -666,7 +666,7 @@ dem_raceeth6:
   - bas-2023
   - bas-2024
   vargroup: dem
-  value_labels_name: raceeth6
+  value_label_id: raceeth6
   description: "\nA mutually exclusive set of six race/ethnicity categories that identifies\
     \ each \nrespondent as non-Latinx multiracial, non-Latinx Black alone, non-Latinx\
     \ White \nalone, non-Latinx Asian alone, non-Latinx American Indian alone, or\
@@ -686,7 +686,7 @@ dem_multi:
   - bas-2023
   - bas-2024
   vargroup: dem
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   description: "\nA binary indicator for any respondent who identified as more than\
     \ one racial\ncategory on the survey or specified 'some other race' that was then\
     \ recoded \ninto this category.\n"
@@ -694,7 +694,7 @@ dem_multi:
   - version_id: '2024'
     surveys_used:
     - bas-2024
-    value_labels_name: yesno01
+    value_label_id: yesno01
 dem_nchild:
   title: Total number of children in household
   response_type: integer
@@ -740,7 +740,7 @@ dem_income:
   - bas-2023
   - bas-2024
   vargroup: dem
-  value_labels_name: comb_income
+  value_label_id: comb_income
   note: '
 
     If a respondent broke off the interview at either the `bas23_dem_income_lo` or
@@ -762,4 +762,4 @@ dem_income:
     - bas-2024
     question_text: During 2023, in which of these groups did your total family income,
       from all sources, fall before taxes?
-    value_labels_name: income
+    value_label_id: income

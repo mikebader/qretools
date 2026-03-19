@@ -25,7 +25,7 @@ nhd_blks:
   - bas-2025
   vargroup: nhd
   source: DCAS 2018 Q6
-  value_labels_name: blocks
+  value_label_id: blocks
   versions:
   - version_id: '2024'
     surveys_used:
@@ -41,13 +41,13 @@ nhd_sat:
   - bas-2025
   vargroup: nhd
   source: DCAS 2018 Q6
-  value_labels_name: satisfied4
+  value_label_id: satisfied4
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     title: Neighborhood Satisfaction
-    value_labels_name: satisfied5
+    value_label_id: satisfied5
 nhd_chg:
   title: Change in neighborhood
   response_type: factor
@@ -59,7 +59,7 @@ nhd_chg:
   - bas-2024
   vargroup: nhd
   source: DCAS 2018 Q7
-  value_labels_name: place_to_live
+  value_label_id: place_to_live
   versions:
   - version_id: '2024'
     surveys_used:
@@ -67,7 +67,7 @@ nhd_chg:
     question_text: Looking back over the past five years or so, would you say that
       __your  neighborhood__ generally has become a better place to live, has stayed
       about  the same, or has become a worse place to live?
-    value_labels_name: nhdchange
+    value_label_id: nhdchange
 nhd_nbknow:
   title: Know neighbors' names
   response_type: factor
@@ -76,7 +76,7 @@ nhd_nbknow:
   surveys_used:
   - bas-2024
   vargroup: nhd
-  value_labels_name: nbknow
+  value_label_id: nbknow
 nhd_cohes1:
   title: Neighbors willingness to help
   response_type: factor
@@ -86,7 +86,7 @@ nhd_cohes1:
   - bas-2025
   vargroup: nhd
   source: PHDCN Q11.a
-  value_labels_name: agree4
+  value_label_id: agree4
   versions:
   - version_id: '2025'
     surveys_used:
@@ -101,7 +101,7 @@ nhd_cohes2:
   - bas-2025
   vargroup: nhd
   source: PHDCN Q11.b
-  value_labels_name: agree4
+  value_label_id: agree4
   versions:
   - version_id: '2025'
     surveys_used:
@@ -116,7 +116,7 @@ nhd_cohes3:
   - bas-2025
   vargroup: nhd
   source: PHDCN Q11.m
-  value_labels_name: agree4
+  value_label_id: agree4
   versions:
   - version_id: '2025'
     surveys_used:
@@ -131,7 +131,7 @@ nhd_cohes4:
   - bas-2025
   vargroup: nhd
   source: PHDCN Q11.f
-  value_labels_name: agree4
+  value_label_id: agree4
   versions:
   - version_id: '2025'
     surveys_used:
@@ -148,7 +148,7 @@ nhd_cohes5:
   - bas-2025
   vargroup: nhd
   source: PHDCN Q11.k
-  value_labels_name: agree4
+  value_label_id: agree4
   versions:
   - version_id: '2025'
     surveys_used:
@@ -161,7 +161,7 @@ nhd_newres:
   surveys_used:
   - bas-2025
   vargroup: nhd
-  value_labels_name: welcome5
+  value_label_id: welcome5
 nhd_schqual:
   title: Quality of public schools
   response_type: factor
@@ -173,7 +173,7 @@ nhd_schqual:
   - bas-2025
   vargroup: nhd
   source: DCAS 2018 Q8
-  value_labels_name: excellent5
+  value_label_id: excellent5
   versions:
   - version_id: '2024'
     surveys_used:
@@ -182,7 +182,7 @@ nhd_schqual:
       \ your neighborhood.  We want to know what you think even if you do not have\
       \ a child that attends the  public schools. \n\nWhat would be your best guess\
       \ about the quality of the __public schools__ in  your neighborhood?"
-    value_labels_name: schqual
+    value_label_id: schqual
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -202,14 +202,14 @@ nhd_schchg:
   - bas-2025
   vargroup: nhd
   source: DCAS 2018 Q9
-  value_labels_name: better5
+  value_label_id: better5
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: During the past five years, do you think that the __public schools__
       in your  neighborhood have gotten better, stayed about the same, or gotten worse?
-    value_labels_name: change5
+    value_label_id: change5
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -225,7 +225,7 @@ nhd_schre:
   surveys_used:
   - bas-2024
   vargroup: nhd
-  value_labels_name: schre
+  value_label_id: schre
   note: "\n{{SCHQUAL}} was filled with response the respondent provided in `nhd_schqual`.\n\
     \nIf the respondent did not answer `nhd_schqual`, the respondent was asked: \n\
     \"Some people think about different things when rating the quality of schools.\
@@ -258,7 +258,7 @@ nhd_safe:
   - bas-2025
   vargroup: nhd
   source: Crime Factors and Neighborhood Decline in Chicago (Quillian and Pager 2001)
-  value_labels_name: satisfied4
+  value_label_id: satisfied4
   versions:
   - version_id: '2025'
     surveys_used:
@@ -266,7 +266,7 @@ nhd_safe:
     question_text: How satisfied are you with your feeling of personal safety in your
       neighborhood?
     title: Neighborhood Safety Satisfaction
-    value_labels_name: satisfied5
+    value_label_id: satisfied5
 nhd_safechg:
   title: Change in feeling of safety in neighborhood
   response_type: factor
@@ -278,14 +278,14 @@ nhd_safechg:
   - bas-2025
   vargroup: nhd
   source: PHDCN Q44.a
-  value_labels_name: better5
+  value_label_id: better5
   versions:
   - version_id: '2024'
     surveys_used:
     - bas-2024
     question_text: During the past five years has your __feeling of personal safety__
       in your  neighborhood gotten better, stayed about the same, or gotten worse?
-    value_labels_name: change5
+    value_label_id: change5
   - version_id: '2025'
     surveys_used:
     - bas-2025
@@ -301,7 +301,7 @@ nhd_walksafe:
   - bas-2025
   vargroup: nhd
   source: CCAHS W1.C-14
-  value_labels_name: walksafe
+  value_label_id: walksafe
   versions:
   - version_id: '2025'
     surveys_used:
@@ -315,7 +315,7 @@ nhd_sidewlkq:
   surveys_used:
   - bas-2024
   vargroup: nhd
-  value_labels_name: sidewlkq
+  value_label_id: sidewlkq
 nhd_wratt:
   title: Worry About Being Attacked
   response_type: factor
@@ -324,7 +324,7 @@ nhd_wratt:
   - bas-2025
   vargroup: nhd
   source: Adapted from Kuen, et al. (2025)
-  value_labels_name: worry5
+  value_label_id: worry5
 nhd_wrbkhm:
   title: Worry About Break-in at Home
   response_type: factor
@@ -333,7 +333,7 @@ nhd_wrbkhm:
   - bas-2025
   vargroup: nhd
   source: Adapted from Kuen, et al. (2025)
-  value_labels_name: worry5
+  value_label_id: worry5
 nhd_pbycrime:
   title: Youth Crime in Neighborhood
   response_type: factor
@@ -342,7 +342,7 @@ nhd_pbycrime:
   surveys_used:
   - bas-2025
   vargroup: nhd
-  value_labels_name: problem5
+  value_label_id: problem5
 nhd_pbvbld:
   title: Vacant houses or storefronts
   response_type: factor
@@ -352,14 +352,14 @@ nhd_pbvbld:
   - bas-2025
   vargroup: nhd
   source: PHDCN Q29.c(with additional response category)
-  value_labels_name: problem4
+  value_label_id: problem4
   versions:
   - version_id: '2025'
     surveys_used:
     - bas-2025
     question_text: How much of a problem are vacant buildings in your neighborhood?
     title: Vacant Buildings in Neighborhood
-    value_labels_name: problem5
+    value_label_id: problem5
 nhd_pdvlot:
   title: Vacant lots
   response_type: factor
@@ -367,7 +367,7 @@ nhd_pdvlot:
   surveys_used:
   - bas-2024
   vargroup: nhd
-  value_labels_name: problem4
+  value_label_id: problem4
 nhd_pdlit:
   title: Litter in neighborhood
   response_type: factor
@@ -377,7 +377,7 @@ nhd_pdlit:
   - bas-2024
   vargroup: nhd
   source: PHDCN Q29.a(with additional response category
-  value_labels_name: problem4
+  value_label_id: problem4
 nhd_pbnoplc:
   title: Police Non-response in Neighborhood
   response_type: factor
@@ -386,7 +386,7 @@ nhd_pbnoplc:
   surveys_used:
   - bas-2025
   vargroup: nhd
-  value_labels_name: problem5
+  value_label_id: problem5
 nhd_pbdrugs:
   title: Drug Use in Neighborhood
   response_type: factor
@@ -395,7 +395,7 @@ nhd_pbdrugs:
   surveys_used:
   - bas-2025
   vargroup: nhd
-  value_labels_name: problem5
+  value_label_id: problem5
 nhd_pbod:
   title: Drug Overdoses in Neighborhood
   response_type: factor
@@ -403,7 +403,7 @@ nhd_pbod:
   surveys_used:
   - bas-2025
   vargroup: nhd
-  value_labels_name: problem5
+  value_label_id: problem5
 nhd_pbdsale:
   title: Drug Sales in Neighborhood
   response_type: factor
@@ -411,7 +411,7 @@ nhd_pbdsale:
   surveys_used:
   - bas-2025
   vargroup: nhd
-  value_labels_name: problem5
+  value_label_id: problem5
 nhd_sansat:
   title: Satisfaction with sanitation services
   response_type: factor
@@ -421,7 +421,7 @@ nhd_sansat:
   - bas-2024
   - bas-2025
   vargroup: nhd
-  value_labels_name: satisfied5
+  value_label_id: satisfied5
   versions:
   - version_id: '2025'
     surveys_used:
@@ -439,7 +439,7 @@ nhd_ptrsat:
   - bas-2024
   - bas-2025
   vargroup: nhd
-  value_labels_name: satisfied5
+  value_label_id: satisfied5
   versions:
   - version_id: '2025'
     surveys_used:
@@ -456,7 +456,7 @@ nhd_plcsat:
   - bas-2024
   - bas-2025
   vargroup: nhd
-  value_labels_name: satisfied5
+  value_label_id: satisfied5
   versions:
   - version_id: '2025'
     surveys_used:
@@ -472,7 +472,7 @@ nhd_schsat:
   - bas-2024
   - bas-2025
   vargroup: nhd
-  value_labels_name: satisfied5
+  value_label_id: satisfied5
   versions:
   - version_id: '2025'
     surveys_used:
@@ -488,7 +488,7 @@ nhd_emgsat:
   surveys_used:
   - bas-2025
   vargroup: nhd
-  value_labels_name: satisfied5
+  value_label_id: satisfied5
 nhd_pkasat:
   title: Satisfaction With Parks
   response_type: factor
@@ -497,7 +497,7 @@ nhd_pkasat:
   surveys_used:
   - bas-2025
   vargroup: nhd
-  value_labels_name: pkasat
+  value_label_id: pkasat
 nhd_pkqsat:
   title: Quality of Parks
   response_type: factor
@@ -506,7 +506,7 @@ nhd_pkqsat:
   surveys_used:
   - bas-2025
   vargroup: nhd
-  value_labels_name: satisfied5
+  value_label_id: satisfied5
 nhd_mvlkly:
   title: Likelihood of moving
   response_type: factor
@@ -516,7 +516,7 @@ nhd_mvlkly:
   - bas-2024
   vargroup: nhd
   source: 2004 DAS/CAS D_1
-  value_labels_name: mvlkly
+  value_label_id: mvlkly
 nhd_mvlklywh:
   title: Likely destination of move
   response_type: factor
@@ -526,7 +526,7 @@ nhd_mvlklywh:
   - bas-2024
   vargroup: nhd
   source: Soul of the Community, 2008-2010 Q5
-  value_labels_name: mvlklywh
+  value_label_id: mvlklywh
 nhd_mvprefwh:
   title: Preferred location
   response_type: factor
@@ -535,7 +535,7 @@ nhd_mvprefwh:
   surveys_used:
   - bas-2024
   vargroup: nhd
-  value_labels_name: mvprefwh
+  value_label_id: mvprefwh
 nhd_stayworr:
   title: Worry about affordability of neighborhood
   response_type: factor
@@ -544,7 +544,7 @@ nhd_stayworr:
   surveys_used:
   - bas-2024
   vargroup: nhd
-  value_labels_name: stayworr
+  value_label_id: stayworr
   note: '
 
     Appears if nhd_mvprefwh = 1 OR 2
@@ -559,7 +559,7 @@ nhd_homeeasy:
   surveys_used:
   - bas-2024
   vargroup: nhd
-  value_labels_name: difficult5
+  value_label_id: difficult5
 nhd_prob_main:
   title: Main neighborhood problem
   response_type: character
@@ -583,7 +583,7 @@ nhd_svc_schools:
   surveys_used:
   - bas-example
   vargroup: nhd
-  value_labels_name: satisfied5
+  value_label_id: satisfied5
 nhd_svc_parks:
   title: Satisfaction with neighborhood parks
   response_type: factor
@@ -592,7 +592,7 @@ nhd_svc_parks:
   surveys_used:
   - bas-example
   vargroup: nhd
-  value_labels_name: satisfied5
+  value_label_id: satisfied5
 nhd_svc_transit:
   title: Satisfaction with neighborhood transit
   response_type: factor
@@ -601,7 +601,7 @@ nhd_svc_transit:
   surveys_used:
   - bas-example
   vargroup: nhd
-  value_labels_name: satisfied5
+  value_label_id: satisfied5
 "feat_rating_{i}":
   title: "Rating of {i}"
   response_type: factor
@@ -609,7 +609,7 @@ nhd_svc_transit:
   surveys_used:
   - bas-example
   vargroup: nhd
-  value_labels_name: excellent5
+  value_label_id: excellent5
   note: |
     Template variable used in a loop. {i} is replaced with the feature name
     (e.g., "parks and green space") and the variable ID becomes feat_rating_1,
@@ -621,7 +621,7 @@ nhd_svc_transit:
   surveys_used:
   - bas-example
   vargroup: nhd
-  value_labels_name: a_lot4
+  value_label_id: a_lot4
   note: |
     Template variable used in a loop. {i} is replaced with the feature name
     and the variable ID becomes feat_improve_1, feat_improve_2, feat_improve_3.

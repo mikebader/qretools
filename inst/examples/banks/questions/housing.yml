@@ -5,7 +5,7 @@ hsg_tenure:
   surveys_used:
   - bas-example
   vargroup: hsg
-  value_labels_name: own
+  value_label_id: own
 hsg_own_years:
   title: Years owned home
   response_type: integer
