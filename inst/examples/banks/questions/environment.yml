@@ -1,356 +1,356 @@
 env_aqconc:
   title: Air Quality Concern
-  storage_type: factor
+  response_type: factor
   question_text: How concerned are you about the air quality in your neighborhood?
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: concern5
+  value_label_id: concern5
 env_lvwtshed:
   title: Live in a Watershed
-  storage_type: factor
+  response_type: factor
   question_text: Do you live in a watershed?
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesnodk
+  value_label_id: yesnodk
   description: We want to ask you about areas called watersheds. A watershed is the
     drainage area to either a body of water itself or to its tributaries, such as
     the rivers & streams that eventually flow into it.
 env_lvecosys:
   title: Live in an Ecosystem
-  storage_type: factor
+  response_type: factor
   question_text: Do you live in an ecosystem?
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesnodk
+  value_label_id: yesnodk
   description: We want to ask you about areas called ecosystems. An ecosystem is an
     area where living organisms and the physical environment interact.
 env_aqcomp:
   title: Air Quality Comparison
-  storage_type: factor
+  response_type: factor
   question_text: How would you compare the air quality in your neighborhood to air
     quality in other neighborhoods in the Baltimore area? Would you say that the air
     quality in your neighborhood is…
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: aqcomp
+  value_label_id: aqcomp
 env_aqsmell:
   title: Air Smells Badly
-  storage_type: factor
+  response_type: factor
   question_text: In the past month, how often has the air in your neighborhood smelled
     bad?
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: aqfreq
+  value_label_id: aqfreq
 env_aqsmoke:
   title: See Smoke
-  storage_type: factor
+  response_type: factor
   question_text: In the past month, how often have you seen smoke coming from houses,
     businesses, or other places in your neighborhood?
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: aqfreq
+  value_label_id: aqfreq
 env_aqburn:
   title: Use a Coal-burning Fireplace or Stove
-  storage_type: factor
+  response_type: factor
   question_text: In cold weather this past winter, how often did you use a fireplace
     or stove that burns wood or coal?
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: aqburn
+  value_label_id: aqburn
 env_aqknowtv:
   title: 'Air Quality Alerts: Television News'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknowrd:
   title: 'Air Quality Alerts: Radio'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknownp:
   title: 'Air Quality Alerts: Newspaper'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknownw:
   title: 'Air Quality Alerts: News Website'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknowww:
   title: 'Air Quality Alerts: Weather Website'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknowow:
   title: 'Air Quality Alerts: Other Website'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknowsm:
   title: 'Air Quality Alerts: Social Media'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknowwa:
   title: 'Air Quality Alerts: Weather Phone App'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknowtx:
   title: 'Air Quality Alerts: Text Message from Agency'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknowff:
   title: 'Air Quality Alerts: Heard from Friends or Family'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknowot:
   title: 'Air Quality Alerts: Other'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqknowdk:
   title: 'Air Quality Alerts: Do Not Know'
-  storage_type: factor
+  response_type: factor
   question_text: In the past year, that is since {{CMONTHNM}} 2024, which of the following
     ways have you learned about air quality alerts in the Baltimore area? _Please
     select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprftv:
   title: 'Alert Preference: Television'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprfrd:
   title: 'Alert Preference: Radio'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprfnp:
   title: 'Alert Preference: Newspaper'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprfnw:
   title: 'Alert Preference: News Website'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprfww:
   title: 'Alert Preference: Weather Website'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprfow:
   title: 'Alert Preference: Other Website'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprfsm:
   title: 'Alert Preference: Social Media'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprfwa:
   title: 'Alert Preference: Weather Phone App'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprftx:
   title: 'Alert Preference: Text Message from Agency'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprfff:
   title: 'Alert Preference: Heard from Friends or Family'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprfot:
   title: 'Alert Preference: Other'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_aqprfno:
   title: 'Alert Preference: Prefer not to Receive Alerts'
-  storage_type: factor
+  response_type: factor
   question_text: In which ways would you prefer to find out about air quality alerts?
     _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_simpfoun:
   title: 'Soil is Important for: Providing a Foundation'
-  storage_type: factor
+  response_type: factor
   question_text: What do you think are the two most important functions of soil? _Please
     select two._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_simpcarb:
   title: 'Soil is Important for: Storing Carbon'
-  storage_type: factor
+  response_type: factor
   question_text: What do you think are the two most important functions of soil? _Please
     select two._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_simpgrow:
   title: 'Soil is Important for: Supporting Plant Growth'
-  storage_type: factor
+  response_type: factor
   question_text: What do you think are the two most important functions of soil? _Please
     select two._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_simpwat:
   title: 'Soil is Important for: Absorbing Water'
-  storage_type: factor
+  response_type: factor
   question_text: What do you think are the two most important functions of soil? _Please
     select two._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_simptox:
   title: 'Soil is Important for: Absorbing Toxic Substances'
-  storage_type: factor
+  response_type: factor
   question_text: What do you think are the two most important functions of soil? _Please
     select two._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01
 env_wqconc:
   title: Water Quality Concern
-  storage_type: factor
+  response_type: factor
   question_text: How concerned are you about the water quality in your neighborhood?
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: concern5
+  value_label_id: concern5
 env_streeren:
   title: 'No Tree: Already Have Enough Trees'
-  storage_type: factor
+  response_type: factor
   question_text: Which of the following reasons would you not want {{JURISDICTION}}
     to plant a tree in front of your home? _Please select all that apply._
   surveys_used:
   - bas-2025
   vargroup: env
-  value_labels_name: yesno01
+  value_label_id: yesno01

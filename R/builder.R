@@ -263,11 +263,11 @@ qt_add_module <- function(.x, module_id = NULL, if_condition = NULL,
 #' introduction, transition, or closing message). In pipe mode, appends to
 #' the top-level questionnaire items. In spec mode, returns an item spec list.
 #'
-#' @param .x A `qt_qre` object (pipe mode) or a statement ID string (spec
-#'   mode). In spec mode, supply the statement ID as `.x` and `text` as a
-#'   named argument.
-#' @param id Character string. Unique statement identifier. Required in pipe
-#'   mode; supply as `.x` in spec mode.
+#' @param .x A `qt_qre` object (pipe mode), a statement ID string (spec mode),
+#'   or omitted entirely when calling in spec mode with named arguments.
+#' @param id Character string or NULL. Unique statement identifier. If omitted
+#'   in both pipe and spec mode, an ID is auto-generated from a hash of the
+#'   text content.
 #' @param text Character string. Statement text to display.
 #' @param keep_with_next Logical. Display on same screen as next item?
 #'   Default `FALSE`.
@@ -294,15 +294,15 @@ qt_add_module <- function(.x, module_id = NULL, if_condition = NULL,
 #'   )
 #' )
 #' }
-qt_add_statement <- function(.x, id = NULL, text = NULL,
+qt_add_statement <- function(.x = NULL, id = NULL, text = NULL,
                              keep_with_next = FALSE, if_condition = NULL,
                              display_class = NULL, programmer_note = NULL,
                              note = NULL) {
   if (inherits(.x, "qt_qre")) {
-    if (is.null(id) || !nzchar(id))
-      stop("'id' is required", call. = FALSE)
     if (is.null(text) || !nzchar(text))
       stop("'text' is required", call. = FALSE)
+    if (is.null(id) || !nzchar(id))
+      id <- paste0("stmt_", substr(digest::digest(text), 1, 8))
     spec <- .qt_statement_spec(id, text, keep_with_next, if_condition,
                                 display_class, programmer_note, note)
     .x$questionnaire$items <- c(.x$questionnaire$items, list(spec))
@@ -314,6 +314,9 @@ qt_add_statement <- function(.x, id = NULL, text = NULL,
   effective_text <- if (!is.null(.x) && is.character(.x)) id  else text
   if (is.null(effective_text) || !nzchar(effective_text))
     stop("'text' is required", call. = FALSE)
+  # Auto-generate an id from the text content when none is provided
+  if (is.null(effective_id) || !nzchar(effective_id))
+    effective_id <- paste0("stmt_", substr(digest::digest(effective_text), 1, 8))
   .qt_statement_spec(effective_id, effective_text, keep_with_next,
                      if_condition, display_class, programmer_note, note)
 }

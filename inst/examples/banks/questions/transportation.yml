@@ -1,26 +1,26 @@
 tsp_ssfapref:
   title: Support for active transportation policy
-  storage_type: factor
+  response_type: factor
   question_text: Thinking about all the things that the {{JURISDICTION}}  government
     does, how much do you support {{JURISDICTION}} making it  easier for people to
     walk, bike, and take public transportation in  {{JURISDICTION}}?
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspjurisdiction4
+  value_label_id: tspjurisdiction4
 tsp_ssfades:
   title: Support street redesign for active transport
-  storage_type: factor
+  response_type: factor
   question_text: How much do you support {{JURISDICTION}} changing the way  that streets
     are designed to make it easier for people to bike, walk,  and take public transportation
     in {{JURISDICTION}}?
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspjurisdiction4
+  value_label_id: tspjurisdiction4
 tsp_ssfatopk:
   title: Support parking removal for active transport
-  storage_type: factor
+  response_type: factor
   question_text: '{{JURISDICTION}} may need to remove parking spaces in  front of
     homes and businesses. How much do you support {{JURISDICTION}}  making it easier
     for people to walk, bike, and take public  transportation even if it means removing
@@ -28,10 +28,10 @@ tsp_ssfatopk:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspjurisdiction4
+  value_label_id: tspjurisdiction4
 tsp_ssfatotl:
   title: Support travel lane removal for active transport
-  storage_type: factor
+  response_type: factor
   question_text: '{{JURISDICTION}} may need to remove travel lanes  used by cars.
     How much do you support {{JURISDICTION}} making  it easier for people to walk,
     bike, and take public transportation  even if it means removing travel lanes for
@@ -39,10 +39,10 @@ tsp_ssfatotl:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspjurisdiction4
+  value_label_id: tspjurisdiction4
 tsp_ssfatosl:
   title: Support slower cars for active transport
-  storage_type: factor
+  response_type: factor
   question_text: '{{JURISDICTION}} may need to make people in cars drive  slower.
     How much do you support {{JURISDICTION}} making it easier  for people to walk,
     bike, and take public transportation even if  it means making people in cars drive
@@ -50,16 +50,16 @@ tsp_ssfatosl:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspjurisdiction4
+  value_label_id: tspjurisdiction4
 tsp_cstknow:
   title: Jurisdiction has complete street policy
-  storage_type: factor
+  response_type: factor
   question_text: __[See note for preface to question]__ To the best of your  knowledge,
     does {{JURISDICTION}} have a {{COMPSTRTXT}}?
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: cstknow
+  value_label_id: cstknow
   note: "\nThis question was prefaced with one of the two statements (prefaces were\
     \ randomly\nassigned). \n\nPreface 1 (asked if `svy_cstsplt` = 1):\n\n> This question\
     \ asks about a policy called “Complete Streets.” Complete Streets \n> requires\
@@ -73,7 +73,7 @@ tsp_cstknow:
     \ was randomly assigned to be filled with the text \ncontained in variable `str_csttxt`.\n"
 tsp_cstfo:
   title: Favor complete street policy
-  storage_type: factor
+  response_type: factor
   question_text: "__[See note for preface to question]__ \n\nSome people favor {{COMPSTRTXT}}\
     \ because it helps  make streets safer to walk and to bike. Others think that\
     \ the policy  removes places to park and makes it slower for cars to get around.\
@@ -81,7 +81,7 @@ tsp_cstfo:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: cstfo
+  value_label_id: cstfo
   note: "\nThis question was prefaced with one of the two statements (prefaces were\
     \ randomly\nassigned). \n\nPreface 1 (asked if `svy_cstsplt` = 1):\n\n> This question\
     \ asks about a policy called “Complete Streets.” Complete Streets \n> requires\
@@ -95,21 +95,21 @@ tsp_cstfo:
     \ was randomly assigned to be filled with the text \ncontained in variable `str_csttxt`.\n"
 tsp_cstfoa:
   title: Strength of opinion for complete street policy
-  storage_type: factor
+  response_type: factor
   question_text: '[IF tsp_cstfo = 1 or 2]: How much do you {{favor/oppose}}  {{JURISDICTION}}
     having a {{COMPSTRTXT}}?'
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: cstfoa
+  value_label_id: cstfoa
 tsp_cstop:
   title: Opinion of Complete Street policy
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: cstop
+  value_label_id: cstop
   note: "\nQuestions used to construct this variable were prefaced with one of the\
     \ two \nstatements (prefaces were randomly assigned). \n\nPreface 1 (asked if\
     \ `svy_cstsplt` = 1):\n\n> This question asks about a policy called “Complete\
@@ -128,12 +128,12 @@ tsp_cstop:
     \ named \nComplete Streets or described the policy without naming it (see note).\n"
 tsp_vehcat:
   title: Number of vehicles (categorical)
-  storage_type: factor
+  response_type: factor
   question_text: ''
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: tspvehcat
+  value_label_id: tspvehcat
   description: '
 
     Number of vehicles owned, leased, or available for regular use by the people
@@ -145,7 +145,7 @@ tsp_vehcat:
     '
 tsp_vehrelus:
   title: Reliable vehicle
-  storage_type: factor
+  response_type: factor
   question_text: Thinking about the vehicle you use most of the time, can you rely
     on this  vehicle to get you to school, work, or other places? Asked only of respondents  who
     had one or more vehicles, i.e., `tsp_vehcnt` > 0.
@@ -153,38 +153,38 @@ tsp_vehrelus:
   - bas-2024
   vargroup: tsp
   source: DMACS Wave 18 vehicle_usual_rely_d18
-  value_labels_name: yesno2
+  value_label_id: yesno2
 tsp_bikeown:
   title: Bike owned
-  storage_type: factor
+  response_type: factor
   question_text: Do you own a bike that you, personally, can use?
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno2
+  value_label_id: yesno2
 tsp_modewalk:
   title: 'Transport mode: walk'
-  storage_type: factor
+  response_type: factor
   question_text: In the past 30 days, how often have you walked to get from place
     to place?
   surveys_used:
   - bas-2024
   vargroup: tsp
   source: DMACS Wave 18 transport_mode_walk_d18
-  value_labels_name: tspfrequency4
+  value_label_id: tspfrequency4
 tsp_modebike:
   title: 'Transport mode: bike'
-  storage_type: factor
+  response_type: factor
   question_text: In the past 30 days, how often have you biked to get from place to
     place?
   surveys_used:
   - bas-2024
   vargroup: tsp
   source: DMACS Wave 18 transport_mode_bike_d18
-  value_labels_name: tspfrequency4
+  value_label_id: tspfrequency4
 tsp_modeownv:
   title: 'Transport mode: drive own vehicle'
-  storage_type: factor
+  response_type: factor
   question_text: In the past 30 days, how often have you driven your own vehicle to
     get from place to place? Your own vehicle may be a car,  truck, SUV, or something
     else that you own.
@@ -192,10 +192,10 @@ tsp_modeownv:
   - bas-2024
   vargroup: tsp
   source: "DMACS Wave 18 transport_mode_owncar_d18 (modified \nquestion wording)"
-  value_labels_name: tspfrequency4
+  value_label_id: tspfrequency4
 tsp_moderide:
   title: 'Transport mode: carpool'
-  storage_type: factor
+  response_type: factor
   question_text: In the past 30 days, how often have you gotten a ride from  omeone
     you know to get from place to place? This could be carpooling  or getting a ride
     from a friend, family member, neighbor, co-worker,  or acquaintance.
@@ -203,29 +203,29 @@ tsp_moderide:
   - bas-2024
   vargroup: tsp
   source: "DMACS Wave 18 transport_mode_getride_d18 (modified \nquestion wording)"
-  value_labels_name: tspfrequency4
+  value_label_id: tspfrequency4
 tsp_modebus:
   title: 'Transport mode: public transit'
-  storage_type: factor
+  response_type: factor
   question_text: In the past 30 days, how often have you taken public transit,  like
     the bus or light rail, to get from place to place?
   surveys_used:
   - bas-2024
   vargroup: tsp
   source: "DMACS Wave 18 transport_mode_bus_d18 (modified \nquestion wording)"
-  value_labels_name: tspfrequency4
+  value_label_id: tspfrequency4
 tsp_pubmore:
   title: Preferred to use public transit more
-  storage_type: factor
+  response_type: factor
   question_text: In the past 30 days, would you have liked to have  taken public transportation,
     like the bus or train, more than you did?
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno2
+  value_label_id: yesno2
 tsp_pubmrrob:
   title: 'Reason public transit not used: physical harm'
-  storage_type: factor
+  response_type: factor
   question_text: The following are some reasons that people might not have taken public  transportation
     more. Which are reasons that you did not take public  transportation as much as
     you wanted in the past 30 days? Please select all  that apply. __I worried that
@@ -233,7 +233,7 @@ tsp_pubmrrob:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -243,7 +243,7 @@ tsp_pubmrrob:
     '
 tsp_pubmrhar:
   title: 'Reason public transit not used: harrassment'
-  storage_type: factor
+  response_type: factor
   question_text: The following are some reasons that people might not have taken public  transportation
     more. Which are reasons that you did not take public  transportation as much as
     you wanted in the past 30 days? Please select all  that apply. __I worried about
@@ -251,7 +251,7 @@ tsp_pubmrhar:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -261,7 +261,7 @@ tsp_pubmrhar:
     '
 tsp_pubmrnop:
   title: 'Reason public transit not used: no stop nearby'
-  storage_type: factor
+  response_type: factor
   question_text: The following are some reasons that people might not have taken public  transportation
     more. Which are reasons that you did not take public  transportation as much as
     you wanted in the past 30 days? Please select all  that apply. __There is not
@@ -269,7 +269,7 @@ tsp_pubmrnop:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -279,7 +279,7 @@ tsp_pubmrnop:
     '
 tsp_pubmrplc:
   title: 'Reason transit not used: not near destination'
-  storage_type: factor
+  response_type: factor
   question_text: The following are some reasons that people might not have taken public  transportation
     more. Which are reasons that you did not take public  transportation as much as
     you wanted in the past 30 days? Please select all  that apply. __The bus or train
@@ -287,7 +287,7 @@ tsp_pubmrplc:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -297,7 +297,7 @@ tsp_pubmrplc:
     '
 tsp_pubmrphy:
   title: 'Reason transit not used: physically unable'
-  storage_type: factor
+  response_type: factor
   question_text: The following are some reasons that people might not have taken public  transportation
     more. Which are reasons that you did not take public  transportation as much as
     you wanted in the past 30 days? Please select all  that apply. __I was not physically
@@ -305,7 +305,7 @@ tsp_pubmrphy:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -315,7 +315,7 @@ tsp_pubmrphy:
     '
 tsp_pubmrcar:
   title: 'Reason transit not used: pedestrian safety'
-  storage_type: factor
+  response_type: factor
   question_text: The following are some reasons that people might not have taken public  transportation
     more. Which are reasons that you did not take public  transportation as much as
     you wanted in the past 30 days? Please select all  that apply. __I worried about
@@ -323,7 +323,7 @@ tsp_pubmrcar:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -333,7 +333,7 @@ tsp_pubmrcar:
     '
 tsp_pubmrrel:
   title: 'Reason transit not used: unreliable'
-  storage_type: factor
+  response_type: factor
   question_text: The following are some reasons that people might not have taken public  transportation
     more. Which are reasons that you did not take public  transportation as much as
     you wanted in the past 30 days? Please select all  that apply. __The bus or train
@@ -341,7 +341,7 @@ tsp_pubmrrel:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -351,7 +351,7 @@ tsp_pubmrrel:
     '
 tsp_pubmrtim:
   title: 'Reason transit not used: takes too long'
-  storage_type: factor
+  response_type: factor
   question_text: The following are some reasons that people might not have taken public  transportation
     more. Which are reasons that you did not take public  transportation as much as
     you wanted in the past 30 days? Please select all  that apply. __The bus or train
@@ -359,7 +359,7 @@ tsp_pubmrtim:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -369,7 +369,7 @@ tsp_pubmrtim:
     '
 tsp_pubmrwea:
   title: 'Reason transit note used: bad weather'
-  storage_type: factor
+  response_type: factor
   question_text: The following are some reasons that people might not have taken public  transportation
     more. Which are reasons that you did not take public  transportation as much as
     you wanted in the past 30 days? Please select all  that apply. __The weather was
@@ -377,7 +377,7 @@ tsp_pubmrwea:
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: yesno01
+  value_label_id: yesno01
   note: '
 
     Respondents were asked to check all of the reasons that they did not use
@@ -387,10 +387,10 @@ tsp_pubmrwea:
     '
 tsp_hltappt:
   title: Transportation difficulty to medical appointments
-  storage_type: factor
+  response_type: factor
   question_text: In the past 12 months, how often did you have trouble  getting transportation
     to medical appointments?
   surveys_used:
   - bas-2024
   vargroup: tsp
-  value_labels_name: hltappt
+  value_label_id: hltappt

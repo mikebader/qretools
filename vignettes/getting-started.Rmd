@@ -259,7 +259,7 @@ nhd_sat$question_text
 nhd_sat$storage_type
 nhd_sat$surveys_used
 nhd_sat$vargroup
-nhd_sat$value_labels_name
+nhd_sat$value_label_id
 nhd_sat$source
 ```
 
