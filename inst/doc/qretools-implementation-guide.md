@@ -165,16 +165,24 @@ instruction: "Select all that apply"
 creates_variables: [tsp_pubreas_cost, tsp_pubreas_time]
 variable_parts:
   tsp_pubreas_cost:
-    part_label: "Cost"
-    part_text: "Too expensive"
+    option_title: "Cost"
+    option_text: "Too expensive"
     type: integer
     value_labels_name: yesno
   tsp_pubreas_time:
-    part_label: "Time"
-    part_text: "Takes too long"
+    option_title: "Time"
+    option_text: "Takes too long"
     type: integer
     value_labels_name: yesno
 ```
+
+`option_title` is the subordinate label appended to the parent question's
+`title` for codebook documentation (e.g., parent title "Reason for not using
+public transit" + `option_title` "Cost" → codebook entry "Reason for not
+using public transit: Cost"). `option_text` is what the respondent sees.
+When the two are identical, a simple string shorthand can be used in place
+of a full object (the string is treated as `option_text`, with `option_title`
+defaulting to the same value).
 
 ---
 

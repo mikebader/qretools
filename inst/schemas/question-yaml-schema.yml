@@ -24,11 +24,16 @@ id: string                        # REQUIRED - Unique identifier
                                   # ranking
       - id: string                # REQUIRED - Unique identifer-name of
                                   #            created variable
-        part_label: string        # REQUIRED - Label for this part
-        response_type: enum       # REQUIRED (if parent.response_type = select_all, must be boolean)
-                                  #          (if parent.response_type = ranking, must be int)
-        value_label_id: string    # Required if  response_type is
-                                  # boolean or factor
+        option_title: string      # Subordinate title appended to parent title
+                                  #   for codebook documentation. Composed as
+                                  #   "{parent.title}: {option_title}". Defaults
+                                  #   to option_text if omitted.
+        option_text: string       # Text shown to respondent for this option.
+                                  #   Default for option_title when omitted.
+        storage_type: enum        # REQUIRED - Storage type of created variable
+                                  #   (select_all parts → boolean;
+                                  #    ranking parts → integer)
+        value_label_id: string    # Required if storage_type is boolean or factor
         note: string              # Part-specific notes
         other_specify: object     # Included if part should produce text field
             id: string            # REQUIRED - Unique identifer (name of
@@ -40,13 +45,11 @@ id: string                        # REQUIRED - Unique identifier
     loop_template:                # Required if response_type = loop
         variable_template: string # REQUIRED - Variable name with {i} placeholder
                                   #            (e.g., "hhm_age_{i}")
-        part_label: string        # REQUIRED - Label including {i} placeholder
-        response_type: enum       # REQUIRED - Form of response (one of: factor,
-                                  #   character, integer, number, ranking,
-                                  #   select_all - NOT loop)
-        storage_type: enum        # Variable storage type if different than
-                                  # default for response_type (see below)
-        value_label_id: string    # Required if response_type = factor
+        option_title: string      # REQUIRED - Label including {i} placeholder
+        storage_type: enum        # REQUIRED - Storage type of loop variable
+                                  #   (one of: factor, character, integer,
+                                  #   numeric, multiple_response - NOT loop)
+        value_label_id: string    # Required if storage_type = factor
         note: string              # Implementation notes
 
     # Highly recommended

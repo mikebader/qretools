@@ -219,7 +219,9 @@
                   sprintf("Variable '%s': restricted_access=true requires restriction_reason", variable_id))
     }
 
-    # creates_variables requires variable_parts
+    # creates_variables: accept inline (named list) and split (char vector + variable_parts)
+    # Inline:  creates_variables is a named mapping  { var_id: {option_title: ..., option_text: ..., ...}, ... }
+    # Split:   creates_variables is a char vector of IDs; variable_parts holds definitions
     if (!is.null(var$creates_variables)) {
       if (is.null(var$variable_parts)) {
         errors <- c(errors,
