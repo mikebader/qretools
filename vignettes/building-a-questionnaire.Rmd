@@ -234,22 +234,57 @@ and subsequent items, showing it only once for the whole block.
 
 Use this when you want a single question bank entry to document the whole
 select-all item.  The entry must list the indicator variables it creates
-(`creates_variables`) and define each option (`variable_parts`):
+(`creates_variables`) and define each option (`variable_parts`).
+
+Each option has two label fields:
+
+- **`option_text`** — the text the respondent sees on screen ("White").
+- **`option_title`** — the subordinate title appended to the parent `title`
+  for codebook documentation.  Composed as `"{title}: {option_title}"`, so
+  `title: "Race indicator"` + `option_title: "White"` → codebook entry
+  `"Race indicator: White"`.  When omitted, defaults to `option_text`.
+
+When `option_title` and `option_text` are the same, you can use a simple
+string shorthand (the string is treated as `option_text`, with `option_title`
+defaulting to the same value):
 
 ```yaml
 dem_race_origin:
-  title: Race or ethnic background (select all)
+  title: Race indicator
   response_type: select_all
   question_text: "What is your racial or ethnic background? Select all that apply."
   surveys_used: [bas-2026]
   vargroup: dem
   creates_variables: [dem_race_wh, dem_race_bl, dem_race_hisp, dem_race_as, dem_race_oth]
   variable_parts:
-    dem_race_wh:   White
-    dem_race_bl:   Black or African American
+    dem_race_wh:   White                        # shorthand: option_text = option_title = "White"
+    dem_race_bl:   Black or African American    # → codebook: "Race indicator: Black or African American"
     dem_race_hisp: Hispanic or Latino
     dem_race_as:   Asian or Pacific Islander
     dem_race_oth:  Some other race or ethnicity
+```
+
+When the respondent-facing text and codebook label differ, use the full object
+form:
+
+```yaml
+dem_race_origin:
+  title: Race indicator
+  response_type: select_all
+  question_text: "What is your racial or ethnic background? Select all that apply."
+  surveys_used: [bas-2026]
+  vargroup: dem
+  creates_variables: [dem_race_wh, dem_race_bl, dem_race_hisp]
+  variable_parts:
+    dem_race_wh:
+      option_title: White                  # → codebook: "Race indicator: White"
+      option_text:  White
+    dem_race_bl:
+      option_title: Black or African American
+      option_text:  Black or African American
+    dem_race_hisp:
+      option_title: Hispanic or Latino
+      option_text:  "Hispanic, Latino, or Spanish origin"   # longer phrasing on screen
 ```
 
 In the questionnaire this is a single question reference:

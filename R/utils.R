@@ -231,7 +231,7 @@
     }
 
     # creates_variables: accept inline (named list) and split (char vector + variable_parts)
-    # Inline:  creates_variables is a named mapping  { var_id: {part_label: ..., ...}, ... }
+    # Inline:  creates_variables is a named mapping  { var_id: {option_title: ..., option_text: ..., ...}, ... }
     # Split:   creates_variables is a char vector of IDs; variable_parts holds definitions
     if (!is.null(var$creates_variables)) {
       cv <- var$creates_variables
