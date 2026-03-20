@@ -293,6 +293,53 @@ In the questionnaire this is a single question reference:
 qt_add_question("dem_race_origin")
 ```
 
+### Other/Specify options
+
+When one of the select-all options is "Other — please specify", it produces
+**two** variables:
+
+1. **The indicator** — a boolean variable (like every other select-all part)
+   that records whether the respondent chose the "Other" option at all.
+2. **The specify text variable** — a companion character variable that stores
+   whatever the respondent typed.
+
+Both are documented inside the same `variable_parts` entry by adding an
+`other_specify` sub-object.  Use `other_title` to give the text variable its
+own codebook title, distinct from the indicator's `option_title`:
+
+```yaml
+dem_race_origin:
+  title: Race indicator
+  response_type: select_all
+  question_text: "What is your racial or ethnic background? Select all that apply."
+  surveys_used: [bas-2026]
+  vargroup: dem
+  creates_variables: [dem_race_wh, dem_race_bl, dem_race_hisp, dem_race_as, dem_race_oth]
+  variable_parts:
+    dem_race_wh:   White
+    dem_race_bl:   Black or African American
+    dem_race_hisp: Hispanic or Latino
+    dem_race_as:   Asian or Pacific Islander
+    dem_race_oth:
+      option_title: Other race or ethnicity          # title for dem_race_oth (boolean)
+      option_text:  Some other race or ethnicity     # text shown on screen
+      other_specify:
+        id:               dem_race_oth_text          # creates second variable
+        other_title:      "Other race (specify)"     # title for dem_race_oth_text
+        other_label:      Please specify             # label next to the text box on screen
+        character_length: 200
+```
+
+This produces two variables in the bank:
+
+| Variable | Storage | Codebook title |
+|---|---|---|
+| `dem_race_oth` | boolean | Race indicator: Other race or ethnicity |
+| `dem_race_oth_text` | character | Race indicator: Other race (specify) |
+
+If `other_title` is omitted, the text variable's codebook title falls back to
+`other_label` (or "Specify" if that is also absent).
+
 ## Preload computes
 
 Compute items in the `preload` block run before any questions are displayed —
