@@ -38,12 +38,18 @@ id: string                        # REQUIRED - Unique identifier
                                   #    ranking parts → integer)
         value_label_id: string    # Required if storage_type is boolean or factor
         note: string              # Part-specific notes
-        other_specify: object     # Included if part should produce text field
-            id: string            # REQUIRED - Unique identifer (name of
-                                  #            created variable)
-            other_label: string   # Label for "specify" part (default:
-                                  # "Specify")
-            character_length: int # Allowed length of fill
+        other_specify: object     # Included if part should produce a companion
+                                  #   text field for "other, specify" options.
+                                  #   Creates a SECOND variable alongside the
+                                  #   boolean indicator defined by this part.
+            id: string            # REQUIRED - Variable name for the specify
+                                  #            text variable (e.g. "dem_race_oth_text")
+            other_title: string   # Codebook title for the specify variable.
+                                  #   Composed as "{parent.title}: {other_title}".
+                                  #   If omitted, defaults to other_label or "Specify".
+            other_label: string   # Text label shown next to the input field
+                                  #   on-screen (default: "Specify")
+            character_length: int # Maximum character length for the text field
             note: string          # "Specify"-specific notes
     loop_template:                # Required if response_type = loop
         variable_template: string # REQUIRED - Variable name with {i} placeholder

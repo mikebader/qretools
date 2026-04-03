@@ -184,6 +184,23 @@ When the two are identical, a simple string shorthand can be used in place
 of a full object (the string is treated as `option_text`, with `option_title`
 defaulting to the same value).
 
+**Other/Specify parts** produce two variables — a boolean indicator and a
+companion character variable — via the `other_specify` sub-object:
+
+```yaml
+tsp_pubreas_oth:
+  option_title: Other reason
+  option_text:  Other (please specify)
+  other_specify:
+    id:               tsp_pubreas_oth_text   # variable name for the text field
+    other_title:      "Other reason (specify)"  # codebook title for the text variable
+    other_label:      Please specify         # label shown next to the input on screen
+    character_length: 200
+```
+
+`other_title` follows the same composition rule: `"{parent.title}: {other_title}"`.
+If omitted, it falls back to `other_label`, then to "Specify".
+
 ---
 
 ## 5. Value Labels YAML Schema
