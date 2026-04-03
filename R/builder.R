@@ -516,15 +516,33 @@ qt_add_randomize <- function(.x, id = NULL, ..., description = NULL,
 #'   spec list.
 #'
 #' @export
-qt_add_display_together <- function(.x, id = NULL, ...,
+qt_add_display_together <- function(.x = NULL, id = NULL, ...,
                                     note = NULL, programmer_note = NULL) {
   items <- list(...)
+
   if (inherits(.x, "qt_qre")) {
+    # Pipe mode: .x is the qre object, id must be provided
+    if (is.null(id) || !nzchar(id))
+      stop("'id' is required", call. = FALSE)
     spec <- .qt_display_together_spec(id, items, note, programmer_note)
     .x$questionnaire$items <- c(.x$questionnaire$items, list(spec))
     return(invisible(.x))
   }
-  effective_id <- if (!is.null(.x) && is.character(.x)) .x else id
+
+  # Spec mode: determine effective_id
+  # If .x is a character string, use it as the id
+  # Otherwise use the id parameter (for when id is passed as named argument)
+  effective_id <- if (!is.null(.x) && is.character(.x) && length(.x) == 1) {
+    .x
+  } else {
+    # If .x is not a character id, it might be the first item passed positionally
+    # In that case, prepend it to items
+    if (!is.null(.x) && !is.character(.x)) {
+      items <- c(list(.x), items)
+    }
+    id
+  }
+
   .qt_display_together_spec(effective_id, items, note, programmer_note)
 }
 
