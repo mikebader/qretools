@@ -2,30 +2,25 @@
 % Please edit documentation in R/builder.R
 \name{qt_add_loop}
 \alias{qt_add_loop}
-\title{Add a Loop Container}
+\title{Add a Loop Block}
 \usage{
 qt_add_loop(
-  .x,
+  .x = NULL,
   id = NULL,
-  id_fills = NULL,
-  title_fills = NULL,
+  over = NULL,
   ...,
   note = NULL,
   programmer_note = NULL
 )
 }
 \arguments{
-\item{.x}{A \code{qt_qre} object (pipe mode) or a loop ID string (spec mode).}
+\item{.x}{A \code{qt_qre} object (pipe mode) or a loop block ID string (spec mode).}
 
-\item{id}{Character string. Unique loop identifier.}
+\item{id}{Character string. Unique identifier for the loop block.}
 
-\item{id_fills}{Character vector. Values substituted for \code{{i}} in variable
-names (e.g., \code{c("1", "2", "3")}).}
+\item{over}{Character string. Name of the variable to loop over.}
 
-\item{title_fills}{Character vector or NULL. Values substituted for \code{{i}}
-in titles. Defaults to \code{id_fills} if NULL.}
-
-\item{...}{Item specs to repeat. Variable IDs must contain \code{{i}}.}
+\item{...}{Item specs to repeat in each iteration.}
 
 \item{note}{Character string or NULL. Implementation notes.}
 
@@ -36,18 +31,6 @@ Pipe mode: invisibly returns modified \code{qt_qre}. Spec mode: item
 spec list.
 }
 \description{
-Repeats a set of items multiple times, substituting \code{{i}} in variable
-names and titles with values from \code{id_fills}.
-}
-\examples{
-\dontrun{
-qt_add_section("features", "Neighborhood Features",
-  qt_add_loop("feature_ratings",
-    id_fills    = c("1", "2", "3"),
-    title_fills = c("parks", "safety", "businesses"),
-    qt_add_question("feat_rating_{i}"),
-    qt_add_question("feat_improve_{i}")
-  )
-)
-}
+Repeats a set of items for each element in a vector variable. Commonly used
+for household rosters or repeated measurements.
 }

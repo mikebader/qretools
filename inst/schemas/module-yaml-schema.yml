@@ -13,6 +13,8 @@ id: string                       # REQUIRED  - Unique identifier
 
     # Highly recommended
     universe: string             # Who answers
+    intro_text: string           # Introductory text displayed before module
+                                 # questions
 
     # Optional - Documentation
     note: string                 # Implementation notes

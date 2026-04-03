@@ -2,29 +2,26 @@
 % Please edit documentation in R/builder.R
 \name{qt_add_split}
 \alias{qt_add_split}
-\title{Add a Split Block}
+\title{Add a Split (Experimental Assignment) Block}
 \usage{
 qt_add_split(
-  .x,
+  .x = NULL,
   id = NULL,
-  description = NULL,
-  control_id = NULL,
+  on = NULL,
   paths = list(),
   note = NULL,
   programmer_note = NULL
 )
 }
 \arguments{
-\item{.x}{A \code{qt_qre} object (pipe mode) or a split ID string (spec mode).}
+\item{.x}{A \code{qt_qre} object (pipe mode) or a split block ID string (spec mode).}
 
-\item{id}{Character string. Unique split identifier.}
+\item{id}{Character string. Unique identifier for the split block.}
 
-\item{description}{Character string. Description of the split purpose.}
+\item{on}{Character string. Variable name to create for tracking assignment.}
 
-\item{control_id}{Character string. Control parameter ID whose value
-determines which path is shown.}
-
-\item{paths}{List of path specs created by \code{qt_add_path()}.}
+\item{paths}{Named list. Each element is a list of item specs for that path.
+Names become the path identifiers.}
 
 \item{note}{Character string or NULL. Implementation notes.}
 
@@ -35,23 +32,6 @@ Pipe mode: invisibly returns modified \code{qt_qre}. Spec mode: item
 spec list.
 }
 \description{
-Routes respondents down different item sequences based on a control
-parameter value (e.g., an A/B experimental condition). Build each path
-using \code{qt_add_path()}.
-}
-\examples{
-\dontrun{
-qt_add_section("experiment", "Community Questions",
-  qt_add_split("community_wording_split",
-    description = "A/B test of question wording",
-    control_id  = "exp_condition",
-    paths = list(
-      qt_add_path("wording_a", control_value = "A",
-        qt_add_question("com_attach_a")),
-      qt_add_path("wording_b", control_value = "B",
-        qt_add_question("com_attach_b"))
-    )
-  )
-)
-}
+Randomly assigns respondents to experimental conditions with different
+question paths. Each path is shown to a subset of respondents.
 }

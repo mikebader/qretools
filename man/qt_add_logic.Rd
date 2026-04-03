@@ -5,7 +5,7 @@
 \title{Add a Logic (Conditional) Block}
 \usage{
 qt_add_logic(
-  .x,
+  .x = NULL,
   id = NULL,
   condition = NULL,
   then = list(),
@@ -42,19 +42,4 @@ Routes survey flow based on an R expression. Items in \code{then} are shown
 when the condition is true; items in \code{otherwise} are shown when false.
 The \code{otherwise} argument serializes to \verb{else:} in YAML, which is what the
 reader and DDI schema expect.
-}
-\examples{
-\dontrun{
-# Spec mode inside a section
-qt_add_section("demographics", "About You",
-  qt_add_question("dem_children"),
-  qt_add_logic("dem_children_logic",
-    condition = "dem_children == 1",
-    then = list(
-      qt_add_question("dem_children_n"),
-      qt_add_question("dem_children_age_youngest")
-    )
-  )
-)
-}
 }

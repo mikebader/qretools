@@ -518,46 +518,86 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   )
 }
 
-#' Expand Module
-#'
-#' Read module definition and expand its items inline
+#' Expand Module into Items
 #'
 #' @keywords internal
 #' @noRd
-.expand_module <- function(item, section_id, qbank, candidates, config, container_context, modbank) {
+.expand_module <- function(item, section_id, qbank, candidates, modbank,
+                           container_context) {
   module_id <- item$module_id
 
-  # Get module from bank
-  module_def <- modbank$modules[[module_id]]
-
-  if (is.null(module_def)) {
+  # Look up module definition
+  if (!module_id %in% names(modbank$modules)) {
     stop("Module '", module_id, "' not found in module bank", call. = FALSE)
   }
 
+  mod_def <- modbank$modules[[module_id]]
+
   # Update container context
-  module_context <- container_context
-  module_context$module_id <- module_id
+  mod_context <- container_context
+  mod_context$module_id <- module_id
 
-  # Process module's items
-  module_items <- .process_items_recursive(
-    module_def$items,
-    section_id = section_id,
-    qbank = qbank,
-    candidates = candidates,
-    config = config,
-    container_context = module_context,
-    modbank = modbank
-  )
+  result <- list()
 
-  # Apply module-level if_condition to all items if specified
-  if (!is.null(item$if_condition)) {
-    module_items <- lapply(module_items, function(mi) {
-      mi$if_condition <- item$if_condition
-      mi
-    })
+  # Handle intro text - check for override first, then module default
+  intro_text <- if (!is.null(item$intro_text)) {
+    # Override provided in survey spec
+    if (is.na(item$intro_text)) {
+      NULL  # NA means suppress intro
+    } else {
+      item$intro_text
+    }
+  } else {
+    # Use module's default intro_text
+    mod_def$intro_text
   }
 
-  module_items
+  if (!is.null(intro_text) && nzchar(intro_text)) {
+    # Create intro statement
+    intro_id <- paste0(module_id, "_intro")
+
+    intro_item <- structure(
+      list(
+        id = intro_id,
+        item_type = "statement",
+        text = intro_text,
+        section_id = section_id,
+        module_id = module_id,
+
+        # Container membership (inherited from container context)
+        loop_id = container_context$loop_id,
+        loop_iteration = container_context$loop_iteration,
+        randomize_id = container_context$randomize_id,
+        split_id = container_context$split_id,
+        split_path = container_context$split_path,
+        display_together_id = container_context$display_together_id,
+        logic_condition = container_context$logic_condition,
+        logic_branch = container_context$logic_branch
+      ),
+      class = c("qt_sitem", "qt_item")
+    )
+
+    result <- list(intro_item)
+  }
+
+  # Expand questions
+  for (q_spec in mod_def$questions) {
+    q_item <- list(
+      variable_id = q_spec$variable_id,
+      source = q_spec$source %||% "qbank"
+    )
+
+    # Pass through conditional logic
+    if (!is.null(q_spec$if_condition)) {
+      q_item$if_condition <- q_spec$if_condition
+    }
+
+    q_result <- .make_question_item(q_item, section_id, qbank, candidates,
+                                    mod_context)
+    result <- c(result, list(q_result))
+  }
+
+  result
 }
 
 #' Expand Loop
