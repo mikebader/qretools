@@ -52,6 +52,7 @@
 qt_qre <- function(id, title, status = c("draft", "final"),
                    short_title = NULL, version = NULL, organization = NULL,
                    author = NULL, description = NULL,
+                   candidates_path = NULL,
                    controls_required = NULL,
                    programmer_note = NULL, note = NULL) {
 

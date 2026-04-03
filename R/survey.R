@@ -406,6 +406,14 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
     stop("Unknown source: ", source, call. = FALSE)
   }
 
+  # If not found in the specified source, try candidates as fallback
+  if (is.null(q_def) && source == "qbank" && !is.null(candidates)) {
+    q_def <- candidates$variables[[varname]]
+    if (!is.null(q_def)) {
+      source <- "candbank"  # Update source to reflect where we found it
+    }
+  }
+
   if (is.null(q_def)) {
     stop("Question '", varname, "' not found in ", source, call. = FALSE)
   }
