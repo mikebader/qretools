@@ -2,22 +2,25 @@
 % Please edit documentation in R/builder.R
 \name{qt_add_module}
 \alias{qt_add_module}
-\title{Add a Module Item}
+\title{Add a Module}
 \usage{
 qt_add_module(
-  .x,
-  module_id = NULL,
-  if_condition = NULL,
+  .x = NULL,
+  id = NULL,
+  intro_text = NULL,
+  note = NULL,
   programmer_note = NULL
 )
 }
 \arguments{
 \item{.x}{A \code{qt_qre} object (pipe mode) or a module ID string (spec mode).}
 
-\item{module_id}{Character string. Module key in the module bank. Required
-in pipe mode; supply as \code{.x} in spec mode.}
+\item{id}{Character string. The module identifier from the module bank.}
 
-\item{if_condition}{Character string or NULL. Display logic (R expression).}
+\item{intro_text}{Character string or NULL. Override the module's default
+intro text. Use \code{NA} to suppress the intro text entirely.}
+
+\item{note}{Character string or NULL. Implementation notes for the module.}
 
 \item{programmer_note}{Character string or NULL. Note to survey programmer.}
 }
@@ -26,6 +29,23 @@ Pipe mode: invisibly returns modified \code{qt_qre}. Spec mode: item
 spec list.
 }
 \description{
-In pipe mode, appends a module reference to the top-level questionnaire
-items. In spec mode, returns a module item spec list.
+Inserts a predefined module (a reusable group of questions) into the
+questionnaire. Modules are defined in the module bank and can be reused
+across surveys.
+}
+\examples{
+\dontrun{
+# Use module with default intro from module bank
+qre |>
+  qt_add_module("transportation_mode")
+
+# Override intro text for this survey
+qre |>
+  qt_add_module("transportation_mode",
+                intro_text = "Let's talk about how you travel around Baltimore.")
+
+# Suppress intro text entirely
+qre |>
+  qt_add_module("transportation_mode", intro_text = NA)
+}
 }

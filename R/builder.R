@@ -230,31 +230,59 @@ qt_add_question <- function(.x, variable_id = NULL, source = "qbank",
 }
 
 
-#' Add a Module Item
+#' Add a Module
 #'
-#' In pipe mode, appends a module reference to the top-level questionnaire
-#' items. In spec mode, returns a module item spec list.
+#' Inserts a predefined module (a reusable group of questions) into the
+#' questionnaire. Modules are defined in the module bank and can be reused
+#' across surveys.
 #'
 #' @param .x A `qt_qre` object (pipe mode) or a module ID string (spec mode).
-#' @param module_id Character string. Module key in the module bank. Required
-#'   in pipe mode; supply as `.x` in spec mode.
-#' @param if_condition Character string or NULL. Display logic (R expression).
+#' @param id Character string. The module identifier from the module bank.
+#' @param intro_text Character string or NULL. Override the module's default
+#'   intro text. Use `NA` to suppress the intro text entirely.
+#' @param note Character string or NULL. Implementation notes for the module.
 #' @param programmer_note Character string or NULL. Note to survey programmer.
 #'
 #' @return Pipe mode: invisibly returns modified `qt_qre`. Spec mode: item
 #'   spec list.
 #'
+#' @examples
+#' \dontrun{
+#' # Use module with default intro from module bank
+#' qre |>
+#'   qt_add_module("transportation_mode")
+#'
+#' # Override intro text for this survey
+#' qre |>
+#'   qt_add_module("transportation_mode",
+#'                 intro_text = "Let's talk about how you travel around Baltimore.")
+#'
+#' # Suppress intro text entirely
+#' qre |>
+#'   qt_add_module("transportation_mode", intro_text = NA)
+#' }
 #' @export
-qt_add_module <- function(.x, module_id = NULL, if_condition = NULL,
+qt_add_module <- function(.x = NULL, id = NULL,
+                          intro_text = NULL,
+                          note = NULL,
                           programmer_note = NULL) {
   if (inherits(.x, "qt_qre")) {
-    if (is.null(module_id) || !nzchar(module_id))
-      stop("'module_id' is required", call. = FALSE)
-    spec <- .qt_module_spec(module_id, if_condition, programmer_note)
+    # Pipe mode
+    if (is.null(id) || !nzchar(id))
+      stop("'id' is required", call. = FALSE)
+    spec <- .qt_module_spec(id, intro_text, note, programmer_note)
     .x$questionnaire$items <- c(.x$questionnaire$items, list(spec))
     return(invisible(.x))
   }
-  .qt_module_spec(.x, if_condition, programmer_note)
+
+  # Spec mode
+  effective_id <- if (!is.null(.x) && is.character(.x) && length(.x) == 1) {
+    .x
+  } else {
+    id
+  }
+
+  .qt_module_spec(effective_id, intro_text, note, programmer_note)
 }
 
 
@@ -396,49 +424,40 @@ qt_add_compute <- function(.x = NULL, id = NULL, description = NULL,
 #'   spec list.
 #'
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' # Spec mode inside a section
-#' qt_add_section("demographics", "About You",
-#'   qt_add_question("dem_children"),
-#'   qt_add_logic("dem_children_logic",
-#'     condition = "dem_children == 1",
-#'     then = list(
-#'       qt_add_question("dem_children_n"),
-#'       qt_add_question("dem_children_age_youngest")
-#'     )
-#'   )
-#' )
-#' }
-qt_add_logic <- function(.x, id = NULL, condition = NULL,
+qt_add_logic <- function(.x = NULL, id = NULL, condition = NULL,
                          then = list(), otherwise = list(),
                          note = NULL, programmer_note = NULL) {
   if (inherits(.x, "qt_qre")) {
+    # Pipe mode: .x is qre, id must be provided
+    if (is.null(id) || !nzchar(id))
+      stop("'id' is required", call. = FALSE)
     spec <- .qt_logic_spec(id, condition, then, otherwise,
-                            note, programmer_note)
+                           note, programmer_note)
     .x$questionnaire$items <- c(.x$questionnaire$items, list(spec))
     return(invisible(.x))
   }
-  # Spec mode: .x is id
-  effective_id <- if (!is.null(.x) && is.character(.x)) .x else id
+
+  # Spec mode: .x is id (if provided positionally), otherwise use id parameter
+  effective_id <- if (!is.null(.x) && is.character(.x) && length(.x) == 1) {
+    .x
+  } else {
+    id
+  }
+
   .qt_logic_spec(effective_id, condition, then, otherwise,
                  note, programmer_note)
 }
 
 
-#' Add a Loop Container
+#' Add a Loop Block
 #'
-#' Repeats a set of items multiple times, substituting `{i}` in variable
-#' names and titles with values from `id_fills`.
+#' Repeats a set of items for each element in a vector variable. Commonly used
+#' for household rosters or repeated measurements.
 #'
-#' @param .x A `qt_qre` object (pipe mode) or a loop ID string (spec mode).
-#' @param id Character string. Unique loop identifier.
-#' @param id_fills Character vector. Values substituted for `{i}` in variable
-#'   names (e.g., `c("1", "2", "3")`).
-#' @param title_fills Character vector or NULL. Values substituted for `{i}`
-#'   in titles. Defaults to `id_fills` if NULL.
-#' @param ... Item specs to repeat. Variable IDs must contain `{i}`.
+#' @param .x A `qt_qre` object (pipe mode) or a loop block ID string (spec mode).
+#' @param id Character string. Unique identifier for the loop block.
+#' @param over Character string. Name of the variable to loop over.
+#' @param ... Item specs to repeat in each iteration.
 #' @param note Character string or NULL. Implementation notes.
 #' @param programmer_note Character string or NULL. Note to survey programmer.
 #'
@@ -446,42 +465,42 @@ qt_add_logic <- function(.x, id = NULL, condition = NULL,
 #'   spec list.
 #'
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' qt_add_section("features", "Neighborhood Features",
-#'   qt_add_loop("feature_ratings",
-#'     id_fills    = c("1", "2", "3"),
-#'     title_fills = c("parks", "safety", "businesses"),
-#'     qt_add_question("feat_rating_{i}"),
-#'     qt_add_question("feat_improve_{i}")
-#'   )
-#' )
-#' }
-qt_add_loop <- function(.x, id = NULL, id_fills = NULL, title_fills = NULL,
-                        ..., note = NULL, programmer_note = NULL) {
+qt_add_loop <- function(.x = NULL, id = NULL, over = NULL, ...,
+                        note = NULL, programmer_note = NULL) {
   items <- list(...)
+
   if (inherits(.x, "qt_qre")) {
-    spec <- .qt_loop_spec(id, id_fills, title_fills, items,
-                           note, programmer_note)
+    # Pipe mode: .x is qre, id must be provided
+    if (is.null(id) || !nzchar(id))
+      stop("'id' is required", call. = FALSE)
+    spec <- .qt_loop_spec(id, over, items, note, programmer_note)
     .x$questionnaire$items <- c(.x$questionnaire$items, list(spec))
     return(invisible(.x))
   }
-  effective_id <- if (!is.null(.x) && is.character(.x)) .x else id
-  .qt_loop_spec(effective_id, id_fills, title_fills, items,
-                note, programmer_note)
+
+  # Spec mode: determine effective_id
+  effective_id <- if (!is.null(.x) && is.character(.x) && length(.x) == 1) {
+    .x
+  } else {
+    # If .x is not a character id, it might be the first item
+    if (!is.null(.x) && !is.character(.x)) {
+      items <- c(list(.x), items)
+    }
+    id
+  }
+
+  .qt_loop_spec(effective_id, over, items, note, programmer_note)
 }
 
 
-#' Add a Randomization Block
+#' Add a Randomize Block
 #'
-#' Groups items whose presentation order will be randomized for each
-#' respondent.
+#' Randomizes the order of items or groups of items. Used for experimental
+#' designs or to reduce order effects in questions.
 #'
-#' @param .x A `qt_qre` object (pipe mode) or a block ID string (spec mode).
-#' @param id Character string. Unique block identifier.
-#' @param ... Item specs to include in the randomization block.
-#' @param description Character string or NULL. Description of the block.
+#' @param .x A `qt_qre` object (pipe mode) or a randomize block ID string (spec mode).
+#' @param id Character string. Unique identifier for the randomize block.
+#' @param ... Item specs to randomize.
 #' @param note Character string or NULL. Implementation notes.
 #' @param programmer_note Character string or NULL. Note to survey programmer.
 #'
@@ -489,16 +508,31 @@ qt_add_loop <- function(.x, id = NULL, id_fills = NULL, title_fills = NULL,
 #'   spec list.
 #'
 #' @export
-qt_add_randomize <- function(.x, id = NULL, ..., description = NULL,
+qt_add_randomize <- function(.x = NULL, id = NULL, ...,
                              note = NULL, programmer_note = NULL) {
   items <- list(...)
+
   if (inherits(.x, "qt_qre")) {
-    spec <- .qt_randomize_spec(id, items, description, note, programmer_note)
+    # Pipe mode: .x is qre, id must be provided
+    if (is.null(id) || !nzchar(id))
+      stop("'id' is required", call. = FALSE)
+    spec <- .qt_randomize_spec(id, items, note, programmer_note)
     .x$questionnaire$items <- c(.x$questionnaire$items, list(spec))
     return(invisible(.x))
   }
-  effective_id <- if (!is.null(.x) && is.character(.x)) .x else id
-  .qt_randomize_spec(effective_id, items, description, note, programmer_note)
+
+  # Spec mode: determine effective_id
+  effective_id <- if (!is.null(.x) && is.character(.x) && length(.x) == 1) {
+    .x
+  } else {
+    # If .x is not a character id, it might be the first item
+    if (!is.null(.x) && !is.character(.x)) {
+      items <- c(list(.x), items)
+    }
+    id
+  }
+
+  .qt_randomize_spec(effective_id, items, note, programmer_note)
 }
 
 
@@ -548,18 +582,16 @@ qt_add_display_together <- function(.x = NULL, id = NULL, ...,
 }
 
 
-#' Add a Split Block
+#' Add a Split (Experimental Assignment) Block
 #'
-#' Routes respondents down different item sequences based on a control
-#' parameter value (e.g., an A/B experimental condition). Build each path
-#' using `qt_add_path()`.
+#' Randomly assigns respondents to experimental conditions with different
+#' question paths. Each path is shown to a subset of respondents.
 #'
-#' @param .x A `qt_qre` object (pipe mode) or a split ID string (spec mode).
-#' @param id Character string. Unique split identifier.
-#' @param description Character string. Description of the split purpose.
-#' @param control_id Character string. Control parameter ID whose value
-#'   determines which path is shown.
-#' @param paths List of path specs created by `qt_add_path()`.
+#' @param .x A `qt_qre` object (pipe mode) or a split block ID string (spec mode).
+#' @param id Character string. Unique identifier for the split block.
+#' @param on Character string. Variable name to create for tracking assignment.
+#' @param paths Named list. Each element is a list of item specs for that path.
+#'   Names become the path identifiers.
 #' @param note Character string or NULL. Implementation notes.
 #' @param programmer_note Character string or NULL. Note to survey programmer.
 #'
@@ -567,34 +599,25 @@ qt_add_display_together <- function(.x = NULL, id = NULL, ...,
 #'   spec list.
 #'
 #' @export
-#'
-#' @examples
-#' \dontrun{
-#' qt_add_section("experiment", "Community Questions",
-#'   qt_add_split("community_wording_split",
-#'     description = "A/B test of question wording",
-#'     control_id  = "exp_condition",
-#'     paths = list(
-#'       qt_add_path("wording_a", control_value = "A",
-#'         qt_add_question("com_attach_a")),
-#'       qt_add_path("wording_b", control_value = "B",
-#'         qt_add_question("com_attach_b"))
-#'     )
-#'   )
-#' )
-#' }
-qt_add_split <- function(.x, id = NULL, description = NULL,
-                         control_id = NULL, paths = list(),
+qt_add_split <- function(.x = NULL, id = NULL, on = NULL, paths = list(),
                          note = NULL, programmer_note = NULL) {
   if (inherits(.x, "qt_qre")) {
-    spec <- .qt_split_spec(id, description, control_id, paths,
-                            note, programmer_note)
+    # Pipe mode: .x is qre, id must be provided
+    if (is.null(id) || !nzchar(id))
+      stop("'id' is required", call. = FALSE)
+    spec <- .qt_split_spec(id, on, paths, note, programmer_note)
     .x$questionnaire$items <- c(.x$questionnaire$items, list(spec))
     return(invisible(.x))
   }
-  effective_id <- if (!is.null(.x) && is.character(.x)) .x else id
-  .qt_split_spec(effective_id, description, control_id, paths,
-                 note, programmer_note)
+
+  # Spec mode: .x is id (if provided positionally), otherwise use id parameter
+  effective_id <- if (!is.null(.x) && is.character(.x) && length(.x) == 1) {
+    .x
+  } else {
+    id
+  }
+
+  .qt_split_spec(effective_id, on, paths, note, programmer_note)
 }
 
 
@@ -644,16 +667,24 @@ qt_add_path <- function(id, control_value, ...) {
   spec
 }
 
+#' Create Module Spec (Internal)
 #' @keywords internal
 #' @noRd
-.qt_module_spec <- function(module_id, if_condition = NULL,
-                             programmer_note = NULL) {
-  if (is.null(module_id) || !nzchar(as.character(module_id)))
-    stop("'module_id' must be a non-empty string", call. = FALSE)
+.qt_module_spec <- function(id, intro_text = NULL, note = NULL,
+                            programmer_note = NULL) {
+  if (is.null(id) || !nzchar(as.character(id)))
+    stop("Module 'id' is required", call. = FALSE)
 
-  spec <- list(item_type = "module", module_id = module_id)
-  if (!is.null(if_condition))    spec$if_condition    <- if_condition
+  spec <- list(
+    item_type = "module",
+    module_id = id
+  )
+
+  # Store intro text override if provided
+  if (!is.null(intro_text)) spec$intro_text <- intro_text
+  if (!is.null(note)) spec$note <- note
   if (!is.null(programmer_note)) spec$programmer_note <- programmer_note
+
   spec
 }
 

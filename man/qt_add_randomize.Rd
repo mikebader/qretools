@@ -2,25 +2,22 @@
 % Please edit documentation in R/builder.R
 \name{qt_add_randomize}
 \alias{qt_add_randomize}
-\title{Add a Randomization Block}
+\title{Add a Randomize Block}
 \usage{
 qt_add_randomize(
-  .x,
+  .x = NULL,
   id = NULL,
   ...,
-  description = NULL,
   note = NULL,
   programmer_note = NULL
 )
 }
 \arguments{
-\item{.x}{A \code{qt_qre} object (pipe mode) or a block ID string (spec mode).}
+\item{.x}{A \code{qt_qre} object (pipe mode) or a randomize block ID string (spec mode).}
 
-\item{id}{Character string. Unique block identifier.}
+\item{id}{Character string. Unique identifier for the randomize block.}
 
-\item{...}{Item specs to include in the randomization block.}
-
-\item{description}{Character string or NULL. Description of the block.}
+\item{...}{Item specs to randomize.}
 
 \item{note}{Character string or NULL. Implementation notes.}
 
@@ -31,6 +28,6 @@ Pipe mode: invisibly returns modified \code{qt_qre}. Spec mode: item
 spec list.
 }
 \description{
-Groups items whose presentation order will be randomized for each
-respondent.
+Randomizes the order of items or groups of items. Used for experimental
+designs or to reduce order effects in questions.
 }
