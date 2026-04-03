@@ -522,8 +522,8 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
 #'
 #' @keywords internal
 #' @noRd
-.expand_module <- function(item, section_id, qbank, candidates, modbank,
-                           container_context) {
+.expand_module <- function(item, section_id, qbank, candidates, config,
+                           container_context, modbank) {
   module_id <- item$module_id
 
   # Look up module definition
