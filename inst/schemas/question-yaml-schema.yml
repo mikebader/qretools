@@ -3,10 +3,13 @@
 
 id: string                        # REQUIRED - Unique identifier
     title: string                 # REQUIRED - Short descriptive title
-    response_type: enum           # REQUIRED - Form of responses
-                                  #            One of: factor, character,
-                                  #            integer, number, ranking,
-                                  #            select_all, loop
+    response_type: enum           # REQUIRED - Form of responses. One of:
+                                  #   factor, character, integer, number,
+                                  #   ranking, select_all, loop
+                                  # NOTE: select_all and loop produce multiple
+                                  #   created variables via creates_variables /
+                                  #   loop_template; they have no single
+                                  #   storage_type at the top level.
     question_text: string         # REQUIRED - Full question as asked
     surveys_used: array[chr]      # REQUIRED - Surveys when question is fielded
     restricted_access: enum       # REQUIRED - Exclude from public (default:
@@ -15,8 +18,8 @@ id: string                        # REQUIRED - Unique identifier
                                   # but allow user to override? see note)
 
     # Conditionally required
-    value_label_id: string        # Required if type == factor
-    character_length: int         # Required if type == character
+    value_label_id: string        # Required if response_type == factor
+    character_length: int         # Required if response_type == character
     selection_number: int         # Required if response_type is select_all or
                                   # ranking - number of selections/rankings
                                   # allowed
@@ -24,29 +27,38 @@ id: string                        # REQUIRED - Unique identifier
                                   # ranking
       - id: string                # REQUIRED - Unique identifer-name of
                                   #            created variable
-        part_label: string        # REQUIRED - Label for this part
-        response_type: enum       # REQUIRED (if parent.response_type = select_all, must be boolean)
-                                  #          (if parent.response_type = ranking, must be int)
-        value_label_id: string    # Required if  response_type is
-                                  # boolean or factor
+        option_title: string      # Subordinate title appended to parent title
+                                  #   for codebook documentation. Composed as
+                                  #   "{parent.title}: {option_title}". Defaults
+                                  #   to option_text if omitted.
+        option_text: string       # Text shown to respondent for this option.
+                                  #   Default for option_title when omitted.
+        storage_type: enum        # REQUIRED - Storage type of created variable
+                                  #   (select_all parts → boolean;
+                                  #    ranking parts → integer)
+        value_label_id: string    # Required if storage_type is boolean or factor
         note: string              # Part-specific notes
-        other_specify: object     # Included if part should produce text field
-            id: string            # REQUIRED - Unique identifer (name of
-                                  #            created variable)
-            other_label: string   # Label for "specify" part (default:
-                                  # "Specify")
-            character_length: int # Allowed length of fill
+        other_specify: object     # Included if part should produce a companion
+                                  #   text field for "other, specify" options.
+                                  #   Creates a SECOND variable alongside the
+                                  #   boolean indicator defined by this part.
+            id: string            # REQUIRED - Variable name for the specify
+                                  #            text variable (e.g. "dem_race_oth_text")
+            other_title: string   # Codebook title for the specify variable.
+                                  #   Composed as "{parent.title}: {other_title}".
+                                  #   If omitted, defaults to other_label or "Specify".
+            other_label: string   # Text label shown next to the input field
+                                  #   on-screen (default: "Specify")
+            character_length: int # Maximum character length for the text field
             note: string          # "Specify"-specific notes
     loop_template:                # Required if response_type = loop
         variable_template: string # REQUIRED - Variable name with {i} placeholder
                                   #            (e.g., "hhm_age_{i}")
-        part_label: string        # REQUIRED - Label including {i} placeholder
-        response_type: enum       # REQUIRED - Form of response (one of: factor,
-                                  #   character, integer, number, ranking,
-                                  #   select_all - NOT loop)
-        storage_type: enum        # Variable storage type if different than
-                                  # default for response_type (see below)
-        value_label_id: string    # Required if response_type = factor
+        option_title: string      # REQUIRED - Label including {i} placeholder
+        storage_type: enum        # REQUIRED - Storage type of loop variable
+                                  #   (one of: factor, character, integer,
+                                  #   numeric, multiple_response - NOT loop)
+        value_label_id: string    # Required if storage_type = factor
         note: string              # Implementation notes
 
     # Highly recommended
@@ -59,8 +71,10 @@ id: string                        # REQUIRED - Unique identifier
                                   #   variables (e.g., Adress ___________)
 
     # Optional - Storage & Documentation
-    storage_type: enum            # Variable storage type if different than
-                                  # default for response_type (see below)
+    storage_type: enum            # Override inferred storage type when it
+                                  # differs from the response_type default
+                                  # (see mapping below). Rarely needed for
+                                  # simple response types.
     note: string                  # Implementation notes
     instruction: string           # Instructions to respondent
     help_text: string             # Optional help text
@@ -84,12 +98,12 @@ id: string                        # REQUIRED - Unique identifier
     # Optional - Content
     media: file-path              # Any media (e.g., images)
 
-# DEFAULTS
-# storage_type defaults by response_type:
-#   factor → factor
-#   character → character
-#   integer → integer
-#   number → number
-#   ranking → integer (for each created variable)
-#   select_all → boolean (for each created variable)
-#   loop → must be specified
+# response_type → storage_type DEFAULTS
+# (storage_type is inferred from response_type unless explicitly overridden)
+#   factor      → factor
+#   character   → character
+#   integer     → integer
+#   number      → numeric
+#   ranking     → integer (for each created variable)
+#   select_all  → boolean (for each created variable)
+#   loop        → must be specified in loop_template.storage_type

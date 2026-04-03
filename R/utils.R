@@ -191,8 +191,16 @@
 
   for (variable_id in names(variables)) {
     var <- variables[[variable_id]]
-    # Accept storage_type or variable_type (schema alias for gen/ctrl banks)
+    # Resolve effective storage type: storage_type is canonical; variable_type
+    # is the alias used in control/generated banks; response_type is the legacy
+    # alias used in question banks and is mapped to storage_type values.
     type_val <- var$storage_type %||% var$variable_type
+    if (is.null(type_val) && !is.null(var$response_type)) {
+      type_val <- tryCatch(
+        .qt_response_to_storage(var$response_type),
+        error = function(e) var$response_type  # keep raw value so invalid-type check fires
+      )
+    }
     if (!is.null(type_val) && !type_val %in% valid_types) {
       errors <- c(errors,
                   sprintf("Variable '%s': Invalid type '%s'. Must be one of: %s",
@@ -204,12 +212,15 @@
   for (variable_id in names(variables)) {
     var <- variables[[variable_id]]
 
-    # Factor must have value_labels_name OR value_label_id
+    # Factor must have value_label_id OR value_labels_name (legacy)
     type_val <- var$storage_type %||% var$variable_type
-    has_value_labels <- !is.null(var$value_labels_name) || !is.null(var$value_label_id)
+    if (is.null(type_val) && !is.null(var$response_type)) {
+      type_val <- tryCatch(.qt_response_to_storage(var$response_type), error = function(e) NULL)
+    }
+    has_value_labels <- !is.null(var$value_label_id) || !is.null(var$value_labels_name)
     if (!is.null(type_val) && type_val == "factor" && !has_value_labels) {
       errors <- c(errors,
-                  sprintf("Variable '%s': type='factor' requires value_labels_name or value_label_id",
+                  sprintf("Variable '%s': type='factor' requires value_label_id",
                           variable_id))
     }
 
@@ -219,21 +230,29 @@
                   sprintf("Variable '%s': restricted_access=true requires restriction_reason", variable_id))
     }
 
-    # creates_variables requires variable_parts
+    # creates_variables: accept inline (named list) and split (char vector + variable_parts)
+    # Inline:  creates_variables is a named mapping  { var_id: {option_title: ..., option_text: ..., ...}, ... }
+    # Split:   creates_variables is a char vector of IDs; variable_parts holds definitions
     if (!is.null(var$creates_variables)) {
-      if (is.null(var$variable_parts)) {
-        errors <- c(errors,
-                    sprintf("Variable '%s': creates_variables specified but variable_parts missing", variable_id))
+      cv <- var$creates_variables
+      if (is.list(cv) && !is.null(names(cv)) && length(cv) > 0) {
+        # Inline format: definitions are embedded; variable_parts not required
       } else {
-        # Check all created variables are defined
-        created <- var$creates_variables
-        defined <- names(var$variable_parts)
-        missing <- setdiff(created, defined)
-
-        if (length(missing) > 0) {
+        # Split format: variable_parts must be present and cover all IDs
+        if (is.null(var$variable_parts)) {
           errors <- c(errors,
-                      sprintf("Variable '%s': Variables in creates_variables not defined in variable_parts: %s",
-                              variable_id, paste(missing, collapse = ", ")))
+                      sprintf("Variable '%s': creates_variables specified but variable_parts missing",
+                              variable_id))
+        } else {
+          created <- unlist(cv)
+          defined <- names(var$variable_parts)
+          missing_parts <- setdiff(created, defined)
+          if (length(missing_parts) > 0) {
+            errors <- c(errors,
+                        sprintf(
+                          "Variable '%s': Variables in creates_variables not defined in variable_parts: %s",
+                          variable_id, paste(missing_parts, collapse = ", ")))
+          }
         }
       }
     }
@@ -280,8 +299,8 @@
     for (variable_id in names(variables)) {
       var <- variables[[variable_id]]
 
-      # Accept value_labels_name or value_label_id (schema alias)
-      label_name <- var$value_labels_name %||% var$value_label_id
+      # Accept value_label_id or value_labels_name (legacy alias)
+      label_name <- var$value_label_id %||% var$value_labels_name
       if (!is.null(label_name)) {
         if (!label_name %in% names(value_labels$labels)) {
           missing_labels <- c(missing_labels,

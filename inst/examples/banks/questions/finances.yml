@@ -1,13 +1,13 @@
 fin_jobempl:
   title: Employment status
-  storage_type: factor
+  response_type: factor
   question_text: Now we want you to think about your current job. If you have more
     than one,  please think about the job that you rely on the most for your income.
     Last week what was your employment status?
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: employment
+  value_label_id: employment
   note: "\nRespondents who reported \"Other\" were presented with opportunity to specify\n\
     employment status (responses are reported in variable \n`bas23_fin_jobemployed_os`).\
     \ \n\nA number of respondents reported being on disability; a category for disability\n\
@@ -16,47 +16,47 @@ fin_jobempl:
     category. \n\n"
 fin_jobsect:
   title: Employment sector
-  storage_type: factor
+  response_type: factor
   question_text: Which of the following best describes your current employer?
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: sector
+  value_label_id: sector
   note: "\nThis question was presented to respondent if theier answer to the employment\
     \ \nstatus question (before recoding) was one of: \"Working full-time\", \"Working\
     \ \npart-time\", or \"With a job but not at work because of temporary illness,\
     \ \nvacation or strike.\"\n\n"
 fin_jobeasy:
   title: Job search confidence
-  storage_type: factor
+  response_type: factor
   question_text: How difficult or easy do you think it would be for you to find another
     job at  least as good as your current one?
   surveys_used:
   - bas-2023
   vargroup: fin
   source: ISSP 2015 Q12 and GSS jobeasy
-  value_labels_name: easy5
+  value_label_id: easy5
   note: "\nThis question was presented to respondent if theier answer to the employment\
     \ \nstatus question (before recoding) was one of: \"Working full-time\", \"Working\
     \ \npart-time\", or \"With a job but not at work because of temporary illness,\
     \ \nvacation or strike.\"\n\n"
 fin_jobworry:
   title: Possibility of losing job
-  storage_type: factor
+  response_type: factor
   question_text: To what extent, if at all, do you worry about the possibility of
     losing your  job?
   surveys_used:
   - bas-2023
   vargroup: fin
   source: ISSP 2015 Q28 and GSS worryjob
-  value_labels_name: worry
+  value_label_id: worry
   note: "\nThis question was presented to respondent if theier answer to the employment\
     \ \nstatus question (before recoding) was one of: \"Working full-time\", \"Working\
     \ \npart-time\", or \"With a job but not at work because of temporary illness,\
     \ \nvacation or strike.\"\n\n"
 fin_amtrich:
   title: Rich Household Threshold
-  storage_type: character
+  response_type: character
   question_text: At what level of income would you say that a household becomes rich?      In
     other words, how much money does a family need to make per year for you      to
     consider them rich?
@@ -72,7 +72,7 @@ fin_amtrich:
     \    "
 fin_amtpoor:
   title: Poor Household Threshold
-  storage_type: character
+  response_type: character
   question_text: At what level of income would you say that a household becomes poor?      In
     other words, how little money does a family need to make per year for you     to
     consider them poor?
@@ -87,7 +87,7 @@ fin_amtpoor:
     \ level of \n    income they would consider a household rich.\n    "
 fin_econba:
   title: Baltimore Current Economic Conditions
-  storage_type: factor
+  response_type: factor
   question_text: How would you rate economic conditions in __the Baltimore area__
     today?
   surveys_used:
@@ -96,14 +96,14 @@ fin_econba:
   source: "\n    Adapted from Gallup. 2025. Gallup Poll. Question 9: 31122385.00008.\
     \ \n    Cornell University, Ithaca, NY: Roper Center for Public Opinion Research.\
     \ \n    (https://doi.org/10.25940/ROPER-31122385).\n    "
-  value_labels_name: econ4
+  value_label_id: econ4
   note: "\n    Respondents were randomized into two categories based on the value\
     \ of \n    BALTUSORD. If BALTUSORD=1, questions were asked in the order: fin_econba,\
     \ \n    fin_efutba, fin_econus, fin_efutus. If BALTUSORD=2, questions were asked\
     \ in \n    the order: fin_econus, fin_efutus, fin_econba, fin_efutba.\n    "
 fin_efutba:
   title: Baltimore Economic Trajectory
-  storage_type: factor
+  response_type: factor
   question_text: Right now, do you think that economic conditions in __the Baltimore
     area__      are getting a lot better, getting a little better, staying about the
     same,      getting a little worse, or getting a lot worse?
@@ -116,14 +116,14 @@ fin_efutba:
     \ and \n    Gallup. 2025. Gallup Poll. Question 10: 31122385.00009. Cornell University,\
     \ \n    Ithaca, NY: Roper Center for Public Opinion Research. \n    (DOI:10.25940/ROPER-31122385).\n\
     \    "
-  value_labels_name: efut5
+  value_label_id: efut5
   note: "\n    Respondents were randomized into two categories based on the value\
     \ of \n    BALTUSORD. If BALTUSORD=1, questions were asked in the order: fin_econba,\
     \ \n    fin_efutba, fin_econus, fin_efutus. If BALTUSORD=2, questions were asked\
     \ in \n    the order: fin_econus, fin_efutus, fin_econba, fin_efutba.\n    "
 fin_econus:
   title: U.S. Current Economic Conditions
-  storage_type: factor
+  response_type: factor
   question_text: How would you rate economic conditions in __the country as a whole__
     today?
   surveys_used:
@@ -132,14 +132,14 @@ fin_econus:
   source: "\n    Adapted from Gallup. 2025. Gallup Poll. Question 9: 31122385.00008.\
     \ Cornell \n    University, Ithaca, NY: Roper Center for Public Opinion Research.\
     \ \n    (https://doi.org/10.25940/ROPER-31122385).\n    "
-  value_labels_name: econ4
+  value_label_id: econ4
   note: "\n    Respondents were randomized into two categories based on the value\
     \ of \n    BALTUSORD. If BALTUSORD=1, questions were asked in the order: fin_econba,\
     \ \n    fin_efutba, fin_econus, fin_efutus. If BALTUSORD=2, questions were asked\
     \ in \n    the order: fin_econus, fin_efutus, fin_econba, fin_efutba.\n    "
 fin_efutus:
   title: U.S. Economic Trajectory
-  storage_type: factor
+  response_type: factor
   question_text: Right now, do you think that economic conditions in __the country
     as a      whole__ are getting a lot better, getting a little better, staying about
     the     same, getting a little worse, or getting a lot worse?
@@ -152,42 +152,42 @@ fin_efutus:
     \ and \n    Gallup. 2025. Gallup Poll. Question 10: 31122385.00009. Cornell University,\
     \ \n    Ithaca, NY: Roper Center for Public Opinion Research. \n    (DOI:10.25940/ROPER-31122385).\n\
     \    "
-  value_labels_name: efut5
+  value_label_id: efut5
   note: "\n    Respondents were randomized into two categories based on the value\
     \ of \n    BALTUSORD. If BALTUSORD=1, questions were asked in the order: fin_econba,\
     \ \n    fin_efutba, fin_econus, fin_efutus. If BALTUSORD=2, questions were asked\
     \ in \n    the order: fin_econus, fin_efutus, fin_econba, fin_efutba.\n    "
 fsi_runout:
   title: 'Food insecurity: food runs out'
-  storage_type: factor
+  response_type: factor
   question_text: Within the past 12 months, you worried that your food would run out
     before you  got money to buy more. Was this…
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: true3
+  value_label_id: true3
 fsi_notlast:
   title: 'Food insecurity: no money for food'
-  storage_type: factor
+  response_type: factor
   question_text: Within the past 12 months, the food you bought just didn’t last and
     you didn’t  have money to get more. Was this…
   surveys_used:
   - bas-2023
   vargroup: fin
-  value_labels_name: true3
+  value_label_id: true3
 fsi_nobal:
   title: 'Food insecurity: can''t afford balanced meals'
-  storage_type: factor
+  response_type: factor
   question_text: Within the past 12 months, you could not afford to eat balanced meals
   surveys_used:
   - bas-2023
   vargroup: fin
   source: 'Adapted from U.S. Household Food Security Survey Module: Six-Item Short
     Form HH4'
-  value_labels_name: true3
+  value_label_id: true3
 fsi_cutsize:
   title: 'Food insecurity: skipped meals'
-  storage_type: factor
+  response_type: factor
   question_text: Within the past 12 months, did you or other adults in your household
     ever cut  the size of your meals or skip meals because there wasn't enough money
     for food?
@@ -195,88 +195,88 @@ fsi_cutsize:
   - bas-2023
   vargroup: fin
   source: 'U.S. Household Food Security Survey Module: Six-Item Short Form AD1'
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
   note: "\nIf the respondent answered 'yes' to this question, they were directed to\
     \ a \nquestion asking how often they would cut meal sizes due to insecurity. If\
     \ they \nanswered 'no' to this question, they were not asked the next question\
     \ about \ncutting meal sizes.\n"
 fsi_eatless:
   title: 'Food insecurity: eat less'
-  storage_type: factor
+  response_type: factor
   question_text: Within the past 12 months, did you ever eat less than you felt you
     should  because there wasn't enough money for food?
   surveys_used:
   - bas-2023
   vargroup: fin
   source: 'U.S. Household Food Security Survey Module: Six-Item Short Form AD2'
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 fsi_hungry:
   title: 'Food insecurity: ever hungry'
-  storage_type: factor
+  response_type: factor
   question_text: Within the past 12 months, were you ever hungry but didn't eat because
     there  wasn't enough money for food?
   surveys_used:
   - bas-2023
   vargroup: fin
   source: 'U.S. Household Food Security Survey Module: Six-Item Short Form AD3'
-  value_labels_name: 'yes'
+  value_label_id: 'yes'
 fin_med:
   title: Medical Cost Affordability
-  storage_type: factor
+  response_type: factor
   question_text: In general, how easy or difficult is it for you to afford your medical      costs?
   surveys_used:
   - bas-2025
   vargroup: fin
   source: KFF Health Care Debt Survey, March 2022, Q81.
-  value_labels_name: med4
+  value_label_id: med4
 fin_futfood:
   title: 'Financial Future: Food'
-  storage_type: factor
+  response_type: factor
   question_text: In the next year, how much do you worry about being able to pay for
     food to      feed yourself and your family?
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: finfut5
+  value_label_id: finfut5
 fin_futhome:
   title: 'Financial Future: Housing'
-  storage_type: factor
+  response_type: factor
   question_text: In the next year, how much do you worry about being able to pay for
     a place      to live for you and your family?
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: finfut5
+  value_label_id: finfut5
 fin_fututil:
   title: 'Financial Future: Utilities'
-  storage_type: factor
+  response_type: factor
   question_text: In the next year, how much do you worry about being able to pay for      utilities
     such as gas, electricity, and water?
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: finfut5
+  value_label_id: finfut5
 fin_futmed:
   title: 'Financial Future: Medical'
-  storage_type: factor
+  response_type: factor
   question_text: In the next year, how much do you worry about being able to pay for
     medical      costs such as doctors' visits and prescriptions?
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: finfut5
+  value_label_id: finfut5
 fin_futtsp:
   title: 'Financial Future: Transportation'
-  storage_type: factor
+  response_type: factor
   question_text: In the next year, how much do you worry about being able to pay for      transportation
     to get places you need to go?
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: finfut5
+  value_label_id: finfut5
 fin_housworr:
   title: 'Housing Insecurity: Affordability Concern'
-  storage_type: factor
+  response_type: factor
   question_text: In the __past 12 months__, that is since {{CMONTHNM}} 2024, how often
     would      you say you  were worried or stressed about having enough money to
     pay your      {{TENURENM}}?
@@ -288,7 +288,7 @@ fin_housworr:
     \ Using \n    American Housing Survey Data. Washington, D.C.: United States Department\
     \ of \n    Housing and Urban Development Office of Policy Development and Research.\n\
     \    "
-  value_labels_name: housworr5
+  value_label_id: housworr5
   note: "\n    This question referred to rent, mortgage, or housing payments based\
     \ on the \n    respondent's answer when they were asked if they rented their home,\
     \ owned \n    it, or had some other kind of payment arrangement (dem_own).\n \
@@ -296,7 +296,7 @@ fin_housworr:
     \ \n    the survey in.\n    "
 fin_housdiff:
   title: 'Housing Insecurity: Payment Difficulty'
-  storage_type: factor
+  response_type: factor
   question_text: In the __past 12 months__, that is since {{CMONTHNM}} 2024, how difficult      was
     it for you to afford your {{TENURENM}} payments?
   surveys_used:
@@ -307,7 +307,7 @@ fin_housdiff:
     \ Using \n    American Housing Survey Data. Washington, D.C.: United States Department\
     \ of \n    Housing and Urban Development Office of Policy Development and Research.\n\
     \    "
-  value_labels_name: housdiff5
+  value_label_id: housdiff5
   note: " \n    This question referred to rent, mortgage, or housing payments based\
     \ on the \n    respondent's answer when they were asked if they rented their home,\
     \ owned \n    it, or had some other kind of payment arrangement (dem_own).\n \
@@ -315,24 +315,24 @@ fin_housdiff:
     \ \n    the survey in.\n    "
 fin_housfmv:
   title: 'Housing Insecurity: Forced Move Concern'
-  storage_type: factor
+  response_type: factor
   question_text: In the __past 12 months__, that is since {{CMONTHNM}} 2024, how often
     would      you say you were worried or stressed about being forced to move?
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: housworr5
+  value_label_id: housworr5
   note: "\n    {{CMONTHNM}} was filled in with the month in which the respondent asnwered\
     \ \n    the survey in.\n    "
 fin_utillate:
   title: Utility Payments
-  storage_type: factor
+  response_type: factor
   question_text: In the __past 12 months__, that is since {{CMONTHNM}} 2024, how often
     has      your household been late on the gas or electricity bill or has only made
     a      partial payment on the gas or electricity bill?
   surveys_used:
   - bas-2025
   vargroup: fin
-  value_labels_name: utillate4
+  value_label_id: utillate4
   note: "\n    {{CMONTHNM}} was filled in with the month in which the respondent asnwered\
     \ \n    the survey in.\n    "

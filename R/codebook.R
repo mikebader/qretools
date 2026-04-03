@@ -139,7 +139,7 @@ qt_codebook <- function(bank,
 
     # Resolve value labels
     resolved_labels <- NULL
-    vl_name <- v$value_labels_name %||% v$value_label_id
+    vl_name <- v$value_label_id %||% v$value_labels_name
     if (!is.null(vl_name) && !is.null(value_labels)) {
       resolved_labels <- value_labels$labels[[vl_name]]
     }
@@ -153,7 +153,7 @@ qt_codebook <- function(bank,
       storage_type     = v$storage_type,
       text             = text,
       value_labels     = resolved_labels,
-      value_labels_name = vl_name,
+      value_label_id = vl_name,
       surveys_used     = v$surveys_used,
       universe         = v$universe,
       vargroup         = v$vargroup,
@@ -209,8 +209,8 @@ qt_codebook <- function(bank,
     # Value labels
     if (!is.null(entry$value_labels) && length(entry$value_labels$values) > 0) {
       vl_header <- "Value labels"
-      if (!is.null(entry$value_labels_name))
-        vl_header <- paste0(vl_header, " (", entry$value_labels_name, ")")
+      if (!is.null(entry$value_label_id))
+        vl_header <- paste0(vl_header, " (", entry$value_label_id, ")")
       lines <- c(lines, "", vl_header)
       for (i in seq_along(entry$value_labels$values)) {
         lines <- c(lines,
