@@ -188,22 +188,23 @@ qt_render_questionnaire.character <- function(
   qre  <- survey_yaml$questionnaire
 
   lines <- c(
-    paste0("# ", meta$title %||% meta$id),
-    "",
-    paste0("**Status:** ", meta$status %||% "unknown"),
+    "---",
+    paste0("title: ", meta$title %||% meta$id),
+    paste0("status: ", meta$status %||% "unknown"),
+    "---",
     ""
   )
 
   if (!is.null(meta$controls_required) && length(meta$controls_required) > 0) {
     ctrl_note <- paste0("[Controls required: ",
                         paste(meta$controls_required, collapse = ", "), "]")
-    lines <- c(lines, .qt_fenced_div(ctrl_note, "programming", mode), "")
+    lines <- c(lines, .qt_fenced_div(ctrl_note, "qre-programming", mode), "")
   }
 
   if (!is.null(meta$programmer_note) && nzchar(meta$programmer_note)) {
     lines <- c(lines,
                .qt_fenced_div(paste0("[", meta$programmer_note, "]"),
-                              "programming", mode),
+                              "qre-programming", mode),
                "")
   }
 
@@ -239,8 +240,8 @@ qt_render_questionnaire.character <- function(
   question_text  <- qvar$question_text
   value_label_id <- qvar$value_label_id
   instruction    <- qvar$instruction
-  note           <- qvar$note
-  source         <- qvar$source %||% qvar$cite
+  citation       <- qvar$cite
+  source         <- qvar$source
 
   versions <- qvar$versions
   if (!is.null(versions) && length(versions) > 0) {
@@ -268,8 +269,9 @@ qt_render_questionnaire.character <- function(
        value_label_id = value_label_id,
        resolved_labels = resolved_labels,
        instruction    = instruction,
-       note           = note,
-       source         = source)
+       source         = source,
+       citation       = citation
+  )
 }
 
 
@@ -360,7 +362,7 @@ qt_render_questionnaire.character <- function(
     if (length(item$provides) > 0)
       block <- c(block, paste0("> Provides: ", paste(item$provides, collapse = ", ")))
     block <- c(block, "")
-    lines <- c(lines, .qt_fenced_div(block, "programming", mode))
+    lines <- c(lines, .qt_fenced_div(block, "qre-programming", mode))
   }
 
   lines
@@ -392,7 +394,7 @@ qt_render_questionnaire.character <- function(
   if (length(item$provides) > 0)
     block <- c(block, paste0(pfx, "[Provides: ",
                               paste(item$provides, collapse = ", "), "]"))
-  .qt_fenced_div(c(block, ""), "programming", mode)
+  .qt_fenced_div(c(block, ""), "qre-programming", mode)
 }
 
 
@@ -481,18 +483,29 @@ qt_render_questionnaire.qt_qreconfig <- function(
   lines <- character()
 
   # Variable name + title
-  varname_line <- paste0("**", variable_id, "**",
-                         if (!is.null(resolved$title) && nzchar(resolved$title))
-                           paste0(" \u2014 ", resolved$title)
-                         else "")
+  # varname_line <- paste0("**", variable_id, "**",
+  #                        if (!is.null(resolved$title) && nzchar(resolved$title))
+  #                          paste0(" \u2014 ", resolved$title)
+  #                        else "")
+  varname_line <- paste0("**", variable_id, "**")
   lines <- c(lines, .qt_fenced_div(paste0(pfx, varname_line),
                                     "qre-varname", mode))
 
   # Question text
-  qt <- trimws(resolved$question_text %||% "")
+
+
+  # qt <- trimws(resolved$question_text %||% "")
+  qb <- character() # initialize question block
+  if (!is.null(if_condition) && nzchar(if_condition)) {
+    qb <- c(qb, paste0(pfx, .qt_span(
+      paste0("[DISPLAY IF: ", if_condition, "]"), "qre-survey-control"
+    )))
+  }
+  qt <- gsub("\n\n", "\\\\\n\\\\\n", resolved$question_text) %||% "" # Preserve internal line breaks without creating <p> elements
+
   if (nzchar(qt)) {
-    lines <- c(lines, .qt_fenced_div(paste0(pfx, qt),
-                                      "qre-question-text", mode))
+    qb <- c(qb, .qt_span(paste0(pfx, qt), "qre-question-text"))
+    lines <- c(lines, .qt_fenced_div(qb, "qre-question-block", mode))
   }
 
   # Instruction (e.g. "Select all that apply.")
@@ -504,43 +517,39 @@ qt_render_questionnaire.qt_qreconfig <- function(
   # Response options
   if (qvar$storage_type == "multiple_response") {
     parts <- .qt_render_select_all_parts(qvar, mode)
-    lines <- c(lines, .qt_indent(parts, depth + 1, indent_char))
+    lines <- c(lines, .qt_indent(parts, 0, indent_char))
   } else if (!is.null(resolved$resolved_labels)) {
     vl <- .qt_render_value_labels_block(resolved$resolved_labels, mode)
-    lines <- c(lines, .qt_indent(vl, depth + 1, indent_char))
+    lines <- c(lines, .qt_indent(vl, 0, indent_char))
   } else if (qvar$storage_type == "character") {
     clen <- qvar$character_length
-    tag  <- if (!is.null(clen)) paste0("[open text, max ", clen, " chars]")
-            else "[open text]"
-    lines <- c(lines, paste0(pfx, indent_char, tag))
+    tag  <- if (!is.null(clen)) paste0("[text, max ", clen, " chars]")
+            else "[text]"
+    lines <- c(lines, paste0(pfx, indent_char, strrep("_", 10), tag))
   } else if (qvar$storage_type == "integer") {
-    lines <- c(lines, paste0(pfx, indent_char, "[integer]"))
+    lines <- c(lines, paste0(pfx, indent_char, strrep("_", 5), " [integer]"))
   } else if (qvar$storage_type == "numeric") {
     lines <- c(lines, paste0(pfx, indent_char, "[numeric]"))
   }
+  lines <- c(lines, "")
 
   # Source / citation
-  src <- trimws(resolved$source %||% "")
+  src <- trimws(resolved$citation %||% "")
   if (nzchar(src)) {
     lines <- c(lines,
                .qt_fenced_div(paste0(pfx, "[Source: ", src, "]"),
-                              "qre-source", mode))
+                              "qre-cite", mode))
   }
 
   # Programmer-facing annotations
   prog <- character()
-  if (!is.null(if_condition) && nzchar(if_condition))
-    prog <- c(prog, paste0(pfx, "[Show if: ", if_condition, "]"))
-  if (!is.null(module_id))
-    prog <- c(prog, paste0(pfx, "[Part of module: ", module_id, "]"))
+  # if (!is.null(module_id))
+  #   prog <- c(prog, paste0(pfx, "[Part of module: ", module_id, "]"))
   if (!is.null(programmer_note) && nzchar(programmer_note))
     prog <- c(prog, paste0(pfx, "[", trimws(programmer_note), "]"))
-  note <- trimws(resolved$note %||% "")
-  if (nzchar(note))
-    prog <- c(prog, paste0(pfx, "[", note, "]"))
 
   if (length(prog) > 0)
-    lines <- c(lines, .qt_fenced_div(prog, "programming", mode))
+    lines <- c(lines, .qt_fenced_div(prog, "qre-programming", mode))
 
   c(lines, "")
 }
@@ -557,31 +566,58 @@ qt_render_questionnaire.qt_qreconfig <- function(
   lines     <- character()
 
   lines <- c(lines,
-             .qt_fenced_div(paste0(pfx, "[IF ", condition, "]"),
-                            "programming", mode))
+             .qt_span(paste0(pfx, "[IF ", condition, "] "),
+                            "qre-survey-control"))
 
   if (length(item$then) > 0) {
-    then_inner <- .qt_render_items(item$then, depth = depth + 1,
+    then_inner <- .qt_render_items(item$then,
+                                   depth = depth + 0,
+                                   # original (maybe not necessary):
+                                   # depth = depth + 1,
                                    qbank = qbank, candidates = candidates,
                                    vlabs = vlabs, modbank = modbank,
                                    survey_id = survey_id, mode = mode,
                                    indent_char = indent_char)
-    lines <- c(lines, .qt_fenced_div(then_inner, "qre-logic-then", mode))
+    if(mode == "full") {
+      lines <- c(
+        lines,
+        "<div class='qre-logic-then'>",
+        then_inner,
+        "</div>"
+      )
+    }
   }
 
   else_items <- item[["else"]]
   if (!is.null(else_items) && length(else_items) > 0) {
     lines <- c(lines,
-               .qt_fenced_div(paste0(pfx, "[ELSE]"), "programming", mode))
-    else_inner <- .qt_render_items(else_items, depth = depth + 1,
+               .qt_span(paste0(pfx, "[ELSE] "), "qre-survey-control"))
+    else_inner <- .qt_render_items(else_items,
+                                   depth = depth + 0,
+                                   # original (maybe not necessary):
+                                   # depth = depth + 1,
                                    qbank = qbank, candidates = candidates,
                                    vlabs = vlabs, modbank = modbank,
                                    survey_id = survey_id, mode = mode,
                                    indent_char = indent_char)
-    lines <- c(lines, .qt_fenced_div(else_inner, "qre-logic-else", mode))
+    if(mode == "full") {
+      lines <- c(
+        lines,
+        "<div class='qre-logic-else'>",
+        else_inner,
+        "</div>"
+      )
+    }
   }
 
-  c(lines, "")
+  if(mode == "full") {
+    lines <- c(
+      "<div class='qre-logic-block'>",
+      lines,
+      "[ENDIF]",
+      "</div>"
+    )
+  }
 }
 
 
@@ -595,7 +631,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
   ctrl_id <- item$control_id %||% ""
   lines   <- c("",
                .qt_fenced_div(paste0(pfx, "[SPLIT on ", ctrl_id, "]"),
-                              "programming", mode))
+                              "qre-programming", mode))
 
   for (path in (item$paths %||% list())) {
     path_id  <- path$id            %||% ""
@@ -603,10 +639,12 @@ qt_render_questionnaire.qt_qreconfig <- function(
     path_note <- paste0(pfx, "[PATH ", path_id, ": ",
                         ctrl_id, " == \"", ctrl_val, "\"]")
     lines <- c(lines, "",
-               .qt_fenced_div(path_note, "programming", mode))
+               .qt_fenced_div(path_note, "qre-programming", mode))
 
     path_inner <- .qt_render_items(path$items %||% list(),
-                                   depth = depth + 1,
+                                   depth = depth + 0,
+                                   # original (maybe not necessary):
+                                   # depth = depth + 1,
                                    qbank = qbank, candidates = candidates,
                                    vlabs = vlabs, modbank = modbank,
                                    survey_id = survey_id, mode = mode,
@@ -636,7 +674,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
   loop_hdr <- paste0(pfx, "[LOOP ", item$id %||% "",
                      " \u2014 ", n, " iteration", if (n != 1) "s" else "",
                      ": ", paste(title_fills, collapse = ", "), "]")
-  lines <- c("", .qt_fenced_div(loop_hdr, "programming", mode))
+  lines <- c("", .qt_fenced_div(loop_hdr, "qre-programming", mode))
 
   for (i in seq_along(id_fills)) {
     id_fill    <- id_fills[i]
@@ -644,7 +682,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
 
     iter_note <- paste0(pfx, "[--- Iteration ", i, ": ", title_fill, " ---]")
     lines <- c(lines, "",
-               .qt_fenced_div(iter_note, "programming", mode))
+               .qt_fenced_div(iter_note, "qre-programming", mode))
 
     for (tmpl_item in (item$items %||% list())) {
       if (identical(tmpl_item$item_type, "question")) {
@@ -671,7 +709,10 @@ qt_render_questionnaire.qt_qreconfig <- function(
                                         resolved$question_text %||% "")
 
         lines <- c(lines,
-                   .qt_render_question(rend_id, resolved, qvar, depth + 1,
+                   .qt_render_question(rend_id, resolved, qvar,
+                                       depth = depth + 0,
+                                       # original (maybe not necessary):
+                                       # depth = depth + 1,
                                        mode, indent_char,
                                        if_condition = tmpl_item$if_condition %||%
                                          qvar$if_condition,
@@ -679,9 +720,15 @@ qt_render_questionnaire.qt_qreconfig <- function(
       } else {
         item_lines <- switch(
           tmpl_item$item_type,
-          "statement" = .qt_render_statement(tmpl_item, depth + 1,
+          "statement" = .qt_render_statement(tmpl_item,
+                                             depth = depth + 0,
+                                             # original (maybe not necessary):
+                                             # depth = depth + 1,
                                               mode, indent_char),
-          "compute"   = .qt_render_compute(tmpl_item, depth + 1,
+          "compute"   = .qt_render_compute(tmpl_item,
+                                           depth = depth + 0,
+                                           # original (maybe not necessary):
+                                           # depth = depth + 1,
                                             mode, indent_char),
           character()
         )
@@ -718,16 +765,19 @@ qt_render_questionnaire.qt_qreconfig <- function(
                   "]")
   end   <- paste0(pfx, "[END RANDOMIZED BLOCK: ", blk_id, "]")
 
-  inner <- .qt_render_items(item$items %||% list(), depth = depth,
+  inner <- .qt_render_items(item$items %||% list(),
+                            depth = depth + 0,
+                            # original (maybe not necessary):
+                            # depth = depth + 1,
                              qbank = qbank, candidates = candidates,
                              vlabs = vlabs, modbank = modbank,
                              survey_id = survey_id, mode = mode,
                              indent_char = indent_char)
 
-  c(.qt_fenced_div(begin, "programming", mode),
+  c(.qt_fenced_div(begin, "qre-programming", mode),
     "",
     inner,
-    .qt_fenced_div(end, "programming", mode),
+    .qt_fenced_div(end, "qre-programming", mode),
     "")
 }
 
@@ -762,14 +812,14 @@ qt_render_questionnaire.qt_qreconfig <- function(
     lines <- c(lines,
                .qt_fenced_div(paste0(pfx, "[Module intro: ",
                                      trimws(intro_text), "]"),
-                              "programming", mode),
+                              "qre-programming", mode),
                "")
   }
 
   for (q_spec in (mod_def$questions %||% list())) {
     q_item <- list(item_type   = "question",
                    variable_id = q_spec$variable_id,
-                   source      = q_spec$source %||% "qbank",
+                   source      = q_spec$cite %||% "qbank",
                    if_condition = NULL,
                    programmer_note = NULL)
     lines <- c(lines,
@@ -790,13 +840,15 @@ qt_render_questionnaire.qt_qreconfig <- function(
 .qt_render_display_together <- function(item, depth, qbank, candidates, vlabs,
                                          modbank, survey_id, mode, indent_char) {
   pfx   <- strrep(indent_char, depth)
-  hdr   <- paste0(pfx, "**DISPLAY TOGETHER: ", item$id %||% "", "**")
-  inner <- .qt_render_items(item$items %||% list(), depth = depth + 1,
+  inner <- .qt_render_items(item$items %||% list(),
+                            depth = depth + 0,
+                            # original (maybe not necessary):
+                            # depth = depth + 1,
                              qbank = qbank, candidates = candidates,
                              vlabs = vlabs, modbank = modbank,
                              survey_id = survey_id, mode = mode,
                              indent_char = indent_char)
-  c(.qt_fenced_div(c(hdr, "", inner), "qre-display-together", mode), "")
+  c(.qt_fenced_div(inner, "qre-display-together", mode), "")
 }
 
 
@@ -812,13 +864,17 @@ qt_render_questionnaire.qt_qreconfig <- function(
 
   mapply(function(code, label) {
     if (mode == "full") {
-      paste0("[", .qt_span(code, "factor-code"), "] ",
-             .qt_span(label, "factor-label"))
+      paste0(
+        "* ",
+        .qt_span(paste0("[", code, "]"), "qre-factor-code"),
+        " ",
+        .qt_span(label, "qre-factor-label")
+      )
     } else {
-      paste0("[", code, "] ", label)
+      paste0("* [", code, "] ", label)
     }
   }, resolved_labels$values, resolved_labels$labels,
-  SIMPLIFY = TRUE, USE.NAMES = FALSE)
+  SIMPLIFY = FALSE, USE.NAMES = FALSE)
 }
 
 
@@ -840,8 +896,8 @@ qt_render_questionnaire.qt_qreconfig <- function(
   lines <- character()
   for (part_id in names(parts_list)) {
     part <- parts_list[[part_id]]
-    option_text <- if (is.character(part)) part
-                   else part$option_text %||% part$option_title %||% part_id
+    option_text <- part$option_text %||% part$option_title %||% part_id
+    if(grepl("^hlt_ediag", option_text)) print(part$option_text)
 
     if (mode == "full") {
       line <- paste0("* ", .qt_span(option_text, "option-text"),
