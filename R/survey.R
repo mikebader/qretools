@@ -147,6 +147,13 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
     }
   }
 
+  # Collect fill names provided by preload computes (always available in flow).
+  preload_provides <- character()
+  for (pi in preload_items) {
+    preload_provides <- c(preload_provides, pi$provides %||% character())
+  }
+  preload_provides <- unique(preload_provides)
+
   # Step 4b: Process questionnaire items recursively
   all_items <- .process_items_recursive(
     survey_yaml$questionnaire$items,
@@ -164,12 +171,17 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   control_params <- character()
   modules_used <- character()
   fills_found <- character()
+  fill_positions <- integer()
+  inline_compute_provides <- integer()  # named: fill name → item_idx
+  item_idx <- 0L
   module_map <- list()
   loop_map <- list()
   logic_map <- list()
   split_map <- list()
 
   for (item in all_items) {
+    item_idx <- item_idx + 1L
+
     if (item$item_type == "question") {
       varnames <- c(varnames, item$variable_id)
 
@@ -182,7 +194,8 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
 
       # Extract fills from question text
       fills <- .extract_fills(item$definition$question_text)
-      fills_found <- c(fills_found, fills)
+      fills_found    <- c(fills_found, fills)
+      fill_positions <- c(fill_positions, rep(item_idx, length(fills)))
 
       # Track module usage
       if (!is.null(item$module_id)) {
@@ -210,24 +223,51 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
       }
     }
 
-    # Extract fills from other item types
+    # Extract fills from statement text
     if (item$item_type == "statement") {
       fills <- .extract_fills(item$text)
-      fills_found <- c(fills_found, fills)
+      fills_found    <- c(fills_found, fills)
+      fill_positions <- c(fill_positions, rep(item_idx, length(fills)))
+    }
+
+    # Record what inline compute items provide and at which position.
+    if (item$item_type == "compute") {
+      for (pname in (item$provides %||% character())) {
+        if (is.null(inline_compute_provides[[pname]])) {
+          inline_compute_provides[[pname]] <- item_idx
+        }
+      }
     }
   }
 
-  # Classify fills: any {{name}} that matches a control parameter variable_id
-  # is a control param reference. Warn about fills that are in neither bank.
-  for (fill in fills_found) {
+  # Classify fills: check ctrlbank, qbank, preload computes, and inline computes.
+  # Inline computes must appear before the fill in document order.
+  computed_fills <- character()
+  for (i in seq_along(fills_found)) {
+    fill     <- fills_found[[i]]
+    fill_pos <- fill_positions[[i]]
+
     if (!is.null(ctrlbank$variables[[fill]])) {
       control_params <- c(control_params, fill)
-    } else if (is.null(qbank$variables[[fill]])) {
-      warning("Fill '{{", fill, "}}' is not defined in the question bank or ",
-              "control parameter bank", call. = FALSE)
+    } else if (!is.null(qbank$variables[[fill]])) {
+      # Question bank variable — valid, no action needed
+    } else if (fill %in% preload_provides) {
+      computed_fills <- c(computed_fills, fill)
+    } else if (!is.null(inline_compute_provides[[fill]])) {
+      if (inline_compute_provides[[fill]] < fill_pos) {
+        computed_fills <- c(computed_fills, fill)
+      } else {
+        warning("Fill '{{", fill, "}}' is provided by a compute item that ",
+                "appears after the question or statement that uses it",
+                call. = FALSE)
+      }
+    } else {
+      warning("Fill '{{", fill, "}}' is not defined in the question bank, ",
+              "control parameter bank, or any compute item", call. = FALSE)
     }
   }
   control_params <- unique(control_params)
+  computed_fills <- unique(computed_fills)
 
   # Step 6: Build source map
   source_map <- data.frame(
@@ -261,6 +301,7 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
       indices = list(
         questions   = unique(varnames),
         controls    = unique(control_params),
+        computed    = computed_fills,
         modules     = unique(modules_used),
         fills       = unique(fills_found),
         items       = seq_along(all_items),
