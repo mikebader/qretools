@@ -198,6 +198,11 @@ qt_add_section <- function(qre, id, title, ...,
 #' @param if_condition Character string or NULL. Survey-specific display logic
 #'   (R expression, e.g., `"dem_child == 1"`).
 #' @param programmer_note Character string or NULL. Note to survey programmer.
+#' @param version Character string or NULL. Version of the question to use when
+#'   the bank entry has a `versions` list. `NULL` (default) uses the last
+#'   (most recent) version. `"base"` uses only the original base entry.
+#'   Any other string selects the version with that `version_id`, applying all
+#'   earlier versions cumulatively (see `.qt_resolve_version()`).
 #'
 #' @return Pipe mode: invisibly returns the modified `qt_qre`. Spec mode:
 #'   returns an item spec list.
@@ -206,8 +211,11 @@ qt_add_section <- function(qre, id, title, ...,
 #'
 #' @examples
 #' \dontrun{
-#' # Pipe mode
+#' # Pipe mode — use the most recent version (default)
 #' qre |> qt_add_question("dem_age")
+#'
+#' # Pipe mode — pin to a specific version
+#' qre |> qt_add_question("dem_age", version = "v2")
 #'
 #' # Spec mode (inside a section)
 #' qt_add_section("demographics", "About You",
@@ -217,16 +225,16 @@ qt_add_section <- function(qre, id, title, ...,
 #' }
 qt_add_question <- function(.x, variable_id = NULL, source = "qbank",
                             hide_question = FALSE, if_condition = NULL,
-                            programmer_note = NULL) {
+                            programmer_note = NULL, version = NULL) {
   if (inherits(.x, "qt_qre")) {
     if (is.null(variable_id) || !nzchar(variable_id))
       stop("'variable_id' is required", call. = FALSE)
     spec <- .qt_question_spec(variable_id, source, hide_question,
-                               if_condition, programmer_note)
+                               if_condition, programmer_note, version)
     .x$questionnaire$items <- c(.x$questionnaire$items, list(spec))
     return(invisible(.x))
   }
-  .qt_question_spec(.x, source, hide_question, if_condition, programmer_note)
+  .qt_question_spec(.x, source, hide_question, if_condition, programmer_note, version)
 }
 
 
@@ -655,7 +663,7 @@ qt_add_path <- function(id, control_value, ...) {
 #' @noRd
 .qt_question_spec <- function(variable_id, source = "qbank",
                                hide_question = FALSE, if_condition = NULL,
-                               programmer_note = NULL) {
+                               programmer_note = NULL, version = NULL) {
   if (is.null(variable_id) || !nzchar(as.character(variable_id)))
     stop("'variable_id' must be a non-empty string", call. = FALSE)
 
@@ -664,6 +672,7 @@ qt_add_path <- function(id, control_value, ...) {
   if (isTRUE(hide_question))          spec$hide_question   <- TRUE
   if (!is.null(if_condition))         spec$if_condition    <- if_condition
   if (!is.null(programmer_note))      spec$programmer_note <- programmer_note
+  if (!is.null(version))              spec$version         <- version
   spec
 }
 
