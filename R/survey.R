@@ -133,17 +133,18 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
          paste(missing_meta, collapse = ", "), call. = FALSE)
   }
 
-  # Step 4a: Process preload items (compute only)
+  # Step 4a: Process preload items
   preload_items <- list()
   if (!is.null(survey_yaml$questionnaire$preload)) {
     for (item in survey_yaml$questionnaire$preload) {
-      if (!identical(item$item_type, "compute")) {
-        stop("'preload' only allows 'compute' items; found item_type: '",
-             item$item_type, "'", call. = FALSE)
+      processed <- if (identical(item$item_type, "compute")) {
+        .make_compute_item(item, section_id = "preload",
+                           container_context = NULL)
+      } else {
+        item$section_id <- "preload"
+        item
       }
-      preload_items <- c(preload_items,
-                         list(.make_compute_item(item, section_id = "preload",
-                                                 container_context = NULL)))
+      preload_items <- c(preload_items, list(processed))
     }
   }
 
