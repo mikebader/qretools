@@ -362,7 +362,7 @@ qt_render_questionnaire.character <- function(
 # @noRd
 .qt_render_statement <- function(item, depth, mode, indent_char) {
   pfx  <- strrep(indent_char, depth)
-  text <- item$text %||% ""
+  text <- .qt_wrap_fills(item$text %||% "", mode)
   c(paste0(pfx, text), "")
 }
 
@@ -490,6 +490,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
     )))
   }
   qt <- gsub("\n\n", "\\\\\n\\\\\n", resolved$question_text) %||% "" # Preserve internal line breaks without creating <p> elements
+  qt <- .qt_wrap_fills(qt, mode)
 
   if (nzchar(qt)) {
     qb <- c(qb, .qt_span(paste0(pfx, qt), "qre-question-text"))
@@ -947,6 +948,16 @@ qt_render_questionnaire.qt_qreconfig <- function(
 .qt_span <- function(text, class) {
   if (is.null(text)) return("")
   paste0("[", text, "]{.", class, "}")
+}
+
+
+# Wrap every {{fill}} pattern in a qt-survey-control span in full mode.
+#
+# @keywords internal
+# @noRd
+.qt_wrap_fills <- function(text, mode) {
+  if (mode != "full" || is.null(text) || !nzchar(text)) return(text)
+  gsub("(\\{\\{[^}]+\\}\\})", "[\\1]{.qt-survey-control}", text, perl = TRUE)
 }
 
 
