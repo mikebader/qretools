@@ -208,9 +208,14 @@ qt_render_questionnaire.character <- function(
                "")
   }
 
-  # Preload computes
+  # Preload items
   if (length(qre$preload) > 0) {
-    lines <- c(lines, .qt_render_preload(qre$preload, mode), "")
+    lines <- c(lines,
+               .qt_render_preload(qre$preload, mode,
+                                  qbank = qbank, candidates = candidates,
+                                  vlabs = vlabs, survey_id = survey_id,
+                                  indent_char = indent_char),
+               "")
   }
 
   # Questionnaire items
@@ -334,22 +339,55 @@ qt_render_questionnaire.character <- function(
 
 # @keywords internal
 # @noRd
-.qt_render_preload <- function(preload_items, mode) {
+.qt_render_preload <- function(preload_items, mode, qbank, candidates, vlabs,
+                                survey_id, indent_char) {
   header <- "### Preload"
   lines  <- .qt_fenced_div(header, "qre-preload", mode)
 
   for (item in preload_items) {
-    block <- c(paste0("**", item$id, "**"))
-    if (!is.null(item$description) && nzchar(item$description))
-      block <- c(block, paste0("> ", item$description))
-    if (!is.null(item$command) && nzchar(item$command))
-      block <- c(block, paste0("> Command: `", item$command, "`"))
-    if (length(item$requires) > 0)
-      block <- c(block, paste0("> Requires: ", paste(item$requires, collapse = ", ")))
-    if (length(item$provides) > 0)
-      block <- c(block, paste0("> Provides: ", paste(item$provides, collapse = ", ")))
-    block <- c(block, "")
-    lines <- c(lines, .qt_fenced_div(block, "qre-programming", mode))
+    item_type  <- item$item_type %||% "compute"
+    item_lines <- switch(
+      item_type,
+
+      "compute" = .qt_render_compute(item, depth = 0, mode, indent_char),
+
+      "fill" = {
+        id   <- item$id %||% ""
+        desc <- trimws(item$description %||% "")
+        fill_text <- if (mode == "full") {
+          .qt_span(paste0("{{", id, "}}"), "qt-survey-control")
+        } else {
+          paste0("{{", id, "}}")
+        }
+        body <- if (nzchar(desc)) paste0(fill_text, " — ", desc) else fill_text
+        .qt_fenced_div(body, "qre-programming", mode)
+      },
+
+      "question" = ,
+      "factor"   = .qt_render_question_item(item, depth = 0, qbank, candidates,
+                                             vlabs, survey_id, mode, indent_char),
+
+      "statement" = .qt_render_statement(item, depth = 0, mode, indent_char),
+
+      "character" = ,
+      "integer"   = ,
+      "numeric"   = {
+        id   <- item$id %||% ""
+        desc <- trimws(item$description %||% "")
+        tag  <- .qt_storage_tag(item_type, item$validation,
+                                 item$character_length)
+        body <- paste0("**", id, "** ", tag,
+                       if (nzchar(desc)) paste0(" — ", desc) else "")
+        .qt_fenced_div(body, "qre-programming", mode)
+      },
+
+      {
+        warning("Unknown preload item_type '", item_type, "' — skipping",
+                call. = FALSE)
+        character()
+      }
+    )
+    lines <- c(lines, item_lines, "")
   }
 
   lines
@@ -510,28 +548,15 @@ qt_render_questionnaire.qt_qreconfig <- function(
     vl <- .qt_render_value_labels_block(resolved$resolved_labels, mode)
     lines <- c(lines, .qt_indent(vl, 0, indent_char))
   } else if (qvar$storage_type == "character") {
-    clen <- qvar$character_length
-    val <- qvar$validation
-    svyc <- ""
-    if (!is.null(clen)) svyc <- paste0("maximum ", clen, " characters")
-    if (!is.null(val)) svyc <- {
-      if (!is.null(clen)) {
-        paste0(svyc, ", ", val)
-      } else {
-        svyc <- val
-      }
-    }
-    if (nzchar(svyc)) svyc <- paste0("; ", svyc)
-    tag <- .qt_span(paste0("[character", svyc, "]"), "qre-survey-control")
-    if (!is.null(qvar$string_label)) tag <- paste(
-      paste0("(", qvar$string_label, ")"),
-      tag
-    )
-  lines <- c(lines, paste0(pfx, indent_char, strrep("_", 10), tag))
+    tag <- .qt_storage_tag("character", qvar$validation, qvar$character_length,
+                            qvar$string_label)
+    lines <- c(lines, paste0(pfx, indent_char, strrep("_", 10), tag))
   } else if (qvar$storage_type == "integer") {
-    lines <- c(lines, paste0(pfx, indent_char, strrep("_", 5), " [integer]"))
+    tag <- .qt_storage_tag("integer", qvar$validation)
+    lines <- c(lines, paste0(pfx, indent_char, strrep("_", 5), " ", tag))
   } else if (qvar$storage_type == "numeric") {
-    lines <- c(lines, paste0(pfx, indent_char, "[numeric]"))
+    tag <- .qt_storage_tag("numeric", qvar$validation)
+    lines <- c(lines, paste0(pfx, indent_char, tag))
   }
   lines <- c(lines, "")
 
@@ -948,6 +973,25 @@ qt_render_questionnaire.qt_qreconfig <- function(
 .qt_fenced_div <- function(lines, class, mode) {
   if (mode != "full") return(lines)
   c(paste0("::: {.", class, "}"), lines, ":::")
+}
+
+
+# Build a [type; validation] survey-control tag for scalar storage types.
+#
+# @keywords internal
+# @noRd
+.qt_storage_tag <- function(storage_type, validation = NULL,
+                             character_length = NULL, string_label = NULL) {
+  notes <- character()
+  if (!is.null(character_length))
+    notes <- c(notes, paste0("maximum ", character_length, " characters"))
+  if (!is.null(validation) && nzchar(validation))
+    notes <- c(notes, validation)
+  note_str <- if (length(notes) > 0) paste0("; ", paste(notes, collapse = "; ")) else ""
+  tag <- .qt_span(paste0("[", storage_type, note_str, "]"), "qre-survey-control")
+  if (!is.null(string_label) && nzchar(string_label))
+    tag <- paste(paste0("(", string_label, ")"), tag)
+  tag
 }
 
 
