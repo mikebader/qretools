@@ -361,7 +361,7 @@ qt_render_questionnaire.character <- function(
 # @keywords internal
 # @noRd
 .qt_render_statement <- function(item, depth, mode, indent_char) {
-  pfx  <- strrep(indent_char, depth)
+  pfx  <- if (mode == "full") "" else strrep(indent_char, depth)
   text <- .qt_wrap_fills(item$text %||% "", mode)
   c(paste0(pfx, text), "")
 }
@@ -372,7 +372,7 @@ qt_render_questionnaire.character <- function(
 # @keywords internal
 # @noRd
 .qt_render_compute <- function(item, depth, mode, indent_char) {
-  pfx   <- strrep(indent_char, depth)
+  pfx   <- if (mode == "full") "" else strrep(indent_char, depth)
   block <- paste0(pfx, "[COMPUTE: ", item$provides %||% "")
   if (!is.null(item$command) && nzchar(item$command))
     block <- c(block, "```", item$command, "```")
@@ -448,7 +448,10 @@ qt_render_questionnaire.qt_qreconfig <- function(
                                              version_id = item$version)
   if_cond     <- if_condition_override %||% item$if_condition %||%
                    qvar$if_condition
-  prog_note   <- item$programmer_note
+  notes       <- trimws(c(resolved$programmer_note %||% character(),
+                          item$programmer_note     %||% character()))
+  prog_note   <- notes[nzchar(notes)]
+  if (length(prog_note) == 0) prog_note <- NULL
 
   .qt_render_question(varname, resolved, qvar, depth, mode, indent_char,
                       if_condition = if_cond, module_id = module_id,
@@ -463,7 +466,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
 .qt_render_question <- function(variable_id, resolved, qvar, depth, mode,
                                  indent_char, if_condition = NULL,
                                  module_id = NULL, programmer_note = NULL) {
-  pfx   <- strrep(indent_char, depth)
+  pfx   <- if (mode == "full") "" else strrep(indent_char, depth)
   lines <- character()
 
   # Variable name + title
@@ -542,15 +545,19 @@ qt_render_questionnaire.qt_qreconfig <- function(
 
   # Programmer-facing annotations
   prog <- character()
-  # if (!is.null(module_id))
-  #   prog <- c(prog, paste0(pfx, "[Part of module: ", module_id, "]"))
-  if (!is.null(programmer_note) && nzchar(programmer_note))
-    prog <- c(prog, paste0(pfx, "[", trimws(programmer_note), "]"))
+  for (note in (programmer_note %||% character())) {
+    if (nzchar(note))
+      prog <- c(prog, paste0(pfx, "[", note, "]"))
+  }
 
   if (length(prog) > 0)
     lines <- c(lines, .qt_fenced_div(prog, "qre-programming", mode))
 
-  c(lines, "")
+  if (mode == "full") {
+    c("<div class=\"qre-question-unit\">", lines, "</div>", "")
+  } else {
+    c(lines, "")
+  }
 }
 
 
@@ -560,7 +567,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
 # @noRd
 .qt_render_logic <- function(item, depth, qbank, candidates, vlabs, modbank,
                               survey_id, mode, indent_char) {
-  pfx       <- strrep(indent_char, depth)
+  pfx       <- if (mode == "full") "" else strrep(indent_char, depth)
   condition <- item$condition %||% ""
   lines     <- character()
 
@@ -626,7 +633,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
 # @noRd
 .qt_render_split <- function(item, depth, qbank, candidates, vlabs, modbank,
                               survey_id, mode, indent_char) {
-  pfx     <- strrep(indent_char, depth)
+  pfx     <- if (mode == "full") "" else strrep(indent_char, depth)
   ctrl_id <- item$control_id %||% ""
   lines   <- c("",
                .qt_fenced_div(paste0(pfx, "[SPLIT on ", ctrl_id, "]"),
@@ -665,7 +672,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
 # @noRd
 .qt_render_loop <- function(item, depth, qbank, candidates, vlabs, modbank,
                              survey_id, mode, indent_char) {
-  pfx         <- strrep(indent_char, depth)
+  pfx         <- if (mode == "full") "" else strrep(indent_char, depth)
   id_fills    <- item$id_fills    %||% character()
   title_fills <- item$title_fills %||% id_fills
   n           <- length(id_fills)
@@ -707,6 +714,11 @@ qt_render_questionnaire.qt_qreconfig <- function(
         resolved$question_text <- gsub("\\{i\\}", title_fill,
                                         resolved$question_text %||% "")
 
+        loop_notes <- trimws(c(resolved$programmer_note %||% character(),
+                                tmpl_item$programmer_note %||% character()))
+        loop_notes <- loop_notes[nzchar(loop_notes)]
+        if (length(loop_notes) == 0) loop_notes <- NULL
+
         lines <- c(lines,
                    .qt_render_question(rend_id, resolved, qvar,
                                        depth = depth + 0,
@@ -715,7 +727,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
                                        mode, indent_char,
                                        if_condition = tmpl_item$if_condition %||%
                                          qvar$if_condition,
-                                       programmer_note = tmpl_item$programmer_note))
+                                       programmer_note = loop_notes))
       } else {
         item_lines <- switch(
           tmpl_item$item_type,
@@ -749,7 +761,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
 # @noRd
 .qt_render_randomize <- function(item, depth, qbank, candidates, vlabs,
                                   modbank, survey_id, mode, indent_char) {
-  pfx     <- strrep(indent_char, depth)
+  pfx     <- if (mode == "full") "" else strrep(indent_char, depth)
   blk_id  <- item$id %||% ""
 
   var_ids <- vapply(item$items %||% list(), function(it) {
@@ -790,7 +802,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
 # @noRd
 .qt_render_module <- function(item, depth, qbank, candidates, vlabs, modbank,
                                survey_id, mode, indent_char) {
-  pfx       <- strrep(indent_char, depth)
+  pfx       <- if (mode == "full") "" else strrep(indent_char, depth)
   module_id <- item$module_id
   lines     <- character()
 
@@ -808,11 +820,8 @@ qt_render_questionnaire.qt_qreconfig <- function(
     mod_def$intro_text
   }
   if (!is.null(intro_text) && nzchar(trimws(intro_text))) {
-    lines <- c(lines,
-               .qt_fenced_div(paste0(pfx, "[Module intro: ",
-                                     trimws(intro_text), "]"),
-                              "qre-programming", mode),
-               "")
+    intro_item <- list(item_type = "statement", text = trimws(intro_text))
+    lines <- c(lines, .qt_render_statement(intro_item, depth, mode, indent_char))
   }
 
   for (q_spec in (mod_def$questions %||% list())) {
@@ -922,6 +931,9 @@ qt_render_questionnaire.qt_qreconfig <- function(
       }
       lines <- c(lines, other_line)
     }
+  }
+  if (mode == "full" && length(lines) > 0) {
+    return(c("<div class=\"qre-response-options\">", lines, "</div>"))
   }
   lines
 }
