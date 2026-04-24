@@ -373,15 +373,11 @@ qt_render_questionnaire.character <- function(
 # @noRd
 .qt_render_compute <- function(item, depth, mode, indent_char) {
   pfx   <- strrep(indent_char, depth)
-  block <- c(paste0(pfx, "[COMPUTE: ", item$id %||% "", "]"))
-  if (!is.null(item$description) && nzchar(item$description))
-    block <- c(block, paste0(pfx, "[", item$description, "]"))
+  block <- paste0(pfx, "[COMPUTE: ", item$provides %||% "")
   if (!is.null(item$command) && nzchar(item$command))
-    block <- c(block, paste0(pfx, "[Command: `", item$command, "`]"))
-  if (length(item$provides) > 0)
-    block <- c(block, paste0(pfx, "[Provides: ",
-                              paste(item$provides, collapse = ", "), "]"))
-  .qt_fenced_div(c(block, ""), "qre-programming", mode)
+    block <- c(block, "```", item$command, "```")
+  block <- c(block, "]")
+  .qt_fenced_div(c(block, ""), "qre-survey-control", mode)
 }
 
 
