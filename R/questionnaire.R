@@ -229,34 +229,54 @@ qt_render_questionnaire.character <- function(
 
 # Internal: Version resolution ------------------------------------------------
 
-# Resolve the correct version of a question's text/labels for survey_id.
-# Only fields present in a version entry override the base value.
-# Falls back to the last version if survey_id matches none.
+# Resolve the correct version of a question's text/labels.
+#
+# Two modes:
+#   version_id != NULL — explicit spec-stored version: delegates field merging
+#     to .qt_resolve_version() (cumulative traversal, base -> ... -> target).
+#   version_id == NULL — survey_id matching: searches each version entry's
+#     surveys_used; falls back to the last version if none match.
+#
+# In both modes the resolved value_label_id is looked up in vlabs and attached
+# as resolved_labels.
 #
 # @keywords internal
 # @noRd
-.qt_render_resolve_version <- function(qvar, survey_id, vlabs) {
-  title          <- qvar$title
-  question_text  <- qvar$question_text
-  value_label_id <- qvar$value_label_id
-  instruction    <- qvar$instruction
-  citation       <- qvar$cite
-  source         <- qvar$source
+.qt_render_resolve_version <- function(qvar, survey_id, vlabs,
+                                        version_id = NULL) {
+  if (!is.null(version_id)) {
+    # Explicit version from the questionnaire spec: use cumulative traversal.
+    merged         <- .qt_resolve_version(qvar, version_id)
+    title          <- merged$title
+    question_text  <- merged$question_text
+    value_label_id <- merged$value_label_id
+    instruction    <- merged$instruction
+    citation       <- merged$cite
+    source         <- merged$source
+  } else {
+    # survey_id-based matching (original behaviour).
+    title          <- qvar$title
+    question_text  <- qvar$question_text
+    value_label_id <- qvar$value_label_id
+    instruction    <- qvar$instruction
+    citation       <- qvar$cite
+    source         <- qvar$source
 
-  versions <- qvar$versions
-  if (!is.null(versions) && length(versions) > 0) {
-    matched <- NULL
-    for (v in versions) {
-      if (survey_id %in% (v$surveys_used %||% character())) {
-        matched <- v
-        break
+    versions <- qvar$versions
+    if (!is.null(versions) && length(versions) > 0) {
+      matched <- NULL
+      for (v in versions) {
+        if (survey_id %in% (v$surveys_used %||% character())) {
+          matched <- v
+          break
+        }
       }
+      apply_ver <- matched %||% versions[[length(versions)]]
+      if (!is.null(apply_ver$title))          title          <- apply_ver$title
+      if (!is.null(apply_ver$question_text))  question_text  <- apply_ver$question_text
+      if (!is.null(apply_ver$value_label_id)) value_label_id <- apply_ver$value_label_id
+      if (!is.null(apply_ver$instruction))    instruction    <- apply_ver$instruction
     }
-    apply_ver <- matched %||% versions[[length(versions)]]
-    if (!is.null(apply_ver$title))          title          <- apply_ver$title
-    if (!is.null(apply_ver$question_text))  question_text  <- apply_ver$question_text
-    if (!is.null(apply_ver$value_label_id)) value_label_id <- apply_ver$value_label_id
-    if (!is.null(apply_ver$instruction))    instruction    <- apply_ver$instruction
   }
 
   resolved_labels <- NULL
@@ -264,14 +284,13 @@ qt_render_questionnaire.character <- function(
     resolved_labels <- vlabs$labels[[value_label_id]]
   }
 
-  list(title          = title,
-       question_text  = question_text,
-       value_label_id = value_label_id,
+  list(title           = title,
+       question_text   = question_text,
+       value_label_id  = value_label_id,
        resolved_labels = resolved_labels,
-       instruction    = instruction,
-       source         = source,
-       citation       = citation
-  )
+       instruction     = instruction,
+       source          = source,
+       citation        = citation)
 }
 
 
@@ -461,7 +480,8 @@ qt_render_questionnaire.qt_qreconfig <- function(
     return(character())
   }
 
-  resolved    <- .qt_render_resolve_version(qvar, survey_id, vlabs)
+  resolved    <- .qt_render_resolve_version(qvar, survey_id, vlabs,
+                                             version_id = item$version)
   if_cond     <- if_condition_override %||% item$if_condition %||%
                    qvar$if_condition
   prog_note   <- item$programmer_note
