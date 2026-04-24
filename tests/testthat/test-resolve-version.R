@@ -232,3 +232,64 @@ test_that("render resolver: no vlabs returns NULL resolved_labels", {
   expect_null(out$resolved_labels)
   expect_equal(out$value_label_id, "v2_labels")
 })
+
+
+# --- value_labels_name alias in version entries --------------------------------
+#
+# The bank normalizer converts value_labels_name → value_label_id for the base
+# entry, but version entries are stored raw and may use the legacy field name.
+# .qt_resolve_version() must keep value_label_id in sync when a version uses
+# value_labels_name without an explicit value_label_id.
+
+# Mirrors the nhd_sat real-world case: base normalized to have value_label_id,
+# version uses legacy value_labels_name field name.
+legacy_alias_entry <- list(
+  variable_id    = "nhd_sat",
+  title          = "Neighborhood satisfaction",
+  storage_type   = "factor",
+  question_text  = "How satisfied are you?",
+  value_label_id = "satisfied4",   # bank-normalized from value_labels_name
+  value_labels_name = "satisfied4", # original field still present after normalization
+  surveys_used   = list("bas-2023"),
+  source_file    = "/fake/path.yml",
+  file_position  = 1L,
+  versions = list(
+    list(
+      version_id        = "v2",
+      surveys_used      = list("bas-2024", "bas-2025"),
+      value_labels_name = "satisfied5"   # legacy field name, no value_label_id
+    )
+  )
+)
+
+test_that("version using value_labels_name updates value_label_id", {
+  out <- qretools:::.qt_resolve_version(legacy_alias_entry, "v2")
+  expect_equal(out$value_label_id, "satisfied5")
+  expect_equal(out$value_labels_name, "satisfied5")
+})
+
+test_that("base version (no versions applied) keeps original value_label_id", {
+  out <- qretools:::.qt_resolve_version(legacy_alias_entry, "base")
+  expect_equal(out$value_label_id, "satisfied4")
+})
+
+test_that("render resolver: version with value_labels_name resolves correct labels", {
+  stub_satisfy <- list(
+    labels = list(
+      satisfied4 = list(values = 1:4,
+                        labels = c("Very satisfied", "Somewhat satisfied",
+                                   "Somewhat dissatisfied", "Very dissatisfied")),
+      satisfied5 = list(values = 1:5,
+                        labels = c("Very satisfied", "Somewhat satisfied",
+                                   "Neither", "Somewhat dissatisfied",
+                                   "Very dissatisfied"))
+    )
+  )
+  out <- qretools:::.qt_render_resolve_version(legacy_alias_entry,
+                                               survey_id = "bas-2026",
+                                               vlabs = stub_satisfy,
+                                               version_id = "v2")
+  expect_equal(out$value_label_id, "satisfied5")
+  expect_length(out$resolved_labels$labels, 5L)
+  expect_equal(out$resolved_labels$labels[[3]], "Neither")
+})
