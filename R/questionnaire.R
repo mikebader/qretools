@@ -229,68 +229,36 @@ qt_render_questionnaire.character <- function(
 
 # Internal: Version resolution ------------------------------------------------
 
-# Resolve the correct version of a question's text/labels.
+# Resolve the correct version of a question entry for rendering.
 #
-# Two modes:
-#   version_id != NULL — explicit spec-stored version: delegates field merging
-#     to .qt_resolve_version() (cumulative traversal, base -> ... -> target).
-#   version_id == NULL — survey_id matching: searches each version entry's
-#     surveys_used; falls back to the last version if none match.
-#
-# In both modes the resolved value_label_id is looked up in vlabs and attached
-# as resolved_labels.
+# Determines the effective version_id — from the explicit spec-stored value
+# when provided, or by matching survey_id against each version's surveys_used
+# (falling back to the last version when nothing matches) — then delegates all
+# field merging to .qt_resolve_version() for cumulative traversal. Attaches
+# resolved_labels as the only computed field not present in the YAML entry.
+# All other fields flow through under their original YAML names with no
+# hardcoded extraction.
 #
 # @keywords internal
 # @noRd
 .qt_render_resolve_version <- function(qvar, survey_id, vlabs,
                                         version_id = NULL) {
-  if (!is.null(version_id)) {
-    # Explicit version from the questionnaire spec: use cumulative traversal.
-    merged         <- .qt_resolve_version(qvar, version_id)
-    title          <- merged$title
-    question_text  <- merged$question_text
-    value_label_id <- merged$value_label_id
-    instruction    <- merged$instruction
-    citation       <- merged$cite
-    source         <- merged$source
+  effective_vid <- if (!is.null(version_id)) {
+    version_id
   } else {
-    # survey_id-based matching (original behaviour).
-    title          <- qvar$title
-    question_text  <- qvar$question_text
-    value_label_id <- qvar$value_label_id
-    instruction    <- qvar$instruction
-    citation       <- qvar$cite
-    source         <- qvar$source
-
-    versions <- qvar$versions
-    if (!is.null(versions) && length(versions) > 0) {
-      matched <- NULL
-      for (v in versions) {
-        if (survey_id %in% (v$surveys_used %||% character())) {
-          matched <- v
-          break
-        }
-      }
-      apply_ver <- matched %||% versions[[length(versions)]]
-      if (!is.null(apply_ver$title))          title          <- apply_ver$title
-      if (!is.null(apply_ver$question_text))  question_text  <- apply_ver$question_text
-      if (!is.null(apply_ver$value_label_id)) value_label_id <- apply_ver$value_label_id
-      if (!is.null(apply_ver$instruction))    instruction    <- apply_ver$instruction
-    }
+    .qt_effective_version_id(qvar, survey_id)
   }
 
-  resolved_labels <- NULL
-  if (!is.null(value_label_id) && !is.null(vlabs)) {
-    resolved_labels <- vlabs$labels[[value_label_id]]
+  resolved <- .qt_resolve_version(qvar, effective_vid)
+
+  resolved$resolved_labels <- if (!is.null(resolved$value_label_id) &&
+                                   !is.null(vlabs)) {
+    vlabs$labels[[resolved$value_label_id]]
+  } else {
+    NULL
   }
 
-  list(title           = title,
-       question_text   = question_text,
-       value_label_id  = value_label_id,
-       resolved_labels = resolved_labels,
-       instruction     = instruction,
-       source          = source,
-       citation        = citation)
+  resolved
 }
 
 
@@ -568,7 +536,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
   lines <- c(lines, "")
 
   # Source / citation
-  src <- trimws(resolved$citation %||% "")
+  src <- trimws(resolved$cite %||% "")
   if (nzchar(src)) {
     lines <- c(lines,
                .qt_fenced_div(paste0(pfx, "[Source: ", src, "]"),

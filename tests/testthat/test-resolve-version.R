@@ -170,14 +170,21 @@ test_that("render resolver: NULL version_id uses survey_id matching", {
   expect_equal(out$resolved_labels$labels, c("Yes", "No", "Maybe"))
 })
 
-test_that("render resolver: NULL version_id falls back to last when no survey match", {
+test_that("render resolver: NULL version_id falls back to last and applies cumulatively", {
+  # No survey match → falls back to last (v3). Cumulative traversal means v2's
+  # value_label_id change is also applied, not just v3's question_text change.
   out <- qretools:::.qt_render_resolve_version(versioned, survey_id = "unknown",
                                                vlabs = stub_vlabs)
-  # Last version is v3, which changed question_text; v2 also applied cumulatively?
-  # No — the survey_id path applies only the single matched/last version's fields.
-  # v3 only changed question_text, not value_label_id, so value_label_id stays base.
   expect_equal(out$question_text,  "v3 text")
-  expect_equal(out$value_label_id, "orig_labels")
+  expect_equal(out$value_label_id, "v2_labels")
+})
+
+test_that("render resolver: survey_id match uses cumulative traversal up to matched version", {
+  # "s3" matches v3; cumulative means v2's value_label_id change is also applied
+  out <- qretools:::.qt_render_resolve_version(versioned, survey_id = "s3",
+                                               vlabs = stub_vlabs)
+  expect_equal(out$question_text,  "v3 text")
+  expect_equal(out$value_label_id, "v2_labels")
 })
 
 test_that("render resolver: explicit version_id uses cumulative traversal", {
