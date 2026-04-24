@@ -172,7 +172,7 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
   modules_used <- character()
   fills_found <- character()
   fill_positions <- integer()
-  inline_compute_provides <- integer()  # named: fill name → item_idx
+  inline_compute_provides <- list()  # named: fill name → item_idx
   item_idx <- 0L
   module_map <- list()
   loop_map <- list()
