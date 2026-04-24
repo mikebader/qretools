@@ -363,7 +363,7 @@ qt_render_questionnaire.character <- function(
 .qt_render_statement <- function(item, depth, mode, indent_char) {
   pfx  <- if (mode == "full") "" else strrep(indent_char, depth)
   text <- .qt_wrap_fills(item$text %||% "", mode)
-  c(paste0(pfx, text), "")
+  c(.qt_fenced_div(paste0(pfx, text), "qre-statement", mode), "")
 }
 
 
