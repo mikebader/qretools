@@ -204,6 +204,13 @@
     for (field in changed_fields) {
       result[[field]] <- v[[field]]
     }
+    # The bank normalizer converts value_labels_name → value_label_id for base
+    # entries, but version entries are stored raw and may use either name.
+    # When a version uses the legacy alias without an explicit value_label_id,
+    # keep the canonical field in sync so downstream lookups always find it.
+    if (!is.null(v$value_labels_name) && is.null(v$value_label_id)) {
+      result$value_label_id <- v$value_labels_name
+    }
   }
   result
 }
