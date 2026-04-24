@@ -68,7 +68,7 @@ id: string                        # REQUIRED - Unique identifier
                                   # "false"; text to explain reason or how to
                                   # gain access
     string_label: string          # Text to display before response for string
-                                  #   variables (e.g., Adress ___________)
+                                  #   variables (e.g., Address ___________)
 
     # Optional - Storage & Documentation
     storage_type: enum            # Override inferred storage type when it

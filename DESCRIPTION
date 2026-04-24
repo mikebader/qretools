@@ -18,7 +18,9 @@ Imports:
     cli
 Suggests:
     rmarkdown,
-    knitr
+    knitr,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
 VignetteBuilder: knitr
 URL: https://github.com/mikebader/qretools
 BugReports: https://github.com/mikebader/qretools/issues

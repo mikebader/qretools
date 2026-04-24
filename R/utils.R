@@ -140,6 +140,57 @@
   )
 }
 
+# Resolve a versioned bank entry to a specific version
+#
+# Traverses the versions list from oldest (first) to newest (last), applying
+# field changes cumulatively up to the requested version. Fields named
+# version_id and surveys_used in each version entry are version metadata and
+# are never merged into the resolved output.
+#
+# @param entry Named list. A single bank entry (e.g., one variable from the
+#   question bank), possibly containing a `versions` element.
+# @param version_id Character string or NULL.
+#   NULL  -> use the last (most recent) version.
+#   "base" -> return only the base entry, ignoring all versions.
+#   other  -> apply all versions up to and including the one with that id.
+# @return Named list of resolved fields. Internal metadata (versions,
+#   source_file, file_position) is excluded from the return value.
+#
+# @keywords internal
+# @noRd
+.qt_resolve_version <- function(entry, version_id = NULL) {
+  internal_fields    <- c("versions", "source_file", "file_position")
+  version_meta_fields <- c("version_id", "surveys_used")
+
+  base     <- entry[setdiff(names(entry), internal_fields)]
+  versions <- entry$versions
+
+  if (is.null(versions) || length(versions) == 0 || identical(version_id, "base")) {
+    return(base)
+  }
+
+  if (is.null(version_id)) {
+    target_idx <- length(versions)
+  } else {
+    ids        <- vapply(versions, function(v) v$version_id %||% "", character(1))
+    target_idx <- match(version_id, ids)
+    if (is.na(target_idx))
+      stop("version_id '", version_id, "' not found in versions list",
+           call. = FALSE)
+  }
+
+  result <- base
+  for (i in seq_len(target_idx)) {
+    v              <- versions[[i]]
+    changed_fields <- setdiff(names(v), version_meta_fields)
+    for (field in changed_fields) {
+      result[[field]] <- v[[field]]
+    }
+  }
+  result
+}
+
+
 # Internal helper: Validate question/variable structure
 #
 # Performs comprehensive validation of variables read from YAML.
