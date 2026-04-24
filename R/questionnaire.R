@@ -871,6 +871,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
     return(character())
 
   mapply(function(code, label) {
+    label <- .qt_wrap_fills(label, mode)
     if (mode == "full") {
       paste0(
         "* ",
@@ -906,6 +907,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
     part <- parts_list[[part_id]]
     option_text <- part$option_text %||% part$option_title %||% part_id
     if(grepl("^hlt_ediag", option_text)) print(part$option_text)
+    option_text <- .qt_wrap_fills(option_text, mode)
 
     if (mode == "full") {
       line <- paste0("* ", .qt_span(option_text, "option-text"),
