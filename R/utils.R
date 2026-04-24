@@ -140,6 +140,24 @@
   )
 }
 
+# Find the version_id corresponding to survey_id in a bank entry's versions list.
+# Returns the version_id of the first version whose surveys_used contains
+# survey_id, or NULL when no version matches or the entry has no versions.
+# NULL maps to .qt_resolve_version()'s "use last" behaviour.
+#
+# @keywords internal
+# @noRd
+.qt_effective_version_id <- function(entry, survey_id) {
+  versions <- entry$versions
+  if (is.null(versions) || length(versions) == 0) return(NULL)
+  for (v in versions) {
+    if (survey_id %in% (v$surveys_used %||% character()))
+      return(v$version_id)
+  }
+  NULL  # no match → caller should use last version
+}
+
+
 # Resolve a versioned bank entry to a specific version
 #
 # Traverses the versions list from oldest (first) to newest (last), applying
