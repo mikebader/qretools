@@ -142,3 +142,86 @@ test_that("qt_add_question() pipe mode stores version in questionnaire item", {
   expect_equal(item$version, "v3")
   expect_equal(item$variable_id, "dem_age")
 })
+
+
+# --- .qt_render_resolve_version(): explicit version_id path ------------------
+#
+# These tests exercise the rendering resolver directly, without needing a
+# full bank. A minimal vlabs stub is used so value-label lookup can be
+# exercised independently of file I/O.
+
+# Stub vlabs object matching the label ids used in `versioned`
+stub_vlabs <- list(
+  labels = list(
+    orig_labels = list(values = c(1L, 2L), labels = c("Yes", "No")),
+    v2_labels   = list(values = c(1L, 2L, 3L),
+                       labels = c("Yes", "No", "Maybe"))
+  )
+)
+
+test_that("render resolver: NULL version_id uses survey_id matching", {
+  # "s2" matches v2, which changed value_label_id
+  out <- qretools:::.qt_render_resolve_version(versioned, survey_id = "s2",
+                                               vlabs = stub_vlabs)
+  expect_equal(out$value_label_id, "v2_labels")
+  # question_text was not changed in v2, so still base
+  expect_equal(out$question_text, "Original text")
+  # resolved_labels from v2_labels
+  expect_equal(out$resolved_labels$labels, c("Yes", "No", "Maybe"))
+})
+
+test_that("render resolver: NULL version_id falls back to last when no survey match", {
+  out <- qretools:::.qt_render_resolve_version(versioned, survey_id = "unknown",
+                                               vlabs = stub_vlabs)
+  # Last version is v3, which changed question_text; v2 also applied cumulatively?
+  # No — the survey_id path applies only the single matched/last version's fields.
+  # v3 only changed question_text, not value_label_id, so value_label_id stays base.
+  expect_equal(out$question_text,  "v3 text")
+  expect_equal(out$value_label_id, "orig_labels")
+})
+
+test_that("render resolver: explicit version_id uses cumulative traversal", {
+  # version_id = "v3" should apply v2 (value_label_id) then v3 (question_text)
+  out <- qretools:::.qt_render_resolve_version(versioned, survey_id = "ignored",
+                                               vlabs = stub_vlabs,
+                                               version_id = "v3")
+  expect_equal(out$question_text,  "v3 text")
+  expect_equal(out$value_label_id, "v2_labels")
+  expect_equal(out$resolved_labels$labels, c("Yes", "No", "Maybe"))
+})
+
+test_that("render resolver: explicit version_id='v2' stops before v3", {
+  out <- qretools:::.qt_render_resolve_version(versioned, survey_id = "ignored",
+                                               vlabs = stub_vlabs,
+                                               version_id = "v2")
+  expect_equal(out$value_label_id, "v2_labels")
+  expect_equal(out$question_text,  "Original text")
+})
+
+test_that("render resolver: explicit version_id='base' returns base fields", {
+  out <- qretools:::.qt_render_resolve_version(versioned, survey_id = "ignored",
+                                               vlabs = stub_vlabs,
+                                               version_id = "base")
+  expect_equal(out$question_text,  "Original text")
+  expect_equal(out$value_label_id, "orig_labels")
+  expect_equal(out$resolved_labels$labels, c("Yes", "No"))
+})
+
+test_that("render resolver: value labels resolved from correct label set", {
+  out_base <- qretools:::.qt_render_resolve_version(versioned, survey_id = "x",
+                                                    vlabs = stub_vlabs,
+                                                    version_id = "base")
+  out_v2   <- qretools:::.qt_render_resolve_version(versioned, survey_id = "x",
+                                                    vlabs = stub_vlabs,
+                                                    version_id = "v2")
+  expect_length(out_base$resolved_labels$labels, 2L)
+  expect_length(out_v2$resolved_labels$labels,   3L)
+})
+
+test_that("render resolver: no vlabs returns NULL resolved_labels", {
+  out <- qretools:::.qt_render_resolve_version(versioned, survey_id = "x",
+                                               vlabs = NULL,
+                                               version_id = "v3")
+  expect_null(out$resolved_labels)
+  expect_equal(out$value_label_id, "v2_labels")
+})
