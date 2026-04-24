@@ -523,9 +523,23 @@ qt_render_questionnaire.qt_qreconfig <- function(
     lines <- c(lines, .qt_indent(vl, 0, indent_char))
   } else if (qvar$storage_type == "character") {
     clen <- qvar$character_length
-    tag  <- if (!is.null(clen)) paste0("[text, max ", clen, " chars]")
-            else "[text]"
-    lines <- c(lines, paste0(pfx, indent_char, strrep("_", 10), tag))
+    val <- qvar$validation
+    svyc <- ""
+    if (!is.null(clen)) svyc <- paste0("maximum ", clen, " characters")
+    if (!is.null(val)) svyc <- {
+      if (!is.null(clen)) {
+        paste0(svyc, ", ", val)
+      } else {
+        svyc <- val
+      }
+    }
+    if (nzchar(svyc)) svyc <- paste0("; ", svyc)
+    tag <- .qt_span(paste0("[character", svyc, "]"), "qre-survey-control")
+    if (!is.null(qvar$string_label)) tag <- paste(
+      paste0("(", qvar$string_label, ")"),
+      tag
+    )
+  lines <- c(lines, paste0(pfx, indent_char, strrep("_", 10), tag))
   } else if (qvar$storage_type == "integer") {
     lines <- c(lines, paste0(pfx, indent_char, strrep("_", 5), " [integer]"))
   } else if (qvar$storage_type == "numeric") {
