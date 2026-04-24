@@ -900,7 +900,7 @@ qt_render_questionnaire.qt_qreconfig <- function(
 
     if (mode == "full") {
       line <- paste0("* ", .qt_span(option_text, "option-text"),
-                     " [", .qt_span(part_id, "option-variable"), "]")
+                     " ", .qt_span(paste0("[", part_id, "]"), "option-variable"))
     } else {
       line <- paste0("* ", option_text, " [", part_id, "]")
     }
@@ -964,4 +964,164 @@ qt_render_questionnaire.qt_qreconfig <- function(
 .qt_indent <- function(lines, depth, indent_char) {
   pfx <- strrep(indent_char, depth)
   ifelse(nzchar(lines), paste0(pfx, lines), lines)
+}
+
+
+# Questionnaire Compilation ---------------------------------------------------
+
+#' Compile a Questionnaire Markdown File to Styled HTML
+#'
+#' Converts a questionnaire Markdown file (produced by
+#' \code{\link{qt_render_questionnaire}}) to a styled, self-contained HTML
+#' document suitable for on-screen review and printing to PDF.
+#'
+#' @param input Character string. Path to the input Markdown file. If
+#'   \code{NULL}, \code{qt_render_questionnaire()} is called first using
+#'   \code{survey_config} and related arguments to produce a temporary file.
+#' @param output_file Character string. Path for the output HTML file.
+#'   Defaults to replacing the \code{.md} extension of \code{input} with
+#'   \code{.html}, or \code{"questionnaire.html"} when \code{input} is
+#'   \code{NULL}.
+#' @param pandoc_path Character string or NULL. Path to the pandoc executable.
+#'   When NULL, uses \code{rmarkdown::find_pandoc()}.
+#' @param filter_path Character string or NULL. Path to the Lua filter file
+#'   (\code{qre-questionnaire.lua}). When NULL, looks in
+#'   \code{system.file("pandoc", package = "qretools")}.
+#' @param template_path Character string or NULL. Path to the HTML template
+#'   file (\code{qre-questionnaire-template.html}). When NULL, looks in
+#'   \code{system.file("pandoc", package = "qretools")}.
+#' @param survey_config Character string or \code{qt_qreconfig} object.
+#'   Passed to \code{qt_render_questionnaire()} when \code{input} is
+#'   \code{NULL}. Ignored otherwise.
+#' @param survey_id Character string. Passed to
+#'   \code{qt_render_questionnaire()} when \code{input} is \code{NULL}.
+#'   Ignored otherwise.
+#' @param config A \code{qt_config} object or NULL. Passed to
+#'   \code{qt_render_questionnaire()} when \code{input} is \code{NULL}.
+#' @param ... Additional arguments passed to \code{qt_render_questionnaire()}
+#'   when \code{input} is \code{NULL}.
+#'
+#' @return Invisibly returns \code{output_file}. Called for its side effect of
+#'   writing the HTML file.
+#'
+#' @details
+#' Requires pandoc (>= 2.11) to be installed and findable. The function calls
+#' pandoc with \code{--lua-filter} and \code{--template}, so both the filter
+#' and template must be present. When using the package-installed copies
+#' (the default), they are located in \code{inst/pandoc/} and found via
+#' \code{system.file()}.
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Compile an existing markdown file
+#' qt_compile_questionnaire(
+#'   input       = "questionnaire-bas-2026.md",
+#'   output_file = "questionnaire-bas-2026.html"
+#' )
+#'
+#' # Render and compile in one step
+#' qt_compile_questionnaire(
+#'   survey_config = "surveys/bas-2026/design/survey-bas-2026.yml",
+#'   survey_id     = "bas-2026",
+#'   output_file   = "questionnaire-bas-2026.html"
+#' )
+#' }
+qt_compile_questionnaire <- function(
+    input         = NULL,
+    output_file   = NULL,
+    pandoc_path   = NULL,
+    filter_path   = NULL,
+    template_path = NULL,
+    survey_config = NULL,
+    survey_id     = NULL,
+    config        = NULL,
+    ...
+) {
+  # --- Locate pandoc ----------------------------------------------------------
+  if (is.null(pandoc_path)) {
+    pandoc_info <- rmarkdown::find_pandoc()
+    pandoc_path <- file.path(pandoc_info$dir, "pandoc")
+    if (!nzchar(pandoc_info$dir) || !file.exists(pandoc_path)) {
+      stop(
+        "pandoc not found. Install pandoc or supply its path via 'pandoc_path'.",
+        call. = FALSE
+      )
+    }
+  }
+
+  # --- Locate filter and template ---------------------------------------------
+  pandoc_dir <- system.file("pandoc", package = "qretools")
+
+  if (is.null(filter_path)) {
+    filter_path <- file.path(pandoc_dir, "qre-questionnaire.lua")
+  }
+  if (!file.exists(filter_path)) {
+    stop("Lua filter not found: ", filter_path, call. = FALSE)
+  }
+
+  if (is.null(template_path)) {
+    template_path <- file.path(pandoc_dir, "qre-questionnaire-template.html")
+  }
+  if (!file.exists(template_path)) {
+    stop("HTML template not found: ", template_path, call. = FALSE)
+  }
+
+  # --- Resolve input file -----------------------------------------------------
+  tmp_md <- NULL
+  if (is.null(input)) {
+    if (is.null(survey_config) || is.null(survey_id)) {
+      stop(
+        "Provide either 'input' (a Markdown path) or both 'survey_config' ",
+        "and 'survey_id' to render first.",
+        call. = FALSE
+      )
+    }
+    tmp_md <- tempfile(fileext = ".md")
+    qt_render_questionnaire(
+      survey_config,
+      survey_id   = survey_id,
+      config      = config,
+      mode        = "full",
+      output      = "file",
+      output_file = tmp_md,
+      ...
+    )
+    input <- tmp_md
+    on.exit(unlink(tmp_md), add = TRUE)
+  }
+
+  if (!file.exists(input)) {
+    stop("Input file not found: ", input, call. = FALSE)
+  }
+
+  # --- Resolve output file ----------------------------------------------------
+  if (is.null(output_file)) {
+    output_file <- sub("\\.md$", ".html", input, ignore.case = TRUE)
+    if (identical(output_file, input)) output_file <- "questionnaire.html"
+  }
+
+  # --- Call pandoc ------------------------------------------------------------
+  args <- c(
+    input,
+    "--lua-filter", filter_path,
+    "--template",   template_path,
+    "--output",     output_file,
+    "--standalone"
+  )
+
+  result <- system2(pandoc_path, args = args, stdout = TRUE, stderr = TRUE)
+  status <- attr(result, "status") %||% 0L
+
+  if (status != 0L) {
+    stop(
+      "pandoc failed with status ", status, ":\n",
+      paste(result, collapse = "\n"),
+      call. = FALSE
+    )
+  }
+
+  message("Questionnaire compiled to: ", output_file)
+  invisible(output_file)
 }
