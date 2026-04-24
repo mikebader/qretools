@@ -10,7 +10,8 @@ qt_add_question(
   source = "qbank",
   hide_question = FALSE,
   if_condition = NULL,
-  programmer_note = NULL
+  programmer_note = NULL,
+  version = NULL
 )
 }
 \arguments{
@@ -29,6 +30,12 @@ Required in pipe mode; supply as \code{.x} in spec mode.}
 (R expression, e.g., \code{"dem_child == 1"}).}
 
 \item{programmer_note}{Character string or NULL. Note to survey programmer.}
+
+\item{version}{Character string or NULL. Version of the question to use when
+the bank entry has a \code{versions} list. \code{NULL} (default) uses the last
+(most recent) version. \code{"base"} uses only the original base entry.
+Any other string selects the version with that \code{version_id}, applying all
+earlier versions cumulatively (see \code{.qt_resolve_version()}).}
 }
 \value{
 Pipe mode: invisibly returns the modified \code{qt_qre}. Spec mode:
@@ -42,8 +49,11 @@ inside a container such as \code{qt_add_section()}.
 }
 \examples{
 \dontrun{
-# Pipe mode
+# Pipe mode — use the most recent version (default)
 qre |> qt_add_question("dem_age")
+
+# Pipe mode — pin to a specific version
+qre |> qt_add_question("dem_age", version = "v2")
 
 # Spec mode (inside a section)
 qt_add_section("demographics", "About You",

@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>$if(title)$$title$$else$Questionnaire$endif$</title>
+  <style>
+    /* ------------------------------------------------------------------ */
+    /* Base                                                                 */
+    /* ------------------------------------------------------------------ */
+    *, *::before, *::after { box-sizing: border-box; }
+
+    body {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 11pt;
+      line-height: 1.5;
+      color: #1a1a1a;
+      background: #ffffff;
+      margin: 0;
+      padding: 0;
+    }
+
+    .page-wrap {
+      max-width: 48em;
+      margin: 0 auto;
+      padding: 2em 2.5em 4em;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Document header                                                      */
+    /* ------------------------------------------------------------------ */
+    header.qre-header {
+      border-bottom: 2px solid #1a1a1a;
+      margin-bottom: 2em;
+      padding-bottom: 0.75em;
+    }
+
+    header.qre-header h1 {
+      font-size: 16pt;
+      font-weight: bold;
+      margin: 0 0 0.2em;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    header.qre-header .qre-status {
+      font-size: 9pt;
+      color: #666;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Sections                                                             */
+    /* ------------------------------------------------------------------ */
+    .qre-section {
+      margin-top: 2.5em;
+    }
+
+    .qre-section h2 {
+      font-size: 13pt;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      border-bottom: 1px solid #999;
+      padding-bottom: 0.25em;
+      margin-bottom: 1.25em;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Variable name                                                        */
+    /* ------------------------------------------------------------------ */
+    .qre-varname {
+      margin-top: 1.5em;
+      margin-bottom: 0;
+    }
+
+    .qre-varname p,
+    .qre-varname strong {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 11pt;
+      font-weight: bold;
+      color: #1a1a1a;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Question block                                                       */
+    /* ------------------------------------------------------------------ */
+    .qre-question-block {
+      margin-top: 0.15em;
+      margin-bottom: 0.4em;
+      padding-left: 1.5em;
+    }
+
+    .qre-question-block p {
+      margin: 0;
+    }
+
+    span.qre-question-text {
+      font-size: 11pt;
+      font-weight: normal;
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Response options                                                     */
+    /* ------------------------------------------------------------------ */
+    .qre-section ul,
+    .qre-logic-then ul,
+    .qre-logic-else ul {
+      list-style: none;
+      padding-left: 2em;
+      margin: 0.2em 0 0.5em;
+    }
+
+    .qre-section ul li,
+    .qre-logic-then ul li,
+    .qre-logic-else ul li {
+      margin: 0.1em 0;
+    }
+
+    span.qre-factor-code {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 9.5pt;
+      color: #cc0000;
+      margin-right: 0.4em;
+    }
+
+    span.qre-factor-label {
+      font-size: 10.5pt;
+    }
+
+    /* Open-ended entry lines */
+    .qre-section > p,
+    .qre-logic-then > p,
+    .qre-logic-else > p {
+      padding-left: 2em;
+      margin: 0.2em 0;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 9.5pt;
+      color: #333;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Survey controls / fill fields                                        */
+    /* ------------------------------------------------------------------ */
+    span.qre-survey-control,
+    div.qre-survey-control {
+      color: #b85c00;
+      font-weight: bold;
+      font-style: normal;
+    }
+
+    div.qre-survey-control {
+      background: #fff8f0;
+      border-left: 3px solid #b85c00;
+      padding: 0.3em 0.75em;
+      margin: 0.4em 0;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Programmer blocks                                                    */
+    /* ------------------------------------------------------------------ */
+    .qre-programming {
+      background: #fff5f5;
+      border-left: 3px solid #cc0000;
+      color: #990000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 9pt;
+      padding: 0.4em 0.75em;
+      margin: 0.6em 0;
+    }
+
+    .qre-programming p,
+    .qre-programming blockquote,
+    .qre-programming code {
+      margin: 0.1em 0;
+      color: #990000;
+      font-family: inherit;
+      font-size: inherit;
+      background: transparent;
+      border: none;
+      padding: 0;
+    }
+
+    .qre-preload {
+      background: #fff5f5;
+      border-left: 3px solid #cc0000;
+      color: #990000;
+      font-family: "Courier New", Courier, monospace;
+      font-size: 9pt;
+      padding: 0.4em 0.75em;
+      margin-bottom: 1.5em;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Citation / source                                                    */
+    /* ------------------------------------------------------------------ */
+    .qre-cite {
+      font-size: 8.5pt;
+      color: #888;
+      padding-left: 1.5em;
+      margin-bottom: 0.5em;
+    }
+
+    .qre-cite p { margin: 0; }
+
+    /* ------------------------------------------------------------------ */
+    /* Logic blocks (IF / ELSE)                                             */
+    /* ------------------------------------------------------------------ */
+    .qre-logic-block {
+      border-left: 3px solid #b85c00;
+      margin: 0.75em 0 0.75em 0.5em;
+      padding-left: 0;
+    }
+
+    /* The [IF ...] and [ELSE] control labels sit outside the indented
+       content but inside the logic block border. */
+    .qre-logic-block > p,
+    .qre-logic-block > span.qre-survey-control {
+      padding-left: 0.5em;
+      margin: 0.15em 0;
+    }
+
+    .qre-logic-then,
+    .qre-logic-else {
+      padding-left: 1.5em;
+      border-left: 1px dashed #d9933a;
+      margin-left: 0.5em;
+    }
+
+    /* ENDIF label — matches survey-control style */
+    .qre-logic-block > p:last-child {
+      color: #b85c00;
+      font-weight: bold;
+      font-size: inherit;
+      font-family: inherit;
+      padding-left: 0.5em;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Display-together block                                               */
+    /* ------------------------------------------------------------------ */
+    .qre-display-together {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Select-all option variables                                          */
+    /* ------------------------------------------------------------------ */
+    span.option-variable {
+      font-family: "Courier New", Courier, monospace;
+      font-size: 9pt;
+      color: #cc0000;
+    }
+
+    /* Right-justify option-variable within its list item */
+    .qre-section ul li:has(span.option-variable),
+    .qre-logic-then ul li:has(span.option-variable),
+    .qre-logic-else ul li:has(span.option-variable) {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1em;
+    }
+
+    /* ------------------------------------------------------------------ */
+    /* Print styles                                                         */
+    /* ------------------------------------------------------------------ */
+    @media print {
+      body {
+        font-size: 10pt;
+      }
+
+      .page-wrap {
+        max-width: 100%;
+        padding: 0;
+      }
+
+      .qre-section {
+        page-break-inside: avoid;
+      }
+
+      .qre-varname {
+        page-break-after: avoid;
+      }
+
+      .qre-question-block {
+        page-break-after: avoid;
+      }
+
+      /* Keep question + its responses together when possible */
+      .qre-varname + .qre-question-block,
+      .qre-question-block + ul {
+        page-break-before: avoid;
+      }
+
+      a { text-decoration: none; color: inherit; }
+    }
+  </style>
+</head>
+<body>
+<div class="page-wrap">
+  <header class="qre-header">
+    <h1>$if(title)$$title$$else$Questionnaire$endif$</h1>
+$if(status)$    <div class="qre-status">Status: $status$</div>$endif$
+  </header>
+
+$body$
+</div>
+</body>
+</html>
