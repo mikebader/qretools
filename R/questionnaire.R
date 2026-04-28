@@ -540,13 +540,14 @@ qt_render_questionnaire.qt_qreconfig <- function(
     lines <- c(lines, paste0(pfx, "*", instr, "*"))
   }
 
-  # Response options
-  if (qvar$storage_type == "multiple_response") {
-    parts <- .qt_render_select_all_parts(qvar, mode)
+  # Response options — use resolved so versioned storage_type/validation apply
+  if ((resolved$storage_type %||% "") == "multiple_response") {
+    parts <- .qt_render_select_all_parts(resolved, mode)
     lines <- c(lines, .qt_indent(parts, 0, indent_char))
   } else if (!is.null(resolved$resolved_labels)) {
     vl <- .qt_render_value_labels_block(resolved$resolved_labels, mode)
     lines <- c(lines, .qt_indent(vl, 0, indent_char))
+<<<<<<< HEAD
   } else if (qvar$storage_type == "character") {
     tag <- .qt_storage_tag("character", qvar$validation, qvar$character_length,
                             qvar$string_label)
@@ -556,6 +557,17 @@ qt_render_questionnaire.qt_qreconfig <- function(
     lines <- c(lines, paste0(pfx, indent_char, strrep("_", 5), " ", tag))
   } else if (qvar$storage_type == "numeric") {
     tag <- .qt_storage_tag("numeric", qvar$validation)
+=======
+  } else if ((resolved$storage_type %||% "") == "character") {
+    tag <- .qt_storage_tag("character", resolved$validation,
+                            resolved$character_length, resolved$string_label)
+    lines <- c(lines, paste0(pfx, indent_char, strrep("_", 10), tag))
+  } else if ((resolved$storage_type %||% "") == "integer") {
+    tag <- .qt_storage_tag("integer", resolved$validation)
+    lines <- c(lines, paste0(pfx, indent_char, strrep("_", 5), " ", tag))
+  } else if ((resolved$storage_type %||% "") == "numeric") {
+    tag <- .qt_storage_tag("numeric", resolved$validation)
+>>>>>>> claude/add-questionnaire-version-selection-ZAjc2
     lines <- c(lines, paste0(pfx, indent_char, tag))
   }
   lines <- c(lines, "")
