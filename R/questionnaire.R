@@ -106,6 +106,7 @@ qt_render_questionnaire <- function(x, ...) UseMethod("qt_render_questionnaire")
 
   list(survey_yaml = survey_yaml,
        qbank       = qbank,
+       ctrlbank    = ctrlbank,
        candidates  = candidates,
        vlabs       = vlabs,
        modbank     = modbank)
@@ -163,6 +164,7 @@ qt_render_questionnaire.character <- function(
   lines <- .qt_render_questionnaire_lines(
     survey_yaml = banks$survey_yaml,
     qbank       = banks$qbank,
+    ctrlbank    = banks$ctrlbank,
     candidates  = banks$candidates,
     vlabs       = banks$vlabs,
     modbank     = banks$modbank,
@@ -181,9 +183,9 @@ qt_render_questionnaire.character <- function(
 #
 # @keywords internal
 # @noRd
-.qt_render_questionnaire_lines <- function(survey_yaml, qbank, candidates,
-                                           vlabs, modbank, survey_id, mode,
-                                           indent_char) {
+.qt_render_questionnaire_lines <- function(survey_yaml, qbank, ctrlbank,
+                                           candidates, vlabs, modbank,
+                                           survey_id, mode, indent_char) {
   meta <- survey_yaml$meta
   qre  <- survey_yaml$questionnaire
 
@@ -196,9 +198,23 @@ qt_render_questionnaire.character <- function(
   )
 
   if (!is.null(meta$controls_required) && length(meta$controls_required) > 0) {
-    ctrl_note <- paste0("[Controls required: ",
-                        paste(meta$controls_required, collapse = ", "), "]")
-    lines <- c(lines, .qt_fenced_div(ctrl_note, "qre-programming", mode), "")
+    ctrl_ids <- as.character(meta$controls_required)
+    if (!is.null(ctrlbank) && length(ctrlbank$variables) > 0) {
+      table_lines <- qt_preload_table(
+        ctrlbank,
+        variables     = ctrl_ids,
+        value_labels  = vlabs,
+        format        = "markdown",
+        output        = "return",
+        title         = "Preload Variables from Sample File",
+        group_by_input = TRUE
+      )
+      lines <- c(lines, table_lines, "")
+    } else {
+      ctrl_note <- paste0("[Controls required: ",
+                          paste(ctrl_ids, collapse = ", "), "]")
+      lines <- c(lines, .qt_fenced_div(ctrl_note, "qre-programming", mode), "")
+    }
   }
 
   if (!is.null(meta$programmer_note) && nzchar(meta$programmer_note)) {
