@@ -134,6 +134,9 @@ qt_codebook <- function(bank,
   lapply(var_ids_ordered, function(var_id) {
     v <- vars[[var_id]]
 
+    # Resolve to most recent version before reading any display fields.
+    v <- .qt_resolve_version(v)
+
     # Resolve text field (question_text for qvar, description for gen/ctrl)
     text <- v$question_text %||% v$description
 
@@ -153,7 +156,7 @@ qt_codebook <- function(bank,
       storage_type     = v$storage_type,
       text             = text,
       value_labels     = resolved_labels,
-      value_label_id = vl_name,
+      value_label_id   = vl_name,
       surveys_used     = v$surveys_used,
       universe         = v$universe,
       vargroup         = v$vargroup,

@@ -146,6 +146,11 @@ qt_preload_table <- function(
 # @noRd
 .qt_preload_prepare_entries <- function(vars, value_labels) {
   lapply(vars, function(v) {
+    # Resolve to most recent version before extracting any display fields.
+    # variable_id is stable across versions so capture it before resolving.
+    var_id <- v$variable_id
+    v      <- .qt_resolve_version(v)
+
     description <- v$question_text %||% v$description %||% ""
 
     resolved_labels <- NULL
@@ -154,7 +159,7 @@ qt_preload_table <- function(
     }
 
     list(
-      variable_id    = v$variable_id,
+      variable_id    = var_id,
       storage_type   = v$storage_type %||% "character",
       description    = description,
       value_label_id = v$value_label_id,
