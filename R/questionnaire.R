@@ -209,7 +209,7 @@ qt_render_questionnaire.character <- function(
         title         = "Preload Variables from Sample File",
         group_by_input = TRUE
       )
-      lines <- c(lines, table_lines, "")
+      lines <- c(lines, .qt_fenced_div(table_lines, "qre-preload", mode), "")
     } else {
       ctrl_note <- paste0("[Controls required: ",
                           paste(ctrl_ids, collapse = ", "), "]")
