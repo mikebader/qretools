@@ -411,10 +411,9 @@ qt_render_questionnaire.character <- function(
 # @noRd
 .qt_render_compute <- function(item, depth, mode, indent_char) {
   pfx   <- if (mode == "full") "" else strrep(indent_char, depth)
-  block <- paste0(pfx, "[COMPUTE: ", item$provides %||% "")
+  block <- paste0(pfx, "COMPUTE: ", item$id %||% "")
   if (!is.null(item$command) && nzchar(item$command))
     block <- c(block, "```", item$command, "```")
-  block <- c(block, "]")
   .qt_fenced_div(c(block, ""), "qre-survey-control", mode)
 }
 
