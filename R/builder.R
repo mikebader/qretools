@@ -184,10 +184,15 @@ qt_add_preload <- qt_preload_compute
 #' }
 qt_preload_source <- function(qre, source, ..., id = NULL,
                                description = NULL, note = NULL) {
+  if (missing(source))
+    stop("qt_preload_source() requires a source name as its second argument ",
+         "(e.g., qt_preload_source(qre, \"Sample file\", ...))",
+         call. = FALSE)
   if (!inherits(qre, "qt_qre"))
-    stop("First argument must be a qt_qre object", call. = FALSE)
-  if (missing(source) || !nzchar(trimws(as.character(source))))
-    stop("'source' is required", call. = FALSE)
+    stop("First argument must be a qt_qre object -- did you forget to pipe?",
+         call. = FALSE)
+  if (!nzchar(trimws(as.character(source))))
+    stop("'source' must be a non-empty string", call. = FALSE)
 
   items <- list(...)
   for (i in seq_along(items)) {
