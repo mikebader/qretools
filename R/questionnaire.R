@@ -197,25 +197,8 @@ qt_render_questionnaire.character <- function(
     ""
   )
 
-  if (!is.null(meta$controls_required) && length(meta$controls_required) > 0) {
-    ctrl_ids <- as.character(meta$controls_required)
-    if (!is.null(ctrlbank) && length(ctrlbank$variables) > 0) {
-      table_lines <- qt_preload_table(
-        ctrlbank,
-        variables     = ctrl_ids,
-        value_labels  = vlabs,
-        format        = "markdown",
-        output        = "return",
-        title         = "Preload Variables from Sample File",
-        group_by_input = TRUE
-      )
-      lines <- c(lines, .qt_fenced_div(table_lines, "qre-preload", mode), "")
-    } else {
-      ctrl_note <- paste0("[Controls required: ",
-                          paste(ctrl_ids, collapse = ", "), "]")
-      lines <- c(lines, .qt_fenced_div(ctrl_note, "qre-programming", mode), "")
-    }
-  }
+  # controls_required is superseded by qt_preload_source() blocks in the
+  # preload section and is no longer rendered here.
 
   if (!is.null(meta$programmer_note) && nzchar(meta$programmer_note)) {
     lines <- c(lines,
@@ -229,7 +212,8 @@ qt_render_questionnaire.character <- function(
     lines <- c(lines,
                .qt_render_preload(qre$preload, mode,
                                   qbank = qbank, candidates = candidates,
-                                  vlabs = vlabs, survey_id = survey_id,
+                                  ctrlbank = ctrlbank, vlabs = vlabs,
+                                  survey_id = survey_id,
                                   indent_char = indent_char),
                "")
   }
@@ -355,8 +339,8 @@ qt_render_questionnaire.character <- function(
 
 # @keywords internal
 # @noRd
-.qt_render_preload <- function(preload_items, mode, qbank, candidates, vlabs,
-                                survey_id, indent_char) {
+.qt_render_preload <- function(preload_items, mode, qbank, candidates,
+                                ctrlbank, vlabs, survey_id, indent_char) {
   header <- "### Preload"
   lines  <- .qt_fenced_div(header, "qre-preload", mode)
 
@@ -366,6 +350,38 @@ qt_render_questionnaire.character <- function(
       item_type,
 
       "compute" = .qt_render_compute(item, depth = 0, mode, indent_char),
+
+      "preload_source" = {
+        source_label <- trimws(item$source %||% "External source")
+        var_ids <- vapply(item$items %||% list(),
+                          function(v) v$variable_id %||% "", character(1))
+        var_ids <- var_ids[nzchar(var_ids)]
+
+        heading <- paste0("**Preload variables: ", source_label, "**")
+        if (!is.null(item$id) && nzchar(item$id %||% ""))
+          heading <- paste0(heading, " {#", item$id, "}")
+
+        if (length(var_ids) > 0 && !is.null(ctrlbank)) {
+          missing_ids <- setdiff(var_ids, names(ctrlbank$variables))
+          if (length(missing_ids) > 0)
+            warning("preload_source '", source_label,
+                    "': variable(s) not found in control bank: ",
+                    paste(missing_ids, collapse = ", "), call. = FALSE)
+          table_lines <- qt_preload_table(
+            ctrlbank,
+            variables    = var_ids,
+            value_labels = vlabs,
+            format       = "markdown",
+            output       = "return",
+            title        = NULL
+          )
+        } else {
+          table_lines <- paste0("Variables: ",
+                                paste(var_ids, collapse = ", "))
+        }
+
+        .qt_fenced_div(c(heading, "", table_lines), "qre-preload", mode)
+      },
 
       "fill" = {
         id   <- item$id %||% ""
