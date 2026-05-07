@@ -286,8 +286,10 @@ qt_render_questionnaire.character <- function(
                                               indent_char,
                                               module_id = NULL,
                                               if_condition_override = NULL),
-      "statement" = .qt_render_statement(item, depth, mode, indent_char),
-      "compute"   = .qt_render_compute(item, depth, mode, indent_char),
+      "statement"        = .qt_render_statement(item, depth, mode, indent_char),
+      "programmer_note"  = .qt_render_programmer_note(item, depth, mode,
+                                                       indent_char),
+      "compute"          = .qt_render_compute(item, depth, mode, indent_char),
       "logic"     = .qt_render_logic(item, depth, qbank, candidates, vlabs,
                                       modbank, survey_id, mode, indent_char),
       "split"     = .qt_render_split(item, depth, qbank, candidates, vlabs,
@@ -434,6 +436,18 @@ qt_render_questionnaire.character <- function(
   pfx  <- if (mode == "full") "" else strrep(indent_char, depth)
   text <- .qt_wrap_fills(item$text %||% "", mode)
   c(.qt_fenced_div(paste0(pfx, text), "qre-statement", mode), "")
+}
+
+
+# Internal: Programmer note renderer -----------------------------------------
+
+# @keywords internal
+# @noRd
+.qt_render_programmer_note <- function(item, depth, mode, indent_char) {
+  pfx  <- if (mode == "full") "" else strrep(indent_char, depth)
+  note <- trimws(item$note %||% "")
+  if (!nzchar(note)) return(character())
+  c(.qt_fenced_div(paste0(pfx, "[", note, "]"), "qre-programming", mode), "")
 }
 
 

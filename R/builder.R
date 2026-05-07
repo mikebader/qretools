@@ -487,6 +487,64 @@ qt_add_statement <- function(.x = NULL, id = NULL, text = NULL,
 }
 
 
+#' Add a Programmer Note
+#'
+#' Inserts a freeform note to the survey programmer at a specific point in the
+#' questionnaire flow. Rendered as a bracketed annotation in the
+#' \code{qre-programming} style (distinct from respondent-facing content). In
+#' pipe mode, appends to the top-level questionnaire items. In spec mode,
+#' returns an item spec list for use inside a container such as
+#' \code{qt_add_section()}.
+#'
+#' @param .x A \code{qt_qre} object (pipe mode), a note string (spec mode with
+#'   a single positional argument), or \code{NULL} / omitted (spec mode with
+#'   named arguments).
+#' @param note Character string. The text of the note.
+#' @param id Character string or \code{NULL}. Optional identifier for
+#'   cross-referencing. If \code{NULL}, an ID is auto-generated from a hash of
+#'   the note text.
+#'
+#' @return Pipe mode: invisibly returns the modified \code{qt_qre} object.
+#'   Spec mode: returns a plain item spec list.
+#'
+#' @seealso \code{\link{qt_add_statement}}, \code{\link{qt_add_compute}}
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Pipe mode — top-level note at the start of the questionnaire
+#' qre <- qt_qre("bas-2026", "BAS 2026", "draft") |>
+#'   qt_add_programmer_note(
+#'     "Set STARTTIME = timestamp() at the beginning of the first section."
+#'   )
+#'
+#' # Spec mode — inside a section
+#' qt_add_section("intro", "Introduction",
+#'   qt_add_programmer_note(
+#'     "Ensure JURISDICTION is loaded before this section is displayed."
+#'   ),
+#'   qt_add_question("q_consent")
+#' )
+#' }
+qt_add_programmer_note <- function(.x = NULL, note = NULL, id = NULL) {
+  if (inherits(.x, "qt_qre")) {
+    if (is.null(note) || !nzchar(trimws(note)))
+      stop("'note' is required", call. = FALSE)
+    effective_id <- id %||% paste0("pnote_", substr(digest::digest(note), 1, 8))
+    spec <- .qt_programmer_note_spec(effective_id, note)
+    .x$questionnaire$items <- c(.x$questionnaire$items, list(spec))
+    return(invisible(.x))
+  }
+  # Spec mode: .x may be the note text supplied positionally
+  effective_note <- if (!is.null(.x) && is.character(.x)) .x else note
+  if (is.null(effective_note) || !nzchar(trimws(effective_note)))
+    stop("'note' is required", call. = FALSE)
+  effective_id <- id %||% paste0("pnote_", substr(digest::digest(effective_note), 1, 8))
+  .qt_programmer_note_spec(effective_id, effective_note)
+}
+
+
 #' Add a Compute Item
 #'
 #' A compute item executes an R expression during survey flow. In the
@@ -843,6 +901,13 @@ qt_add_path <- function(id, control_value, ...) {
   if (!is.null(note))            spec$note            <- note
   spec
 }
+
+#' @keywords internal
+#' @noRd
+.qt_programmer_note_spec <- function(id, note) {
+  list(item_type = "programmer_note", id = id, note = note)
+}
+
 
 #' @keywords internal
 #' @noRd
