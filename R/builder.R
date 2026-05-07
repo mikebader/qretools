@@ -194,7 +194,14 @@ qt_preload_source <- function(qre, source, ..., id = NULL,
   if (!nzchar(trimws(as.character(source))))
     stop("'source' must be a non-empty string", call. = FALSE)
 
-  items <- list(...)
+  items <- tryCatch(
+    list(...),
+    error = function(e) {
+      stop("qt_preload_source(): one of the '...' arguments is missing -- ",
+           "check for a trailing comma after the last qt_preload_var() call",
+           call. = FALSE)
+    }
+  )
   for (i in seq_along(items)) {
     if (!identical(items[[i]]$item_type, "preload_var"))
       stop("qt_preload_source() only accepts qt_preload_var() items; item ", i,
