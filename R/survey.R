@@ -398,6 +398,9 @@ qt_read_survey_config <- function(survey_config_file, config = NULL) {
                         "question" = list(.make_question_item(item, section_id, qbank, candidates, container_context)),
                         "compute" = list(.make_compute_item(item, section_id, container_context)),
 
+                        # Programmer notes are documentation only — not survey data items
+                        "programmer_note" = list(),
+
                         # Section - set section_id, recurse into items
                         "section" = .process_items_recursive(
                           item$items, item$id, qbank, candidates, config,
