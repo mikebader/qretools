@@ -88,11 +88,13 @@ qt_qre <- function(id, title, status = c("draft", "final"),
 
 # Top-level adders (pipe mode only) ------------------------------------------
 
-#' Add Preload Compute Items to a Survey
+#' Add Compute Items to the Preload Section
 #'
-#' Adds one or more compute items to the `preload` section of a survey
-#' questionnaire. Only compute items (created with `qt_add_compute()` in
-#' spec mode) are permitted in preload.
+#' Adds one or more compute operations to the `preload` section of a survey
+#' questionnaire. Each item is built with `qt_add_compute()` in spec mode.
+#' To add external variable source blocks use `qt_preload_source()` instead.
+#'
+#' `qt_add_preload()` is a backward-compatible alias for `qt_preload_compute()`.
 #'
 #' @param qre A `qt_qre` object.
 #' @param ... Compute item specs. Each must be created by `qt_add_compute()`
@@ -105,7 +107,7 @@ qt_qre <- function(id, title, status = c("draft", "final"),
 #' @examples
 #' \dontrun{
 #' qre <- qt_qre("bas-2026", "BAS 2026", "draft") |>
-#'   qt_add_preload(
+#'   qt_preload_compute(
 #'     qt_add_compute(
 #'       id          = "assign_condition",
 #'       description = "Assign A/B condition",
@@ -114,20 +116,146 @@ qt_qre <- function(id, title, status = c("draft", "final"),
 #'     )
 #'   )
 #' }
-qt_add_preload <- function(qre, ...) {
+qt_preload_compute <- function(qre, ...) {
   if (!inherits(qre, "qt_qre"))
     stop("First argument must be a qt_qre object", call. = FALSE)
 
   items <- list(...)
   for (i in seq_along(items)) {
     if (!identical(items[[i]]$item_type, "compute"))
-      stop("preload only accepts compute items; item ", i,
-           " has item_type '", items[[i]]$item_type, "'",
+      stop("qt_preload_compute() only accepts qt_add_compute() items; ",
+           "item ", i, " has item_type '",
+           items[[i]]$item_type %||% "(none)", "'",
            call. = FALSE)
   }
 
   qre$questionnaire$preload <- c(qre$questionnaire$preload, items)
   invisible(qre)
+}
+
+#' @rdname qt_preload_compute
+#' @export
+qt_add_preload <- qt_preload_compute
+
+
+#' Add an External Variable Source Block to the Preload Section
+#'
+#' Adds a source block to the `preload` section documenting variables fetched
+#' from an external data source before the survey starts (e.g., a sample file
+#' or the respondent's browser). Each variable in the block is declared with
+#' `qt_preload_var()` and must exist in the control bank; bank lookup and
+#' validation occur at render time. The block renders as a titled, factor-
+#' expanded table in the questionnaire document.
+#'
+#' @param qre A `qt_qre` object.
+#' @param source Character string. Display name of the data source
+#'   (e.g., `"Sample file"`, `"Browser"`). Used as the table heading.
+#' @param ... `qt_preload_var()` specs, one per variable loaded from this
+#'   source.
+#' @param id Character string or NULL. Optional identifier for cross-referencing.
+#' @param description Character string or NULL. Additional description of
+#'   this source block.
+#' @param note Character string or NULL. Implementation notes.
+#'
+#' @return Invisibly returns the modified `qt_qre` object.
+#'
+#' @seealso \code{\link{qt_preload_var}}, \code{\link{qt_preload_compute}}
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' qre <- qt_qre("bas-2026", "BAS 2026", "draft") |>
+#'   qt_preload_source("Sample file",
+#'     qt_preload_var("ADDR1"),
+#'     qt_preload_var("ADDR2"),
+#'     qt_preload_var("JURISDICTION"),
+#'     id = "sample_preload"
+#'   ) |>
+#'   qt_preload_source("Browser",
+#'     qt_preload_var("AccessCode1")
+#'   ) |>
+#'   qt_preload_compute(
+#'     qt_add_compute(
+#'       id = "assign_condition", provides = "condition",
+#'       command = "condition <- sample(c('A','B'), 1)"
+#'     )
+#'   )
+#' }
+qt_preload_source <- function(qre, source, ..., id = NULL,
+                               description = NULL, note = NULL) {
+  if (missing(source))
+    stop("qt_preload_source() requires a source name as its second argument ",
+         "(e.g., qt_preload_source(qre, \"Sample file\", ...))",
+         call. = FALSE)
+  if (!inherits(qre, "qt_qre"))
+    stop("First argument must be a qt_qre object -- did you forget to pipe?",
+         call. = FALSE)
+  if (!nzchar(trimws(as.character(source))))
+    stop("'source' must be a non-empty string", call. = FALSE)
+
+  items <- tryCatch(
+    list(...),
+    error = function(e) {
+      stop("qt_preload_source(): one of the '...' arguments is missing -- ",
+           "check for a trailing comma after the last qt_preload_var() call",
+           call. = FALSE)
+    }
+  )
+  for (i in seq_along(items)) {
+    if (!identical(items[[i]]$item_type, "preload_var"))
+      stop("qt_preload_source() only accepts qt_preload_var() items; item ", i,
+           " has item_type '", items[[i]]$item_type %||% "(none)", "'",
+           call. = FALSE)
+  }
+
+  spec <- list(item_type = "preload_source",
+               source    = as.character(source),
+               items     = items)
+  if (!is.null(id))          spec$id          <- id
+  if (!is.null(description)) spec$description <- description
+  if (!is.null(note))        spec$note        <- note
+
+  qre$questionnaire$preload <- c(qre$questionnaire$preload, list(spec))
+  invisible(qre)
+}
+
+
+#' Build a Preload Variable Spec
+#'
+#' Creates a variable reference for use inside `qt_preload_source()`. The
+#' \code{variable_id} must exist in the control bank; bank lookup and
+#' validation occur at render time, keeping the builder lightweight.
+#'
+#' @param variable_id Character string. Identifier of the control bank variable
+#'   to be loaded from this source.
+#' @param note Character string or NULL. Notes on this variable's use in this
+#'   specific survey (e.g., scope restrictions).
+#' @param programmer_note Character string or NULL. Note to the survey
+#'   programmer.
+#'
+#' @return A plain list item spec of type \code{"preload_var"}.
+#'
+#' @seealso \code{\link{qt_preload_source}}
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' qt_preload_source("Sample file",
+#'   qt_preload_var("ADDR1"),
+#'   qt_preload_var("JURISDICTION", note = "City and County only")
+#' )
+#' }
+qt_preload_var <- function(variable_id, note = NULL, programmer_note = NULL) {
+  if (missing(variable_id) || !nzchar(trimws(as.character(variable_id))))
+    stop("'variable_id' is required", call. = FALSE)
+
+  spec <- list(item_type   = "preload_var",
+               variable_id = as.character(variable_id))
+  if (!is.null(note))            spec$note            <- note
+  if (!is.null(programmer_note)) spec$programmer_note <- programmer_note
+  spec
 }
 
 
@@ -356,6 +484,64 @@ qt_add_statement <- function(.x = NULL, id = NULL, text = NULL,
     effective_id <- paste0("stmt_", substr(digest::digest(effective_text), 1, 8))
   .qt_statement_spec(effective_id, effective_text, keep_with_next,
                      if_condition, display_class, programmer_note, note)
+}
+
+
+#' Add a Programmer Note
+#'
+#' Inserts a freeform note to the survey programmer at a specific point in the
+#' questionnaire flow. Rendered as a bracketed annotation in the
+#' \code{qre-programming} style (distinct from respondent-facing content). In
+#' pipe mode, appends to the top-level questionnaire items. In spec mode,
+#' returns an item spec list for use inside a container such as
+#' \code{qt_add_section()}.
+#'
+#' @param .x A \code{qt_qre} object (pipe mode), a note string (spec mode with
+#'   a single positional argument), or \code{NULL} / omitted (spec mode with
+#'   named arguments).
+#' @param note Character string. The text of the note.
+#' @param id Character string or \code{NULL}. Optional identifier for
+#'   cross-referencing. If \code{NULL}, an ID is auto-generated from a hash of
+#'   the note text.
+#'
+#' @return Pipe mode: invisibly returns the modified \code{qt_qre} object.
+#'   Spec mode: returns a plain item spec list.
+#'
+#' @seealso \code{\link{qt_add_statement}}, \code{\link{qt_add_compute}}
+#'
+#' @export
+#'
+#' @examples
+#' \dontrun{
+#' # Pipe mode — top-level note at the start of the questionnaire
+#' qre <- qt_qre("bas-2026", "BAS 2026", "draft") |>
+#'   qt_add_programmer_note(
+#'     "Set STARTTIME = timestamp() at the beginning of the first section."
+#'   )
+#'
+#' # Spec mode — inside a section
+#' qt_add_section("intro", "Introduction",
+#'   qt_add_programmer_note(
+#'     "Ensure JURISDICTION is loaded before this section is displayed."
+#'   ),
+#'   qt_add_question("q_consent")
+#' )
+#' }
+qt_add_programmer_note <- function(.x = NULL, note = NULL, id = NULL) {
+  if (inherits(.x, "qt_qre")) {
+    if (is.null(note) || !nzchar(trimws(note)))
+      stop("'note' is required", call. = FALSE)
+    effective_id <- id %||% paste0("pnote_", substr(digest::digest(note), 1, 8))
+    spec <- .qt_programmer_note_spec(effective_id, note)
+    .x$questionnaire$items <- c(.x$questionnaire$items, list(spec))
+    return(invisible(.x))
+  }
+  # Spec mode: .x may be the note text supplied positionally
+  effective_note <- if (!is.null(.x) && is.character(.x)) .x else note
+  if (is.null(effective_note) || !nzchar(trimws(effective_note)))
+    stop("'note' is required", call. = FALSE)
+  effective_id <- id %||% paste0("pnote_", substr(digest::digest(effective_note), 1, 8))
+  .qt_programmer_note_spec(effective_id, effective_note)
 }
 
 
@@ -715,6 +901,13 @@ qt_add_path <- function(id, control_value, ...) {
   if (!is.null(note))            spec$note            <- note
   spec
 }
+
+#' @keywords internal
+#' @noRd
+.qt_programmer_note_spec <- function(id, note) {
+  list(item_type = "programmer_note", id = id, note = note)
+}
+
 
 #' @keywords internal
 #' @noRd

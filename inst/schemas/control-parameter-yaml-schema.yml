@@ -24,6 +24,17 @@ id: string                       # REQUIRED - Unique identifier
                                  # "false"; text to explain reason or how to
                                  # gain access
 
+    # Optional - Provenance
+    input: enum                  # How the variable is populated before
+                                 # the survey starts. One of:
+                                 #   sample   - loaded from sample/preload
+                                 #              data file (e.g., address,
+                                 #              jurisdiction)
+                                 #   system   - auto-populated by survey
+                                 #              system (e.g., date, UID)
+                                 #   computed - derived or randomised
+                                 #              within the instrument
+
     # Optional - Documentation
     note: string                 # Implementation notes
     programmer_note: string      # Note to survey programmer
