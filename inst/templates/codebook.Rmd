@@ -108,12 +108,13 @@ for (entry in params$entries) {
         cat("\n")
       }
 
-      st <- entry[["stats"]]
-      if (!is.null(st)) {
-        fmt <- function(v) if (is.na(v)) "NA" else format(round(v, 2), nsmall = 0)
-        cat("| Min | Max | Mean | SD |\n|-----|-----|------|----|\n")
-        cat("| ", fmt(st[["min"]]), " | ", fmt(st[["max"]]), " | ",
-            fmt(st[["mean"]]), " | ", fmt(st[["sd"]]), " |\n\n", sep = "")
+      tab <- entry[["stats_table"]]
+      if (!is.null(tab) && nrow(tab) > 0) {
+        cat("| Statistic | Value |\n|-----------|------:|\n")
+        for (i in seq_len(nrow(tab))) {
+          cat("| ", esc(tab$statistic[i]), " | ", tab$value[i], " |\n", sep = "")
+        }
+        cat("\n")
       }
 
       mi <- entry[["missing"]]

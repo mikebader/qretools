@@ -17,8 +17,8 @@
 #'   appear as rows of each factor or multiple-response variable's response
 #'   table, after the substantive values, using their labels from the
 #'   missing-codes file. If `FALSE`, they are listed in a separate "Coded
-#'   missing values" table. Numeric variables, which have no response table,
-#'   always list them separately.
+#'   missing values" table. Numeric variables list them as extra rows of their
+#'   statistics table.
 #' @param missing_zeros Logical. If `TRUE` (default), every defined missing code
 #'   gets a row for each factor, multiple-response and numeric variable, with a
 #'   count of 0 where the code does not occur. If `FALSE`, only codes that occur
@@ -168,6 +168,31 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
       miss <- NULL
     }
 
+    # Numeric variables: one table with statistics as rows; coded missing
+    # values follow as rows when they are listed in the table.
+    stats_table <- NULL
+    st <- sm[["stats"]]
+    if (!is.null(st)) {
+      fmt <- function(v) {
+        if (is.na(v)) "NA" else format(round(v, 2), trim = TRUE, scientific = FALSE)
+      }
+      stats_table <- data.frame(
+        statistic = c("Valid responses", "Minimum", "Maximum", "Mean",
+                      "Standard deviation"),
+        value     = c(as.character(ds$n[i]), fmt(st[["min"]]), fmt(st[["max"]]),
+                      fmt(st[["mean"]]), fmt(st[["sd"]])),
+        stringsAsFactors = FALSE
+      )
+      if (missing_in_table && !is.null(miss)) {
+        stats_table <- rbind(
+          stats_table,
+          data.frame(statistic = paste0(miss$label, " (", miss$value, ")"),
+                     value = as.character(miss$n), stringsAsFactors = FALSE)
+        )
+        miss <- NULL
+      }
+    }
+
     list(
       variable_id    = id,
       title          = res$title %||% res$option_title %||% "",
@@ -186,7 +211,8 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
       n_coded        = na_null(ds$n_coded[i]),
       n_na           = na_null(ds$n_na[i]),
       values         = vals,
-      stats          = sm[["stats"]],
+      stats          = st,
+      stats_table    = stats_table,
       missing        = miss,
       parent_id      = na_null(ds$parent_id[i]),
       options        = {
@@ -240,13 +266,11 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
     }
   }
 
-  st <- entry[["stats"]]
-  if (!is.null(st)) {
-    fmt <- function(v) if (is.na(v)) "NA" else format(round(v, 2), nsmall = 0)
-    lines <- c(lines,
-               sprintf("  min %s, max %s, mean %s, sd %s",
-                       fmt(st[["min"]]), fmt(st[["max"]]),
-                       fmt(st[["mean"]]), fmt(st[["sd"]])))
+  tab <- entry[["stats_table"]]
+  if (!is.null(tab) && nrow(tab) > 0) {
+    for (i in seq_len(nrow(tab))) {
+      lines <- c(lines, sprintf("  %s: %s", tab$statistic[i], tab$value[i]))
+    }
   }
 
   mi <- entry[["missing"]]
