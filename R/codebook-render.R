@@ -11,6 +11,7 @@
 #   .qt-group             group heading (`# <vargroup>`)
 #   .qt-variable          one entry; modifiers .qt-type-<storage-type> and
 #                         .qt-status-<status> (codebooks only)
+#   .qt-variable-id       variable name, beneath the heading (title)
 #   .qt-meta              type / group / universe line
 #     .qt-meta-item .qt-storage-type | .qt-vargroup | .qt-universe
 #   .qt-question-text, .qt-option-of, .qt-options, .qt-needs-compilation
@@ -207,19 +208,22 @@ qt_copy_css <- function(config = qt_config(), overwrite = FALSE) {
   has_text <- function(x) !is.null(x) && length(x) == 1 && !is.na(x) &&
     nzchar(trimws(x))
 
+  # Variable name beneath the title
+  add(paste0("<p class=\"qt-variable-id\"><code>", .qt_esc(e[["variable_id"]]), "</code></p>"))
+
   # Meta line
   meta <- character()
   if (has_text(e[["storage_type"]]))
     meta <- c(meta, paste0("<span class=\"qt-meta-item qt-storage-type\">",
-                           "<span class=\"qt-meta-label\">Type</span> <code>",
+                           "<span class=\"qt-meta-label\">Type:</span> <code>",
                            .qt_esc(e[["storage_type"]]), "</code></span>"))
   if (has_text(e[["vargroup"]]))
     meta <- c(meta, paste0("<span class=\"qt-meta-item qt-vargroup\">",
-                           "<span class=\"qt-meta-label\">Group</span> <code>",
+                           "<span class=\"qt-meta-label\">Group:</span> <code>",
                            .qt_esc(e[["vargroup"]]), "</code></span>"))
   if (has_text(e[["universe"]]))
     meta <- c(meta, paste0("<span class=\"qt-meta-item qt-universe\">",
-                           "<span class=\"qt-meta-label\">Universe</span> ",
+                           "<span class=\"qt-meta-label\">Universe:</span> ",
                            .qt_esc(e[["universe"]]), "</span>"))
   if (length(meta) > 0)
     add(paste0("<p class=\"qt-meta\">", paste(meta, collapse = " "), "</p>"))
@@ -308,6 +312,7 @@ qt_copy_css <- function(config = qt_config(), overwrite = FALSE) {
   has_text <- function(x) !is.null(x) && length(x) == 1 && !is.na(x) &&
     nzchar(trimws(x))
 
+  add(paste0("`", e[["variable_id"]], "`"), "")
   meta <- paste0("**Type:** `", e[["storage_type"]] %||% "unclassified", "`")
   if (has_text(e[["vargroup"]]))
     meta <- paste0(meta, "   **Group:** `", e[["vargroup"]], "`")

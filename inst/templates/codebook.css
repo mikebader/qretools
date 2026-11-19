@@ -8,8 +8,12 @@
   --qt-border: #d8dee4;
   --qt-stripe: #f6f8fa;
   --qt-accent: #2563eb;
-  --qt-pill-bg: #eef2ff;
-  --qt-pill-text: #3730a3;
+  --qt-type-bg: #e0ecff;
+  --qt-type-text: #1e40af;
+  --qt-group-bg: #dcfce7;
+  --qt-group-text: #166534;
+  --qt-universe-bg: #fef3c7;
+  --qt-universe-text: #92400e;
   --qt-missing-bg: #fafafa;
   --qt-missing-text: #6b7280;
   --qt-warn-bg: #fff8e1;
@@ -33,12 +37,18 @@
 .qt-variable { margin: 0 0 2rem 0; padding-bottom: 1rem;
   border-bottom: 1px solid var(--qt-border); }
 .qt-variable h1, .qt-variable h2 { font-size: 1.25em; margin-top: 1.5rem; }
-.qt-variable code { font-weight: 600; }
 
-/* Meta pills */
+/* Variable name under the title */
+.qt-variable-id { margin: 0.1rem 0 0.4rem; }
+.qt-variable-id code { font-size: 0.95em; color: var(--qt-muted); font-weight: 600; }
+
+/* Meta pills: one color per kind */
 .qt-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.4rem 0; }
 .qt-meta-item { padding: 0.1rem 0.6rem; border-radius: 999px;
-  background: var(--qt-pill-bg); color: var(--qt-pill-text); font-size: 0.85em; }
+  font-size: 0.85em; }
+.qt-storage-type { background: var(--qt-type-bg); color: var(--qt-type-text); }
+.qt-vargroup { background: var(--qt-group-bg); color: var(--qt-group-text); }
+.qt-universe { background: var(--qt-universe-bg); color: var(--qt-universe-text); }
 .qt-meta-label { font-weight: 600; margin-right: 0.25rem; }
 .qt-meta-item code { background: transparent; color: inherit; padding: 0; }
 
