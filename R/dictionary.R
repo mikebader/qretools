@@ -296,6 +296,23 @@ qt_dictionary <- function(bank,
     output_file <- tempfile(pattern = "codebook_", fileext = ext)
   }
 
+  # rmarkdown resolves a relative output_file against the template's folder,
+  # not the working directory, so make the path absolute here.
+  out_dir <- dirname(output_file)
+  if (!dir.exists(out_dir)) {
+    stop("Output directory does not exist: ", out_dir, call. = FALSE)
+  }
+  output_file <- file.path(normalizePath(out_dir, winslash = "/", mustWork = TRUE),
+                           basename(output_file))
+
+  # Render from a temporary copy of the template so rmarkdown's intermediate
+  # files never land in the package folder (which may be read-only).
+  work_dir <- tempfile(pattern = "qretools_render_")
+  dir.create(work_dir)
+  on.exit(unlink(work_dir, recursive = TRUE), add = TRUE)
+  template_copy <- file.path(work_dir, "codebook.Rmd")
+  file.copy(template, template_copy)
+
   # Save entries to a temp RDS so the template can read them
   entries_path <- tempfile(pattern = "qretools_entries_", fileext = ".rds")
   on.exit(unlink(entries_path), add = TRUE)
@@ -309,7 +326,7 @@ qt_dictionary <- function(bank,
   }
 
   rmarkdown::render(
-    input         = template,
+    input         = template_copy,
     output_format = output_format,
     output_file   = output_file,
     params        = list(
