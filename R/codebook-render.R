@@ -434,8 +434,9 @@ qt_copy_css <- function(config = qt_config(), overwrite = FALSE) {
     for (e in grp$entries) {
       id    <- e[["variable_id"]]
       title <- e[["title"]] %||% ""
-      heading <- paste0(strrep("#", var_level), " `", id, "`",
-                        if (nzchar(title)) paste0(" — ", .qt_md_esc(title)),
+      # the title is the heading; the variable name is shown beneath it
+      heading <- paste0(strrep("#", var_level), " ",
+                        if (nzchar(title)) .qt_md_esc(title) else paste0("`", id, "`"),
                         " {#", id, "}")
       if (html) {
         classes <- c(".qt-variable",
