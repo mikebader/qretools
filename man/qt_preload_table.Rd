@@ -94,5 +94,5 @@ lines <- qt_preload_table(ctrl, value_labels = vl,
 }
 \seealso{
 \code{\link{qt_ctrlbank}}, \code{\link{qt_read_value_labels}},
-\code{\link{qt_codebook}}
+\code{\link{qt_dictionary}}
 }
