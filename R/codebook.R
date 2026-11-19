@@ -13,6 +13,12 @@
 #' output to the console or a file, and HTML/PDF output via R Markdown.
 #'
 #' @inheritParams qt_data_summary
+#' @param missing_in_table Logical. If `TRUE` (default), coded missing values
+#'   appear as rows of each factor or multiple-response variable's response
+#'   table, after the substantive values, using their labels from the
+#'   missing-codes file. If `FALSE`, they are listed in a separate "Coded
+#'   missing values" table. Numeric variables, which have no response table,
+#'   always list them separately. Only codes that occur in the data are shown.
 #' @param format Character string. Output format: \code{"text"} (default),
 #'   \code{"html"}, or \code{"pdf"}. HTML and PDF require the \pkg{rmarkdown}
 #'   package to be installed.
@@ -66,7 +72,8 @@
 #'
 #' @export
 qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
-                        survey_id = NULL, format = c("text", "html", "pdf"),
+                        missing_in_table = TRUE, survey_id = NULL,
+                        format = c("text", "html", "pdf"),
                         output_file = NULL, open = FALSE, title = NULL,
                         config = NULL, ...) {
   format <- match.arg(format)
@@ -86,7 +93,7 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
                         config = config)
   survey_id <- attr(ds, "survey_id")
 
-  entries <- .qt_codebook_entries(ds)
+  entries <- .qt_codebook_entries(ds, missing_in_table = missing_in_table)
   if (length(entries) == 0)
     stop("No variables to document", call. = FALSE)
 
@@ -112,8 +119,10 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
 # stats, missing, parent_id, options, version_id) are added.
 #
 # @param ds A qt_data_summary object from qt_data_summary()
+# @param missing_in_table Logical. Append coded missing values to the response
+#   table of entries that have one (factor, multiple-response)
 # @return List of entry lists
-.qt_codebook_entries <- function(ds) {
+.qt_codebook_entries <- function(ds, missing_in_table = TRUE) {
   resolved <- attr(ds, "resolved") %||% list()
   na_null  <- function(x) if (length(x) == 0 || is.na(x)) NULL else x
 
@@ -121,6 +130,18 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
     id  <- ds$variable_id[i]
     res <- resolved[[id]] %||% list()
     sm  <- ds$summary[[i]]
+
+    vals <- sm[["values"]]
+    miss <- sm[["missing"]]
+    if (missing_in_table && !is.null(vals) && !is.null(miss) && nrow(miss) > 0) {
+      if (!"label" %in% names(vals)) vals$label <- rep("", nrow(vals))
+      vals <- rbind(
+        vals[, c("value", "label", "n"), drop = FALSE],
+        data.frame(value = miss$value, label = miss$label, n = miss$n,
+                   stringsAsFactors = FALSE)
+      )
+      miss <- NULL
+    }
 
     list(
       variable_id    = id,
@@ -139,9 +160,9 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
       n              = na_null(ds$n[i]),
       n_coded        = na_null(ds$n_coded[i]),
       n_na           = na_null(ds$n_na[i]),
-      values         = sm[["values"]],
+      values         = vals,
       stats          = sm[["stats"]],
-      missing        = sm[["missing"]],
+      missing        = miss,
       parent_id      = na_null(ds$parent_id[i]),
       options        = {
         kids <- ds$variable_id[!is.na(ds$parent_id) & ds$parent_id == id]
@@ -187,7 +208,8 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
   vals <- entry[["values"]]
   if (!is.null(vals) && nrow(vals) > 0) {
     for (i in seq_len(nrow(vals))) {
-      lab <- if ("label" %in% names(vals) && !is.na(vals$label[i]))
+      lab <- if ("label" %in% names(vals) && !is.na(vals$label[i]) &&
+                nzchar(vals$label[i]))
                paste0(": ", vals$label[i]) else ""
       lines <- c(lines, sprintf("  %s%s  (n = %d)", vals$value[i], lab, vals$n[i]))
     }
