@@ -11,10 +11,13 @@
 #' question version used by the survey, reconciles the lookup with the columns
 #' of `data`, and summarizes each variable by storage type.
 #'
+#' @param qre A `qt_qre` object, or an already processed survey (the
+#'   `qt_qreconfig` returned by `qt_process()` or `qt_read_survey_config()`).
+#'   It is the first argument so the function works in a pipe. A `qt_qre` is
+#'   passed through `qt_process()`, which also writes the survey YAML to its
+#'   default path; pass a processed object to avoid that.
 #' @param data A data frame of collected responses. Column names must equal
 #'   instrument variable IDs; factor columns hold numeric codes.
-#' @param qre A processed survey: the `qt_qreconfig` object returned by
-#'   `qt_process()` (or `qt_read_survey_config()`).
 #' @param value_labels A `qt_vlabs` object (see `qt_read_value_labels()`), or
 #'   `NULL`. Required to label factor codes; without it factor tables show
 #'   observed codes only.
@@ -23,6 +26,8 @@
 #' @param strict Logical. If `TRUE`, stop when the data and instrument do not
 #'   reconcile (questions missing from the data, or data columns not accounted
 #'   for). If `FALSE` (default), warn and report the problems in the result.
+#' @param config A `qt_config` object or `NULL`; used only when `qre` is a
+#'   `qt_qre` that needs processing.
 #'
 #' @return An object of class `qt_data_summary`: a data frame with one row per
 #'   variable and columns `variable_id`, `parent_id`, `section_id`, `source`,
@@ -52,22 +57,28 @@
 #'
 #' @examples
 #' \dontrun{
-#' qre  <- qt_process(my_qre)
-#' vl   <- qt_read_value_labels()
-#' dat  <- read.csv("bas-2026.csv")
-#' ds   <- qt_data_summary(dat, qre, value_labels = vl)
+#' vl  <- qt_read_value_labels()
+#' dat <- read.csv("bas-2026.csv")
+#'
+#' ds <- my_qre |> qt_data_summary(dat, value_labels = vl)
 #' ds
 #' ds[ds$status != "ok", ]
 #' }
 #'
 #' @export
-qt_data_summary <- function(data, qre, value_labels = NULL,
-                            survey_id = NULL, strict = FALSE) {
+qt_data_summary <- function(qre, data, value_labels = NULL,
+                            survey_id = NULL, strict = FALSE, config = NULL) {
   if (!is.data.frame(data))
     stop("'data' must be a data frame", call. = FALSE)
+
+  # A raw qt_qre is processed first (same call as qt_process(qre), which also
+  # writes the survey YAML to its default path).
+  if (inherits(qre, "qt_qre")) {
+    qre <- qt_process(qre, config = config)
+  }
   if (!inherits(qre, "qt_qreconfig"))
-    stop("'qre' must be a processed survey (class 'qt_qreconfig'); ",
-         "run qt_process() first", call. = FALSE)
+    stop("'qre' must be a qt_qre or a processed survey (class 'qt_qreconfig')",
+         call. = FALSE)
 
   survey_id <- survey_id %||% qre$meta$id
   if (is.null(survey_id) || !nzchar(survey_id))
