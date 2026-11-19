@@ -9,6 +9,8 @@ qt_codebook(
   data,
   value_labels = NULL,
   missing_codes = NULL,
+  missing_in_table = TRUE,
+  missing_zeros = TRUE,
   survey_id = NULL,
   format = c("text", "html", "pdf"),
   output_file = NULL,
@@ -39,6 +41,18 @@ or supply the result of \code{qt_read_missing_codes()}, or a data frame with
 columns \code{type}, \code{value} and \code{label}. Coded values are counted separately,
 by type, from substantive responses; they are not flagged as unlabeled and
 are excluded from numeric summaries.}
+
+\item{missing_in_table}{Logical. If \code{TRUE} (default), coded missing values
+appear as rows of each factor or multiple-response variable's response
+table, after the substantive values, using their labels from the
+missing-codes file. If \code{FALSE}, they are listed in a separate "Coded
+missing values" table. Numeric variables list them as extra rows of their
+statistics table.}
+
+\item{missing_zeros}{Logical. If \code{TRUE} (default), every defined missing code
+gets a row for each factor, multiple-response and numeric variable, with a
+count of 0 where the code does not occur. If \code{FALSE}, only codes that occur
+in the data are shown.}
 
 \item{survey_id}{Character string. Survey ID used to pick each question's
 version. Defaults to \code{qre$meta$id}.}
