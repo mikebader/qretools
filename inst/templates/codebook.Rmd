@@ -88,8 +88,8 @@ for (entry in params$entries) {
       cat("> **Needs compilation:** ", entry[["flags"]], "\n\n", sep = "")
     } else if (entry[["status"]] == "ok") {
       cat("**Responses:** ", entry[["n"]] %||% 0L, " valid, ",
-          entry[["n_skipped"]] %||% 0L, " skipped, ",
-          entry[["n_missing"]] %||% 0L, " missing\n\n", sep = "")
+          entry[["n_coded"]] %||% 0L, " coded missing, ",
+          entry[["n_na"]] %||% 0L, " NA\n\n", sep = "")
 
       vals <- entry[["values"]]
       if (!is.null(vals) && nrow(vals) > 0) {
@@ -116,12 +116,13 @@ for (entry in params$entries) {
             fmt(st[["mean"]]), " | ", fmt(st[["sd"]]), " |\n\n", sep = "")
       }
 
-      sk <- entry[["skips"]]
-      if (!is.null(sk) && nrow(sk) > 0) {
-        cat("**Skip codes:**\n\n| Code | Label | N |\n|------|-------|---|\n")
-        for (i in seq_len(nrow(sk))) {
-          cat("| ", esc(sk$code[i]), " | ", esc(sk$label[i]), " | ", sk$n[i],
-              " |\n", sep = "")
+      mi <- entry[["missing"]]
+      if (!is.null(mi) && nrow(mi) > 0) {
+        cat("**Coded missing values:**\n\n| Value | Type | Label | N |\n",
+            "|-------|------|-------|---|\n", sep = "")
+        for (i in seq_len(nrow(mi))) {
+          cat("| ", esc(mi$value[i]), " | ", esc(mi$type[i]), " | ",
+              esc(mi$label[i]), " | ", mi$n[i], " |\n", sep = "")
         }
         cat("\n")
       }

@@ -21,12 +21,13 @@
 #' @param value_labels A `qt_vlabs` object (see `qt_read_value_labels()`), or
 #'   `NULL`. Required to label factor codes; without it factor tables show
 #'   observed codes only.
-#' @param skip_labels A named character vector or `NULL`. Names are the codes
-#'   used in the data for skipped or otherwise missing responses and values are
-#'   their labels, e.g. `c("-7" = "Missing: Question not presented due to skip
-#'   pattern")`. Codes found in the data are counted separately from
-#'   substantive responses, are not flagged as unlabeled, and are excluded from
-#'   numeric summaries.
+#' @param missing_codes Codes recorded in the data for responses missing for a
+#'   stated reason. `NULL` (default) reads them from the project with
+#'   [qt_read_missing_codes()] (no file means no codes); `FALSE` uses none;
+#'   or supply the result of `qt_read_missing_codes()`, or a data frame with
+#'   columns `type`, `value` and `label`. Coded values are counted separately,
+#'   by type, from substantive responses; they are not flagged as unlabeled and
+#'   are excluded from numeric summaries.
 #' @param survey_id Character string. Survey ID used to pick each question's
 #'   version. Defaults to `qre$meta$id`.
 #' @param strict Logical. If `TRUE`, stop when the data and instrument do not
@@ -38,16 +39,17 @@
 #' @return An object of class `qt_data_summary`: a data frame with one row per
 #'   variable and columns `variable_id`, `parent_id`, `section_id`, `source`,
 #'   `storage_type`, `version_id`, `version_status`, `value_label_id`,
-#'   `status`, `n`, `n_skipped`, `n_missing`, `flags`, and the list-column
-#'   `summary`. `n` counts substantive responses (not `NA`, not a skip code),
-#'   `n_skipped` counts skip codes, and `n_missing` counts `NA`.
+#'   `status`, `n`, `n_coded`, `n_na`, `flags`, and the list-column `summary`.
+#'   `n` counts substantive responses (not `NA`, not a missing code),
+#'   `n_coded` counts values that are missing codes, and `n_na` counts `NA`.
 #'
 #' @details
 #' Each element of `summary` is a list with up to three parts: `values` (a
 #' data frame of `value`, `label`, `n` for factor and multiple-response
 #' variables), `stats` (named numeric `min`, `max`, `mean`, `sd` for numeric
-#' variables), and `skips` (a data frame of `code`, `label`, `n` for skip codes
-#' present in the data). Parts that do not apply are `NULL`.
+#' variables), and `missing` (a data frame of `type`, `value`, `label`, `n` for
+#' the missing codes present in the data, one row per type). Parts that do not
+#' apply are `NULL`.
 #'
 #' `status` is one of:
 #' \describe{
@@ -67,32 +69,24 @@
 #' Multiple-response options are the child variables listed in the parent's
 #' `creates_variables`; each is summarized as its own column.
 #'
-#' @seealso [qt_process()], [qt_codebook()]
+#' @seealso [qt_read_missing_codes()], [qt_process()], [qt_codebook()]
 #'
 #' @examples
 #' \dontrun{
 #' vl  <- qt_read_value_labels()
 #' dat <- read.csv("bas-2026.csv")
-#' skiplabs <- c("-7" = "Missing: Question not presented due to skip pattern")
 #'
-#' ds <- my_qre |>
-#'   qt_data_summary(dat, value_labels = vl, skip_labels = skiplabs)
+#' # missing codes come from the project's _missing_codes.yml, if it has one
+#' ds <- my_qre |> qt_data_summary(dat, value_labels = vl)
 #' ds
 #' ds[ds$status != "ok", ]
 #' }
 #'
 #' @export
-qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
+qt_data_summary <- function(qre, data, value_labels = NULL, missing_codes = NULL,
                             survey_id = NULL, strict = FALSE, config = NULL) {
   if (!is.data.frame(data))
     stop("'data' must be a data frame", call. = FALSE)
-
-  if (!is.null(skip_labels)) {
-    if (!is.character(skip_labels) || is.null(names(skip_labels)) ||
-        anyNA(names(skip_labels)) || !all(nzchar(names(skip_labels))))
-      stop("'skip_labels' must be a named character vector ",
-           "(names are the codes used in the data)", call. = FALSE)
-  }
 
   # A raw qt_qre is processed first (same call as qt_process(qre), which also
   # writes the survey YAML to its default path).
@@ -107,12 +101,14 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
   if (is.null(survey_id) || !nzchar(survey_id))
     stop("Cannot determine survey_id; supply 'survey_id'", call. = FALSE)
 
+  mc <- .qt_resolve_missing_codes(missing_codes, config)
+
   # 1. Lookup of instrument variables (version-resolved) ----------------------
   lookup <- .qt_ds_lookup(qre, survey_id)
 
   # 2. Summarize / reconcile each lookup row ----------------------------------
   recs <- lapply(lookup, .qt_ds_record, data = data,
-                 value_labels = value_labels, skip_labels = skip_labels)
+                 value_labels = value_labels, mc = mc)
 
   # 3. Data columns not accounted for by the instrument -----------------------
   known    <- vapply(lookup, function(r) r$variable_id, character(1))
@@ -125,7 +121,7 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
       status      = "needs_compilation",
       flags       = if (is_ctrl) "control parameter" else "in data, not in instrument",
       n           = sum(!is.na(data[[nm]])),
-      n_missing   = sum(is.na(data[[nm]]))
+      n_na        = sum(is.na(data[[nm]]))
     )
   }
 
@@ -251,7 +247,7 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
 }
 
 # Internal: summarize one lookup row against the data --------------------------
-.qt_ds_record <- function(r, data, value_labels, skip_labels = NULL) {
+.qt_ds_record <- function(r, data, value_labels, mc = NULL) {
   rec <- .qt_ds_blank(
     variable_id = r$variable_id, parent_id = r$parent_id,
     section_id = r$section_id, source = r$source,
@@ -268,7 +264,7 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
     rec$flags  <- "composite variable"
     if (r$variable_id %in% names(data)) {
       rec$n <- sum(!is.na(data[[r$variable_id]]))
-      rec$n_missing <- sum(is.na(data[[r$variable_id]]))
+      rec$n_na <- sum(is.na(data[[r$variable_id]]))
     }
     return(rec)
   }
@@ -279,30 +275,29 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
   }
 
   x <- data[[r$variable_id]]
-  s <- .qt_ds_summarize(x, r$storage_type, r$value_label_id, value_labels,
-                        skip_labels)
-  rec$status    <- "ok"
-  rec$n         <- s$n_valid
-  rec$n_skipped <- s$n_skipped
-  rec$n_missing <- sum(is.na(x))
-  rec$flags     <- s$flags
-  rec$summary   <- s$summary
+  s <- .qt_ds_summarize(x, r$storage_type, r$value_label_id, value_labels, mc)
+  rec$status  <- "ok"
+  rec$n       <- s$n_valid
+  rec$n_coded <- s$n_coded
+  rec$n_na    <- sum(is.na(x))
+  rec$flags   <- s$flags
+  rec$summary <- s$summary
   rec
 }
 
 # Internal: type-specific summary ---------------------------------------------
 #
-# Returns list(summary, flags, n_valid, n_skipped). `summary` is a list with
-# parts `values`, `stats`, `skips` (each possibly NULL).
-.qt_ds_summarize <- function(x, storage, vl_id, value_labels, skip_labels = NULL) {
+# Returns list(summary, flags, n_valid, n_coded). `summary` is a list with
+# parts `values`, `stats`, `missing` (each possibly NULL).
+.qt_ds_summarize <- function(x, storage, vl_id, value_labels, mc = NULL) {
   flags <- character()
   obs   <- x[!is.na(x)]
 
-  result <- function(values = NULL, stats = NULL, skips = NULL, flags = "",
-                     n_valid, n_skipped = 0L) {
-    list(summary = list(values = values, stats = stats, skips = skips),
+  result <- function(values = NULL, stats = NULL, missing = NULL, flags = "",
+                     n_valid, n_coded = 0L) {
+    list(summary = list(values = values, stats = stats, missing = missing),
          flags = flags, n_valid = as.integer(n_valid),
-         n_skipped = as.integer(n_skipped))
+         n_coded = as.integer(n_coded))
   }
 
   if (is.na(storage)) {
@@ -315,22 +310,25 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
                   n_valid = length(obs)))
   }
 
-  # Split off skip codes: counted separately from substantive responses
-  skips   <- NULL
-  n_skip  <- 0L
-  if (!is.null(skip_labels) && length(obs) > 0) {
+  # Split off missing codes: counted separately, by type, from substantive
+  # responses
+  miss   <- NULL
+  n_skip <- 0L
+  if (!is.null(mc) && nrow(mc) > 0 && length(obs) > 0) {
     obs_chr <- as.character(obs)
-    is_skip <- obs_chr %in% names(skip_labels)
-    if (any(is_skip)) {
-      present <- names(skip_labels)[names(skip_labels) %in% unique(obs_chr[is_skip])]
-      skips <- data.frame(
-        code  = present,
-        label = unname(skip_labels[present]),
-        n     = unname(vapply(present, function(cd) sum(obs_chr == cd), integer(1))),
+    is_code <- obs_chr %in% mc$value
+    if (any(is_code)) {
+      mc_present <- mc[mc$value %in% unique(obs_chr[is_code]), , drop = FALSE]
+      miss <- data.frame(
+        type  = mc_present$type,
+        value = mc_present$value,
+        label = mc_present$label,
+        n     = unname(vapply(mc_present$value, function(cd) sum(obs_chr == cd),
+                              integer(1))),
         row.names = NULL, stringsAsFactors = FALSE
       )
-      n_skip <- sum(is_skip)
-      obs    <- obs[!is_skip]
+      n_skip <- sum(is_code)
+      obs    <- obs[!is_code]
     }
   }
 
@@ -345,8 +343,8 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
       c(min = min(num), max = max(num), mean = mean(num),
         sd = if (length(num) > 1) stats::sd(num) else NA_real_)
     }
-    return(result(stats = sm, skips = skips, flags = paste(flags, collapse = "; "),
-                  n_valid = length(obs), n_skipped = n_skip))
+    return(result(stats = sm, missing = miss, flags = paste(flags, collapse = "; "),
+                  n_valid = length(obs), n_coded = n_skip))
   }
 
   if (storage == "factor") {
@@ -372,8 +370,8 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
     if (!is.null(set) && length(unlabeled) > 0)
       flags <- c(flags, paste0("values without labels: ",
                                paste(sort(unlabeled), collapse = ", ")))
-    return(result(values = tab, skips = skips, flags = paste(flags, collapse = "; "),
-                  n_valid = length(obs), n_skipped = n_skip))
+    return(result(values = tab, missing = miss, flags = paste(flags, collapse = "; "),
+                  n_valid = length(obs), n_coded = n_skip))
   }
 
   if (storage == "multiple_response") {
@@ -384,12 +382,12 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
       n     = unname(vapply(vals, function(v) sum(obs_chr == v), integer(1))),
       row.names = NULL, stringsAsFactors = FALSE
     )
-    return(result(values = tab, skips = skips,
-                  n_valid = length(obs), n_skipped = n_skip))
+    return(result(values = tab, missing = miss,
+                  n_valid = length(obs), n_coded = n_skip))
   }
 
   result(flags = paste0("unrecognized storage_type '", storage, "'"),
-         n_valid = length(obs), n_skipped = n_skip)
+         n_valid = length(obs), n_coded = n_skip)
 }
 
 # Internal: empty record ---------------------------------------------------------
@@ -399,13 +397,13 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
                          version_status = NA_character_,
                          value_label_id = NA_character_,
                          status = NA_character_, flags = "",
-                         n = NA_integer_, n_skipped = NA_integer_,
-                         n_missing = NA_integer_) {
+                         n = NA_integer_, n_coded = NA_integer_,
+                         n_na = NA_integer_) {
   list(variable_id = variable_id, parent_id = parent_id, section_id = section_id,
        source = source, storage_type = storage_type, version_id = version_id,
        version_status = version_status, value_label_id = value_label_id,
-       status = status, n = as.integer(n), n_skipped = as.integer(n_skipped),
-       n_missing = as.integer(n_missing), flags = flags, summary = NULL)
+       status = status, n = as.integer(n), n_coded = as.integer(n_coded),
+       n_na = as.integer(n_na), flags = flags, summary = NULL)
 }
 
 # Internal: records -> data frame with summary list-column ----------------------
@@ -423,8 +421,8 @@ qt_data_summary <- function(qre, data, value_labels = NULL, skip_labels = NULL,
     value_label_id = chr("value_label_id"),
     status         = chr("status"),
     n              = int("n"),
-    n_skipped      = int("n_skipped"),
-    n_missing      = int("n_missing"),
+    n_coded        = int("n_coded"),
+    n_na           = int("n_na"),
     flags          = chr("flags"),
     stringsAsFactors = FALSE
   )
@@ -441,6 +439,16 @@ print.qt_data_summary <- function(x, ...) {
   for (nm in names(st)) cat(sprintf("  %-18s %d\n", nm, st[[nm]]))
   fb <- sum(x$version_status == "fallback_last", na.rm = TRUE)
   if (fb > 0) cat(sprintf("  %-18s %d\n", "version fallback", fb))
+
+  mt <- do.call(rbind, lapply(x$summary, function(s) s[["missing"]]))
+  if (!is.null(mt) && nrow(mt) > 0) {
+    tot <- stats::aggregate(n ~ type + value + label, data = mt, FUN = sum)
+    tot <- tot[order(tot$value), , drop = FALSE]
+    cat("\nCoded missing values by type:\n")
+    for (i in seq_len(nrow(tot))) {
+      cat(sprintf("  %-18s %-6s %8d\n", tot$type[i], tot$value[i], tot$n[i]))
+    }
+  }
 
   flagged <- x[x$flags != "" | x$status %in% c("missing_from_data", "needs_compilation"), ,
                drop = FALSE]

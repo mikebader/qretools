@@ -38,8 +38,8 @@
 #' \itemize{
 #'   \item variable ID, title, storage type and universe
 #'   \item question text from the version the survey used
-#'   \item counts of substantive responses, skip codes (see `skip_labels`) and
-#'     missing values
+#'   \item counts of substantive responses, coded missing values by type (see
+#'     `missing_codes`) and `NA`
 #'   \item factor variables: counts for every value label, plus any values with
 #'     no label; numeric variables: minimum, maximum, mean and standard
 #'     deviation
@@ -52,20 +52,20 @@
 #' Instrument variables with no column in the data are listed in the header
 #' rather than documented.
 #'
-#' @seealso [qt_data_summary()], [qt_dictionary()]
+#' @seealso [qt_data_summary()], [qt_read_missing_codes()], [qt_dictionary()]
 #'
 #' @examples
 #' \dontrun{
 #' vl <- qt_read_value_labels()
-#' skiplabs <- c("-7" = "Missing: Question not presented due to skip pattern")
 #'
+#' # missing codes come from the project's _missing_codes.yml, if it has one
 #' my_qre |>
-#'   qt_codebook(dat, value_labels = vl, skip_labels = skiplabs,
+#'   qt_codebook(dat, value_labels = vl,
 #'               format = "html", output_file = "codebook-bas-2026.html")
 #' }
 #'
 #' @export
-qt_codebook <- function(qre, data, value_labels = NULL, skip_labels = NULL,
+qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
                         survey_id = NULL, format = c("text", "html", "pdf"),
                         output_file = NULL, open = FALSE, title = NULL,
                         config = NULL, ...) {
@@ -82,7 +82,7 @@ qt_codebook <- function(qre, data, value_labels = NULL, skip_labels = NULL,
   }
 
   ds <- qt_data_summary(qre, data, value_labels = value_labels,
-                        skip_labels = skip_labels, survey_id = survey_id,
+                        missing_codes = missing_codes, survey_id = survey_id,
                         config = config)
   survey_id <- attr(ds, "survey_id")
 
@@ -108,8 +108,8 @@ qt_codebook <- function(qre, data, value_labels = NULL, skip_labels = NULL,
 #
 # One entry per summary row, except instrument variables missing from the data.
 # Fields shared with dictionary entries keep the same names so both functions
-# use the same renderers; data fields (status, flags, n, n_skipped, n_missing,
-# values, stats, skips, parent_id, options, version_id) are added.
+# use the same renderers; data fields (status, flags, n, n_coded, n_na, values,
+# stats, missing, parent_id, options, version_id) are added.
 #
 # @param ds A qt_data_summary object from qt_data_summary()
 # @return List of entry lists
@@ -137,11 +137,11 @@ qt_codebook <- function(qre, data, value_labels = NULL, skip_labels = NULL,
       status         = ds$status[i],
       flags          = ds$flags[i],
       n              = na_null(ds$n[i]),
-      n_skipped      = na_null(ds$n_skipped[i]),
-      n_missing      = na_null(ds$n_missing[i]),
+      n_coded        = na_null(ds$n_coded[i]),
+      n_na           = na_null(ds$n_na[i]),
       values         = sm[["values"]],
       stats          = sm[["stats"]],
-      skips          = sm[["skips"]],
+      missing        = sm[["missing"]],
       parent_id      = na_null(ds$parent_id[i]),
       options        = {
         kids <- ds$variable_id[!is.na(ds$parent_id) & ds$parent_id == id]
@@ -180,9 +180,9 @@ qt_codebook <- function(qre, data, value_labels = NULL, skip_labels = NULL,
   if (status != "ok") return(lines)
 
   lines <- c(lines, "",
-             sprintf("Responses: %d valid, %d skipped, %d missing",
-                     entry[["n"]] %||% 0L, entry[["n_skipped"]] %||% 0L,
-                     entry[["n_missing"]] %||% 0L))
+             sprintf("Responses: %d valid, %d coded missing, %d NA",
+                     entry[["n"]] %||% 0L, entry[["n_coded"]] %||% 0L,
+                     entry[["n_na"]] %||% 0L))
 
   vals <- entry[["values"]]
   if (!is.null(vals) && nrow(vals) > 0) {
@@ -202,11 +202,12 @@ qt_codebook <- function(qre, data, value_labels = NULL, skip_labels = NULL,
                        fmt(st[["mean"]]), fmt(st[["sd"]])))
   }
 
-  sk <- entry[["skips"]]
-  if (!is.null(sk) && nrow(sk) > 0) {
-    lines <- c(lines, "", "Skip codes")
-    for (i in seq_len(nrow(sk))) {
-      lines <- c(lines, sprintf("  %s: %s  (n = %d)", sk$code[i], sk$label[i], sk$n[i]))
+  mi <- entry[["missing"]]
+  if (!is.null(mi) && nrow(mi) > 0) {
+    lines <- c(lines, "", "Coded missing values")
+    for (i in seq_len(nrow(mi))) {
+      lines <- c(lines, sprintf("  %s (%s): %s  (n = %d)",
+                                mi$value[i], mi$type[i], mi$label[i], mi$n[i]))
     }
   }
 
