@@ -5,23 +5,36 @@
 \title{Summarize Collected Data Against a Processed Survey}
 \usage{
 qt_data_summary(
-  data,
   qre,
+  data,
   value_labels = NULL,
+  missing_codes = NULL,
   survey_id = NULL,
-  strict = FALSE
+  strict = FALSE,
+  config = NULL
 )
 }
 \arguments{
+\item{qre}{A \code{qt_qre} object, or an already processed survey (the
+\code{qt_qreconfig} returned by \code{qt_process()} or \code{qt_read_survey_config()}).
+It is the first argument so the function works in a pipe. A \code{qt_qre} is
+passed through \code{qt_process()}, which also writes the survey YAML to its
+default path; pass a processed object to avoid that.}
+
 \item{data}{A data frame of collected responses. Column names must equal
 instrument variable IDs; factor columns hold numeric codes.}
-
-\item{qre}{A processed survey: the \code{qt_qreconfig} object returned by
-\code{qt_process()} (or \code{qt_read_survey_config()}).}
 
 \item{value_labels}{A \code{qt_vlabs} object (see \code{qt_read_value_labels()}), or
 \code{NULL}. Required to label factor codes; without it factor tables show
 observed codes only.}
+
+\item{missing_codes}{Codes recorded in the data for responses missing for a
+stated reason. \code{NULL} (default) reads them from the project with
+\code{\link[=qt_read_missing_codes]{qt_read_missing_codes()}} (no file means no codes); \code{FALSE} uses none;
+or supply the result of \code{qt_read_missing_codes()}, or a data frame with
+columns \code{type}, \code{value} and \code{label}. Coded values are counted separately,
+by type, from substantive responses; they are not flagged as unlabeled and
+are excluded from numeric summaries.}
 
 \item{survey_id}{Character string. Survey ID used to pick each question's
 version. Defaults to \code{qre$meta$id}.}
@@ -29,12 +42,17 @@ version. Defaults to \code{qre$meta$id}.}
 \item{strict}{Logical. If \code{TRUE}, stop when the data and instrument do not
 reconcile (questions missing from the data, or data columns not accounted
 for). If \code{FALSE} (default), warn and report the problems in the result.}
+
+\item{config}{A \code{qt_config} object or \code{NULL}; used only when \code{qre} is a
+\code{qt_qre} that needs processing.}
 }
 \value{
 An object of class \code{qt_data_summary}: a data frame with one row per
 variable and columns \code{variable_id}, \code{parent_id}, \code{section_id}, \code{source},
 \code{storage_type}, \code{version_id}, \code{version_status}, \code{value_label_id},
-\code{status}, \code{n}, \code{n_missing}, \code{flags}, and the list-column \code{summary}.
+\code{status}, \code{n}, \code{n_coded}, \code{n_na}, \code{flags}, and the list-column \code{summary}.
+\code{n} counts substantive responses (not \code{NA}, not a missing code),
+\code{n_coded} counts values that are missing codes, and \code{n_na} counts \code{NA}.
 }
 \description{
 Builds a lookup of the questions in a processed survey, resolves the
@@ -42,6 +60,13 @@ question version used by the survey, reconciles the lookup with the columns
 of \code{data}, and summarizes each variable by storage type.
 }
 \details{
+Each element of \code{summary} is a list with up to three parts: \code{values} (a
+data frame of \code{value}, \code{label}, \code{n} for factor and multiple-response
+variables), \code{stats} (named numeric \code{min}, \code{max}, \code{mean}, \code{sd} for numeric
+variables), and \code{missing} (a data frame of \code{type}, \code{value}, \code{label}, \code{n} for
+the missing codes present in the data, one row per type). Parts that do not
+apply are \code{NULL}.
+
 \code{status} is one of:
 \describe{
 \item{ok}{in the instrument and the data; summarized (character
@@ -62,15 +87,16 @@ Multiple-response options are the child variables listed in the parent's
 }
 \examples{
 \dontrun{
-qre  <- qt_process(my_qre)
-vl   <- qt_read_value_labels()
-dat  <- read.csv("bas-2026.csv")
-ds   <- qt_data_summary(dat, qre, value_labels = vl)
+vl  <- qt_read_value_labels()
+dat <- read.csv("bas-2026.csv")
+
+# missing codes come from the project's _missing_codes.yml, if it has one
+ds <- my_qre |> qt_data_summary(dat, value_labels = vl)
 ds
 ds[ds$status != "ok", ]
 }
 
 }
 \seealso{
-\code{\link[=qt_process]{qt_process()}}, \code{\link[=qt_codebook]{qt_codebook()}}
+\code{\link[=qt_read_missing_codes]{qt_read_missing_codes()}}, \code{\link[=qt_process]{qt_process()}}, \code{\link[=qt_codebook]{qt_codebook()}}
 }

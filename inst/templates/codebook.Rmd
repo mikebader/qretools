@@ -15,10 +15,12 @@ params:
   entries: NULL
   title: "Codebook"
   survey: NULL
+  not_in_data: NULL
 ---
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = FALSE)
+`%||%` <- function(a, b) if (is.null(a)) b else a
 ```
 
 ```{r preamble, results='asis'}
@@ -26,6 +28,10 @@ if (!is.null(params$survey)) {
   cat("> **Survey wave:** ", params$survey, "\n\n", sep = "")
 }
 cat("**Total variables:** ", length(params$entries), "\n\n", sep = "")
+if (length(params$not_in_data) > 0) {
+  cat("**Instrument variables not in data (", length(params$not_in_data), "):** ",
+      paste0("`", params$not_in_data, "`", collapse = ", "), "\n\n", sep = "")
+}
 ```
 
 ---
@@ -66,6 +72,66 @@ for (entry in params$entries) {
       cat("| ", vl$values[i], " | ", vl$labels[i], " |\n", sep = "")
     }
     cat("\n")
+  }
+
+  # --- Response counts (codebook entries only) ---
+  if (!is.null(entry[["status"]])) {
+    esc <- function(x) gsub("|", "\\|", x, fixed = TRUE)
+    if (!is.null(entry[["parent_id"]])) {
+      cat("**Option of:** `", entry[["parent_id"]], "`\n\n", sep = "")
+    }
+    if (!is.null(entry[["options"]])) {
+      cat("**Option variables:** ",
+          paste0("`", entry[["options"]], "`", collapse = ", "), "\n\n", sep = "")
+    }
+    if (entry[["status"]] == "needs_compilation") {
+      cat("> **Needs compilation:** ", entry[["flags"]], "\n\n", sep = "")
+    } else if (entry[["status"]] == "ok") {
+      cat("**Responses:** ", entry[["n"]] %||% 0L, " valid, ",
+          entry[["n_coded"]] %||% 0L, " coded missing, ",
+          entry[["n_na"]] %||% 0L, " NA\n\n", sep = "")
+
+      vals <- entry[["values"]]
+      if (!is.null(vals) && nrow(vals) > 0) {
+        has_label <- "label" %in% names(vals)
+        cat(if (has_label) "| Value | Label | N |\n|-------|-------|---|\n"
+            else "| Value | N |\n|-------|---|\n")
+        for (i in seq_len(nrow(vals))) {
+          if (has_label) {
+            cat("| ", esc(vals$value[i]), " | ",
+                if (is.na(vals$label[i])) "*(no label)*" else esc(vals$label[i]),
+                " | ", vals$n[i], " |\n", sep = "")
+          } else {
+            cat("| ", esc(vals$value[i]), " | ", vals$n[i], " |\n", sep = "")
+          }
+        }
+        cat("\n")
+      }
+
+      tab <- entry[["stats_table"]]
+      if (!is.null(tab) && nrow(tab) > 0) {
+        cat("| Statistic | Value |\n|-----------|------:|\n")
+        for (i in seq_len(nrow(tab))) {
+          cat("| ", esc(tab$statistic[i]), " | ", tab$value[i], " |\n", sep = "")
+        }
+        cat("\n")
+      }
+
+      mi <- entry[["missing"]]
+      if (!is.null(mi) && nrow(mi) > 0) {
+        cat("**Coded missing values:**\n\n| Value | Type | Label | N |\n",
+            "|-------|------|-------|---|\n", sep = "")
+        for (i in seq_len(nrow(mi))) {
+          cat("| ", esc(mi$value[i]), " | ", esc(mi$type[i]), " | ",
+              esc(mi$label[i]), " | ", mi$n[i], " |\n", sep = "")
+        }
+        cat("\n")
+      }
+
+      if (nzchar(entry[["flags"]] %||% "")) {
+        cat("> **Flags:** ", entry[["flags"]], "\n\n", sep = "")
+      }
+    }
   }
 
   # --- Surveys used ---

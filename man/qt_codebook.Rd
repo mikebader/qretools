@@ -2,27 +2,60 @@
 % Please edit documentation in R/codebook.R
 \name{qt_codebook}
 \alias{qt_codebook}
-\title{Generate a Variable Codebook}
+\title{Generate a Codebook for a Survey's Data}
 \usage{
 qt_codebook(
-  bank,
-  survey = NULL,
+  qre,
+  data,
+  value_labels = NULL,
+  missing_codes = NULL,
+  missing_in_table = TRUE,
+  missing_zeros = TRUE,
+  survey_id = NULL,
   format = c("text", "html", "pdf"),
   output_file = NULL,
-  value_labels = NULL,
   open = FALSE,
-  title = "Codebook",
+  title = NULL,
+  config = NULL,
   ...
 )
 }
 \arguments{
-\item{bank}{A bank object: \code{qt_qbank}, \code{qt_genbank}, or
-\code{qt_ctrlbank}.}
+\item{qre}{A \code{qt_qre} object, or an already processed survey (the
+\code{qt_qreconfig} returned by \code{qt_process()} or \code{qt_read_survey_config()}).
+It is the first argument so the function works in a pipe. A \code{qt_qre} is
+passed through \code{qt_process()}, which also writes the survey YAML to its
+default path; pass a processed object to avoid that.}
 
-\item{survey}{Character string or \code{NULL}. If supplied, only variables
-whose \code{surveys_used} field includes this survey ID are included in
-the codebook. If \code{NULL} (the default), all variables are included
-and each variable entry shows which surveys it appears in.}
+\item{data}{A data frame of collected responses. Column names must equal
+instrument variable IDs; factor columns hold numeric codes.}
+
+\item{value_labels}{A \code{qt_vlabs} object (see \code{qt_read_value_labels()}), or
+\code{NULL}. Required to label factor codes; without it factor tables show
+observed codes only.}
+
+\item{missing_codes}{Codes recorded in the data for responses missing for a
+stated reason. \code{NULL} (default) reads them from the project with
+\code{\link[=qt_read_missing_codes]{qt_read_missing_codes()}} (no file means no codes); \code{FALSE} uses none;
+or supply the result of \code{qt_read_missing_codes()}, or a data frame with
+columns \code{type}, \code{value} and \code{label}. Coded values are counted separately,
+by type, from substantive responses; they are not flagged as unlabeled and
+are excluded from numeric summaries.}
+
+\item{missing_in_table}{Logical. If \code{TRUE} (default), coded missing values
+appear as rows of each factor or multiple-response variable's response
+table, after the substantive values, using their labels from the
+missing-codes file. If \code{FALSE}, they are listed in a separate "Coded
+missing values" table. Numeric variables list them as extra rows of their
+statistics table.}
+
+\item{missing_zeros}{Logical. If \code{TRUE} (default), every defined missing code
+gets a row for each factor, multiple-response and numeric variable, with a
+count of 0 where the code does not occur. If \code{FALSE}, only codes that occur
+in the data are shown.}
+
+\item{survey_id}{Character string. Survey ID used to pick each question's
+version. Defaults to \code{qre$meta$id}.}
 
 \item{format}{Character string. Output format: \code{"text"} (default),
 \code{"html"}, or \code{"pdf"}. HTML and PDF require the \pkg{rmarkdown}
@@ -34,15 +67,14 @@ the console; if a path is given, output is written to that file. For
 \code{format = "html"} or \code{"pdf"}, if \code{NULL} a temporary file
 is used.}
 
-\item{value_labels}{A \code{qt_vlabs} object or \code{NULL}. If supplied,
-value labels are resolved and included in the codebook for factor
-variables. If \code{NULL}, factor variables show only the label-set name.}
-
 \item{open}{Logical. If \code{TRUE}, the output file is opened after
 rendering (HTML/PDF only). Default: \code{FALSE}.}
 
 \item{title}{Character string. Title for the codebook document. Default:
-\code{"Codebook"}.}
+\code{"Codebook: <survey_id>"}.}
+
+\item{config}{A \code{qt_config} object or \code{NULL}; used only when \code{qre} is a
+\code{qt_qre} that needs processing.}
 
 \item{...}{Additional arguments passed to \code{rmarkdown::render()} for
 HTML/PDF output.}
@@ -53,45 +85,42 @@ returns the character vector of text lines. For all other cases: invisibly
 returns the path to the output file.
 }
 \description{
-Produce documentation for variables in a bank, optionally filtered to a
-single survey wave. Supports plain-text output to the console or a file,
-and HTML/PDF output via R Markdown.
+Document the data collected for one survey. Summarizes \code{data} against the
+survey instrument with \code{\link[=qt_data_summary]{qt_data_summary()}} and renders each variable with
+its question text, storage type and response counts. Supports plain-text
+output to the console or a file, and HTML/PDF output via R Markdown.
 }
 \details{
-Each variable entry in the codebook includes:
+Each variable in the data is documented in instrument order, followed by
+data columns that are not in the instrument. A variable entry shows:
 \itemize{
-\item Variable ID, title, and storage type
-\item Question text (for question variables) or description (for generated
-and control variables)
-\item Value labels if the variable is a factor and \code{value_labels} is
-supplied
-\item Universe, variable group, citation/source, and notes
-\item Surveys used (for cross-survey codebooks only)
+\item variable ID, title, storage type and universe
+\item question text from the version the survey used
+\item counts of substantive responses, coded missing values by type (see
+\code{missing_codes}) and \code{NA}
+\item factor variables: counts for every value label, plus any values with
+no label; numeric variables: minimum, maximum, mean and standard
+deviation
+\item multiple-response questions: one entry per option column
+\item character variables are marked as character, with nothing else
+documented
+\item composite variables, control parameters and columns not in the
+instrument are marked as needing compilation
 }
+Instrument variables with no column in the data are listed in the header
+rather than documented.
 }
 \examples{
 \dontrun{
-config <- qt_config(project_root = "inst/examples")
-qbank  <- qt_qbank(config)
-vl     <- qt_read_value_labels(config)
+vl <- qt_read_value_labels()
 
-# Cross-survey text codebook to console
-qt_codebook(qbank, value_labels = vl)
-
-# Single-survey text codebook
-qt_codebook(qbank, survey = "bas-2024", value_labels = vl)
-
-# HTML codebook to file
-qt_codebook(qbank, format = "html", output_file = "codebook.html",
-            value_labels = vl)
-
-# PDF codebook
-qt_codebook(qbank, format = "pdf", output_file = "codebook.pdf",
-            value_labels = vl)
+# missing codes come from the project's _missing_codes.yml, if it has one
+my_qre |>
+  qt_codebook(dat, value_labels = vl,
+              format = "html", output_file = "codebook-bas-2026.html")
 }
 
 }
 \seealso{
-\code{\link{qt_qbank}}, \code{\link{qt_genbank}},
-\code{\link{qt_ctrlbank}}, \code{\link{qt_read_value_labels}}
+\code{\link[=qt_data_summary]{qt_data_summary()}}, \code{\link[=qt_read_missing_codes]{qt_read_missing_codes()}}, \code{\link[=qt_dictionary]{qt_dictionary()}}
 }

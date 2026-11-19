@@ -412,7 +412,8 @@ qbank$variables[["nhd_nyrs"]]$surveys_used
 | `qt_read_question_bank()` | `qt_qbank()` | `qt_qbank` object |
 | `qt_read_generated_variables()` | `qt_genbank()` | `qt_genbank` object |
 | `qt_read_control_parameters()` | `qt_ctrlbank()` | `qt_ctrlbank` object |
-| `qt_codebook()` | — | text/HTML/PDF codebook |
+| `qt_dictionary()` | — | text/HTML/PDF variable dictionary from a bank |
+| `qt_codebook()` | — | text/HTML/PDF codebook for one survey with data |
 
 | Bank component | What it contains |
 |---|---|

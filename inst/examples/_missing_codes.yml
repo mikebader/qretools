@@ -1,0 +1,13 @@
+missing_codes:
+  no_info:
+    value: "-6"
+    label: "Missing: Could not be constructed from available information"
+  skip:
+    value: "-7"
+    label: "Missing: Question not presented due to skip pattern"
+  item_nonresponse:
+    value: "-8"
+    label: "Missing: Item non-response"
+  breakoff:
+    value: "-9"
+    label: "Missing: Question not presented due to breakoff"

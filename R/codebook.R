@@ -1,21 +1,28 @@
-# Codebook Generation Functions
+# Codebook Functions
 #
-# Functions for producing documentation of survey variables in multiple
-# output formats: plain text (to console or file), HTML, and PDF.
-# HTML and PDF outputs use an R Markdown template bundled with the package.
+# A codebook documents one survey's collected data: the questions as asked
+# (the version used by that survey) with response counts from the data. For a
+# cross-survey dictionary of variables that needs no data, see qt_dictionary().
+# Rendering is shared with qt_dictionary() (R/dictionary.R).
 
-#' Generate a Variable Codebook
+#' Generate a Codebook for a Survey's Data
 #'
-#' Produce documentation for variables in a bank, optionally filtered to a
-#' single survey wave. Supports plain-text output to the console or a file,
-#' and HTML/PDF output via R Markdown.
+#' Document the data collected for one survey. Summarizes `data` against the
+#' survey instrument with [qt_data_summary()] and renders each variable with
+#' its question text, storage type and response counts. Supports plain-text
+#' output to the console or a file, and HTML/PDF output via R Markdown.
 #'
-#' @param bank A bank object: \code{qt_qbank}, \code{qt_genbank}, or
-#'   \code{qt_ctrlbank}.
-#' @param survey Character string or \code{NULL}. If supplied, only variables
-#'   whose \code{surveys_used} field includes this survey ID are included in
-#'   the codebook. If \code{NULL} (the default), all variables are included
-#'   and each variable entry shows which surveys it appears in.
+#' @inheritParams qt_data_summary
+#' @param missing_in_table Logical. If `TRUE` (default), coded missing values
+#'   appear as rows of each factor or multiple-response variable's response
+#'   table, after the substantive values, using their labels from the
+#'   missing-codes file. If `FALSE`, they are listed in a separate "Coded
+#'   missing values" table. Numeric variables list them as extra rows of their
+#'   statistics table.
+#' @param missing_zeros Logical. If `TRUE` (default), every defined missing code
+#'   gets a row for each factor, multiple-response and numeric variable, with a
+#'   count of 0 where the code does not occur. If `FALSE`, only codes that occur
+#'   in the data are shown.
 #' @param format Character string. Output format: \code{"text"} (default),
 #'   \code{"html"}, or \code{"pdf"}. HTML and PDF require the \pkg{rmarkdown}
 #'   package to be installed.
@@ -24,13 +31,10 @@
 #'   the console; if a path is given, output is written to that file. For
 #'   \code{format = "html"} or \code{"pdf"}, if \code{NULL} a temporary file
 #'   is used.
-#' @param value_labels A \code{qt_vlabs} object or \code{NULL}. If supplied,
-#'   value labels are resolved and included in the codebook for factor
-#'   variables. If \code{NULL}, factor variables show only the label-set name.
 #' @param open Logical. If \code{TRUE}, the output file is opened after
 #'   rendering (HTML/PDF only). Default: \code{FALSE}.
 #' @param title Character string. Title for the codebook document. Default:
-#'   \code{"Codebook"}.
+#'   \code{"Codebook: <survey_id>"}.
 #' @param ... Additional arguments passed to \code{rmarkdown::render()} for
 #'   HTML/PDF output.
 #'
@@ -39,314 +43,246 @@
 #'   returns the path to the output file.
 #'
 #' @details
-#' Each variable entry in the codebook includes:
+#' Each variable in the data is documented in instrument order, followed by
+#' data columns that are not in the instrument. A variable entry shows:
 #' \itemize{
-#'   \item Variable ID, title, and storage type
-#'   \item Question text (for question variables) or description (for generated
-#'     and control variables)
-#'   \item Value labels if the variable is a factor and \code{value_labels} is
-#'     supplied
-#'   \item Universe, variable group, citation/source, and notes
-#'   \item Surveys used (for cross-survey codebooks only)
+#'   \item variable ID, title, storage type and universe
+#'   \item question text from the version the survey used
+#'   \item counts of substantive responses, coded missing values by type (see
+#'     `missing_codes`) and `NA`
+#'   \item factor variables: counts for every value label, plus any values with
+#'     no label; numeric variables: minimum, maximum, mean and standard
+#'     deviation
+#'   \item multiple-response questions: one entry per option column
+#'   \item character variables are marked as character, with nothing else
+#'     documented
+#'   \item composite variables, control parameters and columns not in the
+#'     instrument are marked as needing compilation
 #' }
+#' Instrument variables with no column in the data are listed in the header
+#' rather than documented.
 #'
-#' @seealso \code{\link{qt_qbank}}, \code{\link{qt_genbank}},
-#'   \code{\link{qt_ctrlbank}}, \code{\link{qt_read_value_labels}}
+#' @seealso [qt_data_summary()], [qt_read_missing_codes()], [qt_dictionary()]
 #'
 #' @examples
 #' \dontrun{
-#' config <- qt_config(project_root = "inst/examples")
-#' qbank  <- qt_qbank(config)
-#' vl     <- qt_read_value_labels(config)
+#' vl <- qt_read_value_labels()
 #'
-#' # Cross-survey text codebook to console
-#' qt_codebook(qbank, value_labels = vl)
-#'
-#' # Single-survey text codebook
-#' qt_codebook(qbank, survey = "bas-2024", value_labels = vl)
-#'
-#' # HTML codebook to file
-#' qt_codebook(qbank, format = "html", output_file = "codebook.html",
-#'             value_labels = vl)
-#'
-#' # PDF codebook
-#' qt_codebook(qbank, format = "pdf", output_file = "codebook.pdf",
-#'             value_labels = vl)
+#' # missing codes come from the project's _missing_codes.yml, if it has one
+#' my_qre |>
+#'   qt_codebook(dat, value_labels = vl,
+#'               format = "html", output_file = "codebook-bas-2026.html")
 #' }
 #'
 #' @export
-qt_codebook <- function(bank,
-                        survey       = NULL,
-                        format       = c("text", "html", "pdf"),
-                        output_file  = NULL,
-                        value_labels = NULL,
-                        open         = FALSE,
-                        title        = "Codebook",
-                        ...) {
+qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
+                        missing_in_table = TRUE, missing_zeros = TRUE,
+                        survey_id = NULL,
+                        format = c("text", "html", "pdf"),
+                        output_file = NULL, open = FALSE, title = NULL,
+                        config = NULL, ...) {
   format <- match.arg(format)
 
-  # 1. Prepare standardized variable entries
-  entries <- .qt_prepare_codebook_entries(bank, survey, value_labels)
-
-  if (length(entries) == 0) {
-    if (!is.null(survey)) {
-      stop("No variables found for survey '", survey, "'", call. = FALSE)
-    } else {
-      stop("The bank contains no variables", call. = FALSE)
-    }
+  if (inherits(qre, "qt_bank")) {
+    stop("qt_codebook() documents one survey's data and takes a qt_qre as ",
+         "its first argument. To document a bank without data, use ",
+         "qt_dictionary().", call. = FALSE)
+  }
+  if (missing(data)) {
+    stop("'data' is required. To document variables without data, use ",
+         "qt_dictionary().", call. = FALSE)
   }
 
-  # 2. Build title
-  if (title == "Codebook" && !is.null(survey)) {
-    title <- paste0("Codebook: ", survey)
-  }
+  mc <- .qt_resolve_missing_codes(missing_codes, config)
+  ds <- qt_data_summary(qre, data, value_labels = value_labels,
+                        missing_codes = mc %||% FALSE, survey_id = survey_id,
+                        config = config)
+  survey_id <- attr(ds, "survey_id")
 
-  # 3. Dispatch by format
+  entries <- .qt_codebook_entries(ds, mc = mc,
+                                  missing_in_table = missing_in_table,
+                                  missing_zeros = missing_zeros)
+  if (length(entries) == 0)
+    stop("No variables to document", call. = FALSE)
+
+  not_in_data <- ds$variable_id[ds$status == "missing_from_data"]
+  title <- title %||% paste0("Codebook: ", survey_id)
+
   if (format == "text") {
-    .qt_codebook_text(entries, survey = survey, title = title,
-                      output_file = output_file)
+    .qt_codebook_text(entries, survey = survey_id, title = title,
+                      output_file = output_file, not_in_data = not_in_data)
   } else {
-    .qt_codebook_rmd(entries, format = format, survey = survey, title = title,
-                     output_file = output_file, open = open, ...)
+    .qt_codebook_rmd(entries, format = format, survey = survey_id,
+                     title = title, output_file = output_file, open = open,
+                     not_in_data = not_in_data, ...)
   }
 }
 
-# Internal: Prepare standardized codebook entries from a bank
+
+# Internal: Build codebook entries from a qt_data_summary --------------------------
 #
-# Filters by survey (if specified) and resolves value labels for each variable.
+# One entry per summary row, except instrument variables missing from the data.
+# Fields shared with dictionary entries keep the same names so both functions
+# use the same renderers; data fields (status, flags, n, n_coded, n_na, values,
+# stats, missing, parent_id, options, version_id) are added.
 #
-# @param bank A qt_qbank, qt_genbank, or qt_ctrlbank object
-# @param survey Character string or NULL
-# @param value_labels qt_vlabs object or NULL
-# @return List of standardized entry lists
-.qt_prepare_codebook_entries <- function(bank, survey, value_labels) {
-  vars <- bank$variables
+# @param ds A qt_data_summary object from qt_data_summary()
+# @param mc A qt_missing_codes object or NULL
+# @param missing_in_table Logical. Append coded missing values to the response
+#   table of entries that have one (factor, multiple-response)
+# @param missing_zeros Logical. List every defined code, with n = 0 where the
+#   code does not occur, instead of only the codes present in the data
+# @return List of entry lists
+.qt_codebook_entries <- function(ds, mc = NULL, missing_in_table = TRUE,
+                                 missing_zeros = TRUE) {
+  resolved <- attr(ds, "resolved") %||% list()
+  na_null  <- function(x) if (length(x) == 0 || is.na(x)) NULL else x
 
-  # Filter by survey if requested
-  if (!is.null(survey)) {
-    vars <- Filter(function(v) survey %in% v$surveys_used, vars)
-  }
+  lapply(which(ds$status != "missing_from_data"), function(i) {
+    id  <- ds$variable_id[i]
+    res <- resolved[[id]] %||% list()
+    sm  <- ds$summary[[i]]
 
-  # Build entries in file position order (preserves YAML order)
-  var_ids_ordered <- bank$meta$indices$by_file_position
-  var_ids_ordered <- var_ids_ordered[var_ids_ordered %in% names(vars)]
+    vals <- sm[["values"]]
+    miss <- sm[["missing"]]
 
-  lapply(var_ids_ordered, function(var_id) {
-    v <- vars[[var_id]]
-
-    # Resolve to most recent version before reading any display fields.
-    v <- .qt_resolve_version(v)
-
-    # Resolve text field (question_text for qvar, description for gen/ctrl)
-    text <- v$question_text %||% v$description
-
-    # Resolve value labels
-    resolved_labels <- NULL
-    vl_name <- v$value_label_id %||% v$value_labels_name
-    if (!is.null(vl_name) && !is.null(value_labels)) {
-      resolved_labels <- value_labels$labels[[vl_name]]
+    # Documented variables (those with a response table or numeric stats) list
+    # missing codes in the order defined; absent codes get n = 0 if requested.
+    if (!is.null(mc) && nrow(mc) > 0 && (!is.null(vals) || !is.null(sm[["stats"]]))) {
+      n_found <- if (!is.null(miss)) stats::setNames(miss$n, miss$value) else integer()
+      n_all   <- unname(n_found[mc$value])
+      n_all[is.na(n_all)] <- 0L
+      miss <- data.frame(type = mc$type, value = mc$value, label = mc$label,
+                         n = as.integer(n_all), stringsAsFactors = FALSE)
+      if (!missing_zeros) miss <- miss[miss$n > 0, , drop = FALSE]
+      if (nrow(miss) == 0) miss <- NULL
     }
 
-    # Resolve citation (schema uses 'cite' or 'source')
-    cite <- v$cite %||% v$source
+    if (missing_in_table && !is.null(vals) && !is.null(miss)) {
+      if (!"label" %in% names(vals)) vals$label <- rep("", nrow(vals))
+      vals <- rbind(
+        vals[, c("value", "label", "n"), drop = FALSE],
+        data.frame(value = miss$value, label = miss$label, n = miss$n,
+                   stringsAsFactors = FALSE)
+      )
+      miss <- NULL
+    }
+
+    # Numeric variables: one table with statistics as rows; coded missing
+    # values follow as rows when they are listed in the table.
+    stats_table <- NULL
+    st <- sm[["stats"]]
+    if (!is.null(st)) {
+      fmt <- function(v) {
+        if (is.na(v)) "NA" else format(round(v, 2), trim = TRUE, scientific = FALSE)
+      }
+      stats_table <- data.frame(
+        statistic = c("Minimum", "Maximum", "Mean", "Standard deviation"),
+        value     = c(fmt(st[["min"]]), fmt(st[["max"]]),
+                      fmt(st[["mean"]]), fmt(st[["sd"]])),
+        stringsAsFactors = FALSE
+      )
+      if (missing_in_table && !is.null(miss)) {
+        stats_table <- rbind(
+          stats_table,
+          data.frame(statistic = paste0(miss$label, " (", miss$value, ")"),
+                     value = as.character(miss$n), stringsAsFactors = FALSE)
+        )
+        miss <- NULL
+      }
+    }
 
     list(
-      variable_id      = var_id,
-      title            = v$title,
-      storage_type     = v$storage_type,
-      text             = text,
-      value_labels     = resolved_labels,
-      value_label_id   = vl_name,
-      surveys_used     = v$surveys_used,
-      universe         = v$universe,
-      vargroup         = v$vargroup,
-      cite             = cite,
-      note             = v$note
+      variable_id    = id,
+      title          = res$title %||% res$option_title %||% "",
+      storage_type   = na_null(ds$storage_type[i]) %||% "unclassified",
+      text           = res$question_text %||% res$option_text %||% res$description,
+      value_labels   = NULL,
+      value_label_id = na_null(ds$value_label_id[i]),
+      surveys_used   = NULL,
+      universe       = res$universe,
+      vargroup       = res$vargroup,
+      cite           = res$cite %||% res$source,
+      note           = res$note,
+      status         = ds$status[i],
+      flags          = ds$flags[i],
+      n              = na_null(ds$n[i]),
+      n_coded        = na_null(ds$n_coded[i]),
+      n_na           = na_null(ds$n_na[i]),
+      values         = vals,
+      stats          = st,
+      stats_table    = stats_table,
+      missing        = miss,
+      parent_id      = na_null(ds$parent_id[i]),
+      options        = {
+        kids <- ds$variable_id[!is.na(ds$parent_id) & ds$parent_id == id]
+        if (length(kids) > 0) kids else NULL
+      },
+      version_id     = na_null(ds$version_id[i])
     )
   })
 }
 
-# Internal: Write plain-text codebook
+
+# Internal: Plain-text lines for the data part of a codebook entry -----------------
 #
-# @param entries List of prepared codebook entries
-# @param survey Character string or NULL
-# @param title Character string
-# @param output_file Character string or NULL
-# @return Invisibly returns the lines or file path
-.qt_codebook_text <- function(entries, survey, title, output_file) {
-  lines <- character()
-
-  # Header
-  lines <- c(lines,
-             title,
-             strrep("=", min(nchar(title), 70)),
-             "")
-
-  if (!is.null(survey)) {
-    lines <- c(lines, paste0("Survey wave: ", survey), "")
-  }
-  lines <- c(lines, paste0("Total variables: ", length(entries)), "", "")
-
-  for (entry in entries) {
-    # Variable heading
-    lines <- c(lines, paste0(entry$variable_id, "  [", entry$storage_type, "]  ",
-                             entry$title))
-    lines <- c(lines, strrep("-", min(70, nchar(entry$variable_id) +
-                                        nchar(entry$storage_type) +
-                                        nchar(entry$title) + 6)))
-
-    # Type / group / universe
-    meta_parts <- character()
-    if (!is.null(entry$vargroup))
-      meta_parts <- c(meta_parts, paste0("Group: ", entry$vargroup))
-    if (!is.null(entry$universe))
-      meta_parts <- c(meta_parts, paste0("Universe: ", entry$universe))
-    if (length(meta_parts) > 0)
-      lines <- c(lines, paste(meta_parts, collapse = "  |  "))
-
-    # Question / description text
-    if (!is.null(entry$text) && nchar(trimws(entry$text)) > 0) {
-      lines <- c(lines, "", .qt_wrap_text(entry$text, width = 70, indent = 2))
-    }
-
-    # Value labels
-    if (!is.null(entry$value_labels) && length(entry$value_labels$values) > 0) {
-      vl_header <- "Value labels"
-      if (!is.null(entry$value_label_id))
-        vl_header <- paste0(vl_header, " (", entry$value_label_id, ")")
-      lines <- c(lines, "", vl_header)
-      for (i in seq_along(entry$value_labels$values)) {
-        lines <- c(lines,
-                   sprintf("  %s: %s",
-                           entry$value_labels$values[i],
-                           entry$value_labels$labels[i]))
-      }
-    }
-
-    # Surveys used (cross-survey only)
-    if (is.null(survey) && !is.null(entry$surveys_used)) {
-      lines <- c(lines, "",
-                 paste0("Surveys: ", paste(entry$surveys_used, collapse = ", ")))
-    }
-
-    # Citation
-    if (!is.null(entry$cite) && nchar(trimws(entry$cite)) > 0) {
-      lines <- c(lines, paste0("Source: ", entry$cite))
-    }
-
-    # Notes
-    if (!is.null(entry$note) && nchar(trimws(entry$note)) > 0) {
-      lines <- c(lines, "", paste0("Note: ", entry$note))
-    }
-
-    lines <- c(lines, "", "")
-  }
-
-  if (is.null(output_file)) {
-    cat(paste(lines, collapse = "\n"))
-    invisible(lines)
-  } else {
-    writeLines(lines, output_file)
-    invisible(output_file)
-  }
-}
-
-# Internal: Render R Markdown codebook
+# Returns character(0) for entries without data fields (dictionary entries).
 #
-# @param entries List of prepared codebook entries
-# @param format Character string: "html" or "pdf"
-# @param survey Character string or NULL
-# @param title Character string
-# @param output_file Character string or NULL
-# @param open Logical
-# @param ... Passed to rmarkdown::render()
-# @return Invisibly returns the output file path
-.qt_codebook_rmd <- function(entries, format, survey, title, output_file,
-                              open, ...) {
-  if (!requireNamespace("rmarkdown", quietly = TRUE)) {
-    stop(
-      "Package 'rmarkdown' is required for HTML/PDF codebook output.\n",
-      "Install it with: install.packages(\"rmarkdown\")",
-      call. = FALSE
-    )
-  }
-
-  # Locate template
-  template <- system.file("templates", "codebook.Rmd", package = "qretools")
-  if (!nzchar(template)) {
-    stop("codebook.Rmd template not found in the qretools package installation",
-         call. = FALSE)
-  }
-
-  # Default output file
-  if (is.null(output_file)) {
-    ext <- if (format == "html") ".html" else ".pdf"
-    output_file <- tempfile(pattern = "codebook_", fileext = ext)
-  }
-
-  # Save entries to a temp RDS so the template can read them
-  entries_path <- tempfile(pattern = "qretools_entries_", fileext = ".rds")
-  on.exit(unlink(entries_path), add = TRUE)
-  saveRDS(entries, entries_path)
-
-  # Build rmarkdown output format spec
-  output_format <- if (format == "html") {
-    rmarkdown::html_document(toc = TRUE, toc_float = TRUE, theme = "flatly")
-  } else {
-    rmarkdown::pdf_document(toc = TRUE, latex_engine = "xelatex")
-  }
-
-  rmarkdown::render(
-    input         = template,
-    output_format = output_format,
-    output_file   = output_file,
-    params        = list(
-      entries = entries,
-      title   = title,
-      survey  = survey
-    ),
-    quiet = TRUE,
-    ...
-  )
-
-  if (open) {
-    utils::browseURL(output_file)
-  }
-
-  invisible(output_file)
-}
-
-# Internal: Wrap a long text string to a given width
-#
-# @param text Character string
-# @param width Integer - max line width
-# @param indent Integer - spaces of indentation for each line
-# @return Character vector of wrapped lines
-.qt_wrap_text <- function(text, width = 70, indent = 0) {
-  prefix <- strrep(" ", indent)
-  usable_width <- width - indent
-  words <- strsplit(trimws(text), "\\s+")[[1]]
+# @param entry A prepared entry list
+# @return Character vector of lines
+.qt_text_data_lines <- function(entry) {
+  status <- entry[["status"]]
+  if (is.null(status)) return(character())
 
   lines <- character()
-  current <- character()
-  current_len <- 0
+  if (!is.null(entry[["parent_id"]]))
+    lines <- c(lines, "", paste0("Option of: ", entry[["parent_id"]]))
+  if (!is.null(entry[["options"]]))
+    lines <- c(lines, "",
+               paste0("Option variables: ",
+                      paste(entry[["options"]], collapse = ", ")))
 
-  for (word in words) {
-    word_len <- nchar(word)
-    if (current_len == 0) {
-      current <- word
-      current_len <- word_len
-    } else if (current_len + 1 + word_len <= usable_width) {
-      current <- paste(current, word)
-      current_len <- current_len + 1 + word_len
-    } else {
-      lines <- c(lines, paste0(prefix, current))
-      current <- word
-      current_len <- word_len
+  if (status == "needs_compilation") {
+    lines <- c(lines, "", paste0("Needs compilation: ", entry[["flags"]]))
+    if (!is.null(entry[["n"]]))
+      lines <- c(lines, paste0("Non-missing values: ", entry[["n"]]))
+    return(lines)
+  }
+  if (status != "ok") return(lines)
+
+  lines <- c(lines, "",
+             sprintf("Responses: %d valid, %d coded missing, %d NA",
+                     entry[["n"]] %||% 0L, entry[["n_coded"]] %||% 0L,
+                     entry[["n_na"]] %||% 0L))
+
+  vals <- entry[["values"]]
+  if (!is.null(vals) && nrow(vals) > 0) {
+    for (i in seq_len(nrow(vals))) {
+      lab <- if ("label" %in% names(vals) && !is.na(vals$label[i]) &&
+                nzchar(vals$label[i]))
+               paste0(": ", vals$label[i]) else ""
+      lines <- c(lines, sprintf("  %s%s  (n = %d)", vals$value[i], lab, vals$n[i]))
     }
   }
-  if (nchar(current) > 0) {
-    lines <- c(lines, paste0(prefix, current))
+
+  tab <- entry[["stats_table"]]
+  if (!is.null(tab) && nrow(tab) > 0) {
+    for (i in seq_len(nrow(tab))) {
+      lines <- c(lines, sprintf("  %s: %s", tab$statistic[i], tab$value[i]))
+    }
   }
+
+  mi <- entry[["missing"]]
+  if (!is.null(mi) && nrow(mi) > 0) {
+    lines <- c(lines, "", "Coded missing values")
+    for (i in seq_len(nrow(mi))) {
+      lines <- c(lines, sprintf("  %s (%s): %s  (n = %d)",
+                                mi$value[i], mi$type[i], mi$label[i], mi$n[i]))
+    }
+  }
+
+  if (nzchar(entry[["flags"]] %||% ""))
+    lines <- c(lines, "", paste0("Flags: ", entry[["flags"]]))
+
   lines
 }
