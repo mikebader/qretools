@@ -177,9 +177,8 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
         if (is.na(v)) "NA" else format(round(v, 2), trim = TRUE, scientific = FALSE)
       }
       stats_table <- data.frame(
-        statistic = c("Valid responses", "Minimum", "Maximum", "Mean",
-                      "Standard deviation"),
-        value     = c(as.character(ds$n[i]), fmt(st[["min"]]), fmt(st[["max"]]),
+        statistic = c("Minimum", "Maximum", "Mean", "Standard deviation"),
+        value     = c(fmt(st[["min"]]), fmt(st[["max"]]),
                       fmt(st[["mean"]]), fmt(st[["sd"]])),
         stringsAsFactors = FALSE
       )
