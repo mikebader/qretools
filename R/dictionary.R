@@ -31,6 +31,17 @@
 #'   rendering (HTML/PDF only). Default: \code{FALSE}.
 #' @param title Character string. Title for the dictionary document. Default:
 #'   \code{"Dictionary"}.
+#' @param group_by Character string. `"none"` (default) lists variables in
+#'   order; `"vargroup"` groups them under a heading for each `vargroup`, in
+#'   order of first appearance, with variables that have no group last.
+#' @param style Character string. HTML only. `"gitbook"` (default) renders a
+#'   `bookdown`-like page with a sidebar table of contents (needs the
+#'   \pkg{bookdown} package; falls back to `"document"` if it is not
+#'   installed); `"document"` renders a plain `rmarkdown` HTML document with a
+#'   floating table of contents.
+#' @param css Character vector of CSS file paths or `NULL`. Applied after the
+#'   package's default stylesheet and the project's `css/codebook.css` (if it
+#'   exists; see [qt_copy_css()]), so later rules override earlier ones.
 #' @param ... Additional arguments passed to \code{rmarkdown::render()} for
 #'   HTML/PDF output.
 #'
@@ -39,6 +50,10 @@
 #'   returns the path to the output file.
 #'
 #' @details
+#' HTML output carries semantic `qt-` CSS classes (for example `qt-variable`,
+#' `qt-question-text`, `qt-response-table`, `qt-missing-row`) that the default
+#' stylesheet and your own CSS can target.
+#'
 #' Each variable entry in the dictionary includes:
 #' \itemize{
 #'   \item Variable ID, title, and storage type
@@ -51,7 +66,8 @@
 #' }
 #'
 #' @seealso \code{\link{qt_qbank}}, \code{\link{qt_genbank}},
-#'   \code{\link{qt_ctrlbank}}, \code{\link{qt_read_value_labels}}
+#'   \code{\link{qt_ctrlbank}}, \code{\link{qt_read_value_labels}},
+#'   [qt_copy_css()]
 #'
 #' @examples
 #' \dontrun{
@@ -82,8 +98,13 @@ qt_dictionary <- function(bank,
                         value_labels = NULL,
                         open         = FALSE,
                         title        = "Dictionary",
+                        group_by     = c("none", "vargroup"),
+                        style        = c("gitbook", "document"),
+                        css          = NULL,
                         ...) {
-  format <- match.arg(format)
+  format   <- match.arg(format)
+  group_by <- match.arg(group_by)
+  style    <- match.arg(style)
 
   # 1. Prepare standardized variable entries
   entries <- .qt_prepare_codebook_entries(bank, survey, value_labels)
@@ -104,10 +125,11 @@ qt_dictionary <- function(bank,
   # 3. Dispatch by format
   if (format == "text") {
     .qt_codebook_text(entries, survey = survey, title = title,
-                      output_file = output_file)
+                      output_file = output_file, group_by = group_by)
   } else {
     .qt_codebook_rmd(entries, format = format, survey = survey, title = title,
-                     output_file = output_file, open = open, ...)
+                     output_file = output_file, open = open,
+                     group_by = group_by, style = style, css = css, ...)
   }
 }
 
@@ -174,7 +196,7 @@ qt_dictionary <- function(bank,
 # @param output_file Character string or NULL
 # @return Invisibly returns the lines or file path
 .qt_codebook_text <- function(entries, survey, title, output_file,
-                              not_in_data = NULL) {
+                              not_in_data = NULL, group_by = "none") {
   lines <- character()
 
   # Header
@@ -194,62 +216,67 @@ qt_dictionary <- function(bank,
   }
   lines <- c(lines, "", "")
 
-  for (entry in entries) {
-    # Variable heading
-    lines <- c(lines, paste0(entry$variable_id, "  [", entry$storage_type, "]  ",
-                             entry$title))
-    lines <- c(lines, strrep("-", min(70, nchar(entry$variable_id) +
-                                        nchar(entry$storage_type) +
-                                        nchar(entry$title) + 6)))
-
-    # Type / group / universe
-    meta_parts <- character()
-    if (!is.null(entry$vargroup))
-      meta_parts <- c(meta_parts, paste0("Group: ", entry$vargroup))
-    if (!is.null(entry$universe))
-      meta_parts <- c(meta_parts, paste0("Universe: ", entry$universe))
-    if (length(meta_parts) > 0)
-      lines <- c(lines, paste(meta_parts, collapse = "  |  "))
-
-    # Question / description text
-    if (!is.null(entry$text) && nchar(trimws(entry$text)) > 0) {
-      lines <- c(lines, "", .qt_wrap_text(entry$text, width = 70, indent = 2))
+  for (grp in .qt_group_entries(entries, group_by)) {
+    if (!is.null(grp$name)) {
+      lines <- c(lines, strrep("=", 70), toupper(grp$name), strrep("=", 70), "")
     }
+    for (entry in grp$entries) {
+      # Variable heading
+      lines <- c(lines, paste0(entry$variable_id, "  [", entry$storage_type, "]  ",
+                               entry$title))
+      lines <- c(lines, strrep("-", min(70, nchar(entry$variable_id) +
+                                          nchar(entry$storage_type) +
+                                          nchar(entry$title) + 6)))
 
-    # Value labels
-    if (!is.null(entry$value_labels) && length(entry$value_labels$values) > 0) {
-      vl_header <- "Value labels"
-      if (!is.null(entry$value_label_id))
-        vl_header <- paste0(vl_header, " (", entry$value_label_id, ")")
-      lines <- c(lines, "", vl_header)
-      for (i in seq_along(entry$value_labels$values)) {
-        lines <- c(lines,
-                   sprintf("  %s: %s",
-                           entry$value_labels$values[i],
-                           entry$value_labels$labels[i]))
+      # Type / group / universe
+      meta_parts <- character()
+      if (!is.null(entry$vargroup))
+        meta_parts <- c(meta_parts, paste0("Group: ", entry$vargroup))
+      if (!is.null(entry$universe))
+        meta_parts <- c(meta_parts, paste0("Universe: ", entry$universe))
+      if (length(meta_parts) > 0)
+        lines <- c(lines, paste(meta_parts, collapse = "  |  "))
+
+      # Question / description text
+      if (!is.null(entry$text) && nchar(trimws(entry$text)) > 0) {
+        lines <- c(lines, "", .qt_wrap_text(entry$text, width = 70, indent = 2))
       }
+
+      # Value labels
+      if (!is.null(entry$value_labels) && length(entry$value_labels$values) > 0) {
+        vl_header <- "Value labels"
+        if (!is.null(entry$value_label_id))
+          vl_header <- paste0(vl_header, " (", entry$value_label_id, ")")
+        lines <- c(lines, "", vl_header)
+        for (i in seq_along(entry$value_labels$values)) {
+          lines <- c(lines,
+                     sprintf("  %s: %s",
+                             entry$value_labels$values[i],
+                             entry$value_labels$labels[i]))
+        }
+      }
+
+      # Response counts and flags (codebook entries only)
+      lines <- c(lines, .qt_text_data_lines(entry))
+
+      # Surveys used (cross-survey only)
+      if (is.null(survey) && !is.null(entry$surveys_used)) {
+        lines <- c(lines, "",
+                   paste0("Surveys: ", paste(entry$surveys_used, collapse = ", ")))
+      }
+
+      # Citation
+      if (!is.null(entry$cite) && nchar(trimws(entry$cite)) > 0) {
+        lines <- c(lines, paste0("Source: ", entry$cite))
+      }
+
+      # Notes
+      if (!is.null(entry$note) && nchar(trimws(entry$note)) > 0) {
+        lines <- c(lines, "", paste0("Note: ", entry$note))
+      }
+
+      lines <- c(lines, "", "")
     }
-
-    # Response counts and flags (codebook entries only)
-    lines <- c(lines, .qt_text_data_lines(entry))
-
-    # Surveys used (cross-survey only)
-    if (is.null(survey) && !is.null(entry$surveys_used)) {
-      lines <- c(lines, "",
-                 paste0("Surveys: ", paste(entry$surveys_used, collapse = ", ")))
-    }
-
-    # Citation
-    if (!is.null(entry$cite) && nchar(trimws(entry$cite)) > 0) {
-      lines <- c(lines, paste0("Source: ", entry$cite))
-    }
-
-    # Notes
-    if (!is.null(entry$note) && nchar(trimws(entry$note)) > 0) {
-      lines <- c(lines, "", paste0("Note: ", entry$note))
-    }
-
-    lines <- c(lines, "", "")
   }
 
   if (is.null(output_file)) {
@@ -263,6 +290,9 @@ qt_dictionary <- function(bank,
 
 # Internal: Render R Markdown codebook
 #
+# The Markdown is generated in R (see R/codebook-render.R) and rendered from a
+# temporary folder, so nothing is written next to the package or the output.
+#
 # @param entries List of prepared codebook entries
 # @param format Character string: "html" or "pdf"
 # @param survey Character string or NULL
@@ -271,10 +301,16 @@ qt_dictionary <- function(bank,
 # @param open Logical
 # @param not_in_data Character vector of instrument variables absent from the
 #   data (codebook only), or NULL
+# @param group_by "none" or "vargroup"
+# @param style "gitbook" or "document" (HTML only)
+# @param css Character vector of extra CSS files (HTML only) or NULL
+# @param config qt_config or NULL; used to find the project CSS
 # @param ... Passed to rmarkdown::render()
 # @return Invisibly returns the output file path
 .qt_codebook_rmd <- function(entries, format, survey, title, output_file,
-                              open, not_in_data = NULL, ...) {
+                             open, not_in_data = NULL, group_by = "none",
+                             style = "gitbook", css = NULL, config = NULL,
+                             ...) {
   if (!requireNamespace("rmarkdown", quietly = TRUE)) {
     stop(
       "Package 'rmarkdown' is required for HTML/PDF codebook output.\n",
@@ -283,21 +319,14 @@ qt_dictionary <- function(bank,
     )
   }
 
-  # Locate template
-  template <- system.file("templates", "codebook.Rmd", package = "qretools")
-  if (!nzchar(template)) {
-    stop("codebook.Rmd template not found in the qretools package installation",
-         call. = FALSE)
-  }
-
   # Default output file
   if (is.null(output_file)) {
     ext <- if (format == "html") ".html" else ".pdf"
     output_file <- tempfile(pattern = "codebook_", fileext = ext)
   }
 
-  # rmarkdown resolves a relative output_file against the template's folder,
-  # not the working directory, so make the path absolute here.
+  # rmarkdown resolves a relative output_file against the input's folder, not
+  # the working directory, so make the path absolute here.
   out_dir <- dirname(output_file)
   if (!dir.exists(out_dir)) {
     stop("Output directory does not exist: ", out_dir, call. = FALSE)
@@ -305,39 +334,64 @@ qt_dictionary <- function(bank,
   output_file <- file.path(normalizePath(out_dir, winslash = "/", mustWork = TRUE),
                            basename(output_file))
 
-  # Render from a temporary copy of the template so rmarkdown's intermediate
-  # files never land in the package folder (which may be read-only).
+  # Single-survey documents do not repeat the surveys each variable appears in
+  if (!is.null(survey)) {
+    entries <- lapply(entries, function(e) { e["surveys_used"] <- list(NULL); e })
+  }
+
+  # Build the document
+  yaml_title <- gsub("\\", "\\\\", title, fixed = TRUE)
+  yaml_title <- gsub("\"", "\\\"", yaml_title, fixed = TRUE)
+  rmd <- c("---",
+           paste0("title: \"", yaml_title, "\""),
+           paste0("date: \"", format(Sys.Date(), "%B %d, %Y"), "\""),
+           "---", "",
+           .qt_codebook_body(entries, format = format, survey = survey,
+                             not_in_data = not_in_data, group_by = group_by,
+                             style = style))
+
   work_dir <- tempfile(pattern = "qretools_render_")
   dir.create(work_dir)
   on.exit(unlink(work_dir, recursive = TRUE), add = TRUE)
-  template_copy <- file.path(work_dir, "codebook.Rmd")
-  file.copy(template, template_copy)
+  rmd_path <- file.path(work_dir, "codebook.Rmd")
+  writeLines(rmd, rmd_path, useBytes = TRUE)
 
-  # Save entries to a temp RDS so the template can read them
-  entries_path <- tempfile(pattern = "qretools_entries_", fileext = ".rds")
-  on.exit(unlink(entries_path), add = TRUE)
-  saveRDS(entries, entries_path)
-
-  # Build rmarkdown output format spec
-  output_format <- if (format == "html") {
-    rmarkdown::html_document(toc = TRUE, toc_float = TRUE, theme = "flatly")
-  } else {
-    rmarkdown::pdf_document(toc = TRUE, latex_engine = "xelatex")
+  render <- function(output_format) {
+    rmarkdown::render(
+      input         = rmd_path,
+      output_format = output_format,
+      output_file   = output_file,
+      quiet         = TRUE,
+      ...
+    )
   }
 
-  rmarkdown::render(
-    input         = template_copy,
-    output_format = output_format,
-    output_file   = output_file,
-    params        = list(
-      entries     = entries,
-      title       = title,
-      survey      = survey,
-      not_in_data = not_in_data
-    ),
-    quiet = TRUE,
-    ...
-  )
+  if (format == "pdf") {
+    render(rmarkdown::pdf_document(toc = TRUE, latex_engine = "xelatex"))
+  } else {
+    css_files <- .qt_css_files(css, config)
+    document  <- function() {
+      rmarkdown::html_document(toc = TRUE, toc_float = TRUE, theme = "flatly",
+                               css = css_files)
+    }
+    if (identical(style, "gitbook") && requireNamespace("bookdown", quietly = TRUE)) {
+      gitbook <- bookdown::gitbook(split_by = "none", number_sections = FALSE,
+                                   css = css_files,
+                                   config = list(toc = list(collapse = "section")))
+      tryCatch(
+        render(gitbook),
+        error = function(e) {
+          warning("bookdown::gitbook rendering failed (", conditionMessage(e),
+                  "); using style = \"document\" instead", call. = FALSE)
+          render(document())
+        }
+      )
+    } else {
+      if (identical(style, "gitbook"))
+        message("Package 'bookdown' is not installed; using style = \"document\"")
+      render(document())
+    }
+  }
 
   if (open) {
     utils::browseURL(output_file)
