@@ -18,7 +18,11 @@
 #'   table, after the substantive values, using their labels from the
 #'   missing-codes file. If `FALSE`, they are listed in a separate "Coded
 #'   missing values" table. Numeric variables, which have no response table,
-#'   always list them separately. Only codes that occur in the data are shown.
+#'   always list them separately.
+#' @param missing_zeros Logical. If `TRUE` (default), every defined missing code
+#'   gets a row for each factor, multiple-response and numeric variable, with a
+#'   count of 0 where the code does not occur. If `FALSE`, only codes that occur
+#'   in the data are shown.
 #' @param format Character string. Output format: \code{"text"} (default),
 #'   \code{"html"}, or \code{"pdf"}. HTML and PDF require the \pkg{rmarkdown}
 #'   package to be installed.
@@ -72,7 +76,8 @@
 #'
 #' @export
 qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
-                        missing_in_table = TRUE, survey_id = NULL,
+                        missing_in_table = TRUE, missing_zeros = TRUE,
+                        survey_id = NULL,
                         format = c("text", "html", "pdf"),
                         output_file = NULL, open = FALSE, title = NULL,
                         config = NULL, ...) {
@@ -88,12 +93,15 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
          "qt_dictionary().", call. = FALSE)
   }
 
+  mc <- .qt_resolve_missing_codes(missing_codes, config)
   ds <- qt_data_summary(qre, data, value_labels = value_labels,
-                        missing_codes = missing_codes, survey_id = survey_id,
+                        missing_codes = mc %||% FALSE, survey_id = survey_id,
                         config = config)
   survey_id <- attr(ds, "survey_id")
 
-  entries <- .qt_codebook_entries(ds, missing_in_table = missing_in_table)
+  entries <- .qt_codebook_entries(ds, mc = mc,
+                                  missing_in_table = missing_in_table,
+                                  missing_zeros = missing_zeros)
   if (length(entries) == 0)
     stop("No variables to document", call. = FALSE)
 
@@ -119,10 +127,14 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
 # stats, missing, parent_id, options, version_id) are added.
 #
 # @param ds A qt_data_summary object from qt_data_summary()
+# @param mc A qt_missing_codes object or NULL
 # @param missing_in_table Logical. Append coded missing values to the response
 #   table of entries that have one (factor, multiple-response)
+# @param missing_zeros Logical. List every defined code, with n = 0 where the
+#   code does not occur, instead of only the codes present in the data
 # @return List of entry lists
-.qt_codebook_entries <- function(ds, missing_in_table = TRUE) {
+.qt_codebook_entries <- function(ds, mc = NULL, missing_in_table = TRUE,
+                                 missing_zeros = TRUE) {
   resolved <- attr(ds, "resolved") %||% list()
   na_null  <- function(x) if (length(x) == 0 || is.na(x)) NULL else x
 
@@ -133,7 +145,20 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
 
     vals <- sm[["values"]]
     miss <- sm[["missing"]]
-    if (missing_in_table && !is.null(vals) && !is.null(miss) && nrow(miss) > 0) {
+
+    # Documented variables (those with a response table or numeric stats) list
+    # missing codes in the order defined; absent codes get n = 0 if requested.
+    if (!is.null(mc) && nrow(mc) > 0 && (!is.null(vals) || !is.null(sm[["stats"]]))) {
+      n_found <- if (!is.null(miss)) stats::setNames(miss$n, miss$value) else integer()
+      n_all   <- unname(n_found[mc$value])
+      n_all[is.na(n_all)] <- 0L
+      miss <- data.frame(type = mc$type, value = mc$value, label = mc$label,
+                         n = as.integer(n_all), stringsAsFactors = FALSE)
+      if (!missing_zeros) miss <- miss[miss$n > 0, , drop = FALSE]
+      if (nrow(miss) == 0) miss <- NULL
+    }
+
+    if (missing_in_table && !is.null(vals) && !is.null(miss)) {
       if (!"label" %in% names(vals)) vals$label <- rep("", nrow(vals))
       vals <- rbind(
         vals[, c("value", "label", "n"), drop = FALSE],
