@@ -8,6 +8,9 @@
   codes registered as user-missing; multiple-response options use `yesno_01`.
   Problems are collected in `attr(, "qt_codings_report")`. Adds `haven` to
   Imports and drops unused `purrr`.
+* New `qt_zap_missing()`: turns the missing codes left by `qt_apply_codings()`
+  into `NA` (haven user-missing values, factor missing levels, and character
+  missing codes).
 
 * New `qt_data_summary()`: joins a survey (`qt_qre`/`qt_qreconfig`) to collected
   data, resolves the question version used by the survey, reconciles

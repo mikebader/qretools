@@ -50,3 +50,21 @@ test_that("unlabeled factor values are kept as levels and reported", {
   expect_equal(res$unlabeled, "9")
   expect_equal(as.character(res$x), c("Yes", "9"))
 })
+
+test_that("zapping a factor drops missing levels and sets those values to NA", {
+  x   <- .qt_ac_factor(c(1, 2, -8, -7), set, mc)$x
+  out <- .qt_zap_factor(x)
+  expect_equal(levels(out), c("Yes", "No"))
+  expect_equal(as.character(out), c("Yes", "No", NA, NA))
+  expect_equal(unname(attr(out, "qt_codes")), c("1", "2"))
+})
+
+test_that("qt_zap_missing() handles factors, haven columns and strings", {
+  df <- data.frame(s = c("a", "-8", "b"), stringsAsFactors = FALSE)
+  df$f <- .qt_ac_factor(c(1, -8, 2), set, mc)$x
+  df$n <- .qt_ac_numeric(c(1, -8, 3), "integer", mc)$x
+  out <- qt_zap_missing(df, missing_codes = mc)
+  expect_equal(out$s, c("a", NA, "b"))
+  expect_equal(as.character(out$f), c("Yes", NA, "No"))
+  expect_equal(as.integer(out$n), c(1L, NA, 3L))
+})

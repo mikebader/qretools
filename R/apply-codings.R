@@ -28,7 +28,8 @@
 #'   file (so levels are the same across variables). Missing codes stay in the
 #'   data as levels. Values with no label are kept as levels named by their
 #'   code, and reported as `unlabeled_values`. The code behind each level is
-#'   kept in `attr(x, "qt_codes")`.
+#'   kept in `attr(x, "qt_codes")`. Factors cannot carry `haven`'s user-missing
+#'   flag; use [qt_zap_missing()] to turn their missing levels into `NA`.
 #' * **integer**, **numeric**: coerced to the declared type, then wrapped with
 #'   [haven::labelled_spss()]. Declared missing codes, and any other negative
 #'   value (reported as `negative_not_in_codes`), are registered as user-missing
@@ -199,6 +200,51 @@ qt_apply_codings <- function(qre, data, value_labels, missing_codes = NULL,
   all_text  <- c(all_text, unlabeled)
 
   out <- factor(codes, levels = all_codes, labels = all_text)
-  attr(out, "qt_codes") <- stats::setNames(all_codes, all_text)
+  attr(out, "qt_codes")   <- stats::setNames(all_codes, all_text)
+  attr(out, "qt_missing") <- mc_text   # level names that are missing codes
   list(x = out, unlabeled = unlabeled)
+}
+
+
+#' Turn Missing Codes into NA
+#'
+#' Convert the missing codes in data from [qt_apply_codings()] to `NA`, so the
+#' data can be analyzed directly.
+#'
+#' @param data A data frame, usually the result of [qt_apply_codings()].
+#' @inheritParams qt_data_summary
+#'
+#' @return `data` with
+#'   * user-missing values in `haven` columns set to `NA`
+#'     ([haven::zap_missing()]),
+#'   * missing-code levels of factors set to `NA` and dropped from the levels,
+#'   * character values equal to a missing code (e.g., `"-8"`) set to `NA`.
+#'
+#' @seealso [qt_apply_codings()]
+#' @export
+qt_zap_missing <- function(data, missing_codes = NULL, config = NULL) {
+  if (!is.data.frame(data))
+    stop("'data' must be a data frame", call. = FALSE)
+  mc   <- .qt_resolve_missing_codes(missing_codes, config)
+  data <- haven::zap_missing(data)
+
+  for (nm in names(data)) {
+    x <- data[[nm]]
+    if (is.factor(x) && !is.null(attr(x, "qt_missing"))) {
+      data[[nm]] <- .qt_zap_factor(x)
+    } else if (is.character(x) && !is.null(mc)) {
+      x[x %in% mc$value] <- NA_character_
+      data[[nm]] <- x
+    }
+  }
+  data
+}
+
+# Internal: drop missing-code levels from a factor made by .qt_ac_factor() ---
+.qt_zap_factor <- function(x) {
+  codes <- attr(x, "qt_codes")
+  keep  <- setdiff(levels(x), attr(x, "qt_missing"))
+  out   <- factor(as.character(x), levels = keep)
+  attr(out, "qt_codes") <- codes[names(codes) %in% keep]
+  out
 }
