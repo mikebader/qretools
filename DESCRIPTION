@@ -15,7 +15,6 @@ Roxygen: list(markdown = TRUE)
 Imports:
     cli,
     digest,
-    haven,
     stats,
     tools,
     utils,

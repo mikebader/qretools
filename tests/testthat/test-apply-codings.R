@@ -8,11 +8,11 @@ mc <- data.frame(
 )
 set <- list(values = c(1, 2), labels = c("Yes", "No"))
 
-test_that("integers become labelled_spss with missing codes registered", {
+test_that("integers keep missing codes as values and record them", {
   res <- .qt_ac_numeric(c("1", "5", "-8", NA), "integer", mc)
-  expect_s3_class(res$x, "haven_labelled_spss")
-  expect_type(unclass(res$x), "integer")
-  expect_setequal(attr(res$x, "na_values"), c(-7L, -8L))
+  expect_type(res$x, "integer")
+  expect_equal(as.integer(res$x), c(1L, 5L, -8L, NA))
+  expect_setequal(attr(res$x, "qt_missing"), c(-7L, -8L))
   expect_equal(res$n_failed, 0)
   expect_length(res$undeclared, 0)
 })
@@ -20,7 +20,7 @@ test_that("integers become labelled_spss with missing codes registered", {
 test_that("negative values not in the codes are registered and reported", {
   res <- .qt_ac_numeric(c(1, -3), "integer", mc)
   expect_equal(res$undeclared, -3)
-  expect_true(-3L %in% attr(res$x, "na_values"))
+  expect_true(-3L %in% attr(res$x, "qt_missing"))
 })
 
 test_that("non-numeric values are counted; non-whole integers stay numeric", {
@@ -30,9 +30,9 @@ test_that("non-numeric values are counted; non-whole integers stay numeric", {
   expect_type(res$x, "double")
 })
 
-test_that("no missing codes and no negatives returns a plain vector", {
+test_that("no missing codes and no negatives returns an untagged vector", {
   res <- .qt_ac_numeric(c(1, 2), "integer", NULL)
-  expect_false(inherits(res$x, "haven_labelled_spss"))
+  expect_null(attr(res$x, "qt_missing"))
 })
 
 test_that("factors keep missing codes as levels with full labels", {
@@ -59,7 +59,7 @@ test_that("zapping a factor drops missing levels and sets those values to NA", {
   expect_equal(unname(attr(out, "qt_codes")), c("1", "2"))
 })
 
-test_that("qt_zap_missing() handles factors, haven columns and strings", {
+test_that("qt_zap_missing() handles factors, numbers and strings", {
   df <- data.frame(s = c("a", "-8", "b"), stringsAsFactors = FALSE)
   df$f <- .qt_ac_factor(c(1, -8, 2), set, mc)$x
   df$n <- .qt_ac_numeric(c(1, -8, 3), "integer", mc)$x

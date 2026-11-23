@@ -28,14 +28,13 @@
 #'   file (so levels are the same across variables). Missing codes stay in the
 #'   data as levels. Values with no label are kept as levels named by their
 #'   code, and reported as `unlabeled_values`. The code behind each level is
-#'   kept in `attr(x, "qt_codes")`. Factors cannot carry `haven`'s user-missing
-#'   flag; use [qt_zap_missing()] to turn their missing levels into `NA`.
-#' * **integer**, **numeric**: coerced to the declared type, then wrapped with
-#'   [haven::labelled_spss()]. Declared missing codes, and any other negative
-#'   value (reported as `negative_not_in_codes`), are registered as user-missing
-#'   values but stay in the data. An integer variable holding non-whole values
-#'   stays numeric (`non_integer_values`). Use [haven::zap_missing()] to turn
-#'   user-missing values into `NA` before analysis.
+#'   kept in `attr(x, "qt_codes")`; the missing-code levels are recorded in
+#'   `attr(x, "qt_missing")` for [qt_zap_missing()].
+#' * **integer**, **numeric**: coerced to the declared type. Missing codes stay
+#'   in the data as values. The declared codes, plus any other negative value
+#'   (reported as `negative_not_in_codes`), are recorded in `attr(x, "qt_missing")`
+#'   for [qt_zap_missing()]. An integer variable holding non-whole values stays
+#'   numeric (`non_integer_values`).
 #' * **character**: unchanged (a missing code such as `"-8"` stays as is).
 #' * **multiple_response** options: factors labelled with the `yesno_01` label
 #'   set.
@@ -147,7 +146,7 @@ qt_apply_codings <- function(qre, data, value_labels, missing_codes = NULL,
 }
 
 
-# Internal: integer/numeric column -> typed, user-missing-aware vector -------
+# Internal: integer/numeric column -> typed vector tagged with missing values -
 .qt_ac_numeric <- function(x, storage, mc = NULL) {
   num    <- if (is.numeric(x)) as.numeric(x) else
     suppressWarnings(as.numeric(as.character(x)))
@@ -168,11 +167,8 @@ qt_apply_codings <- function(qre, data, value_labels, missing_codes = NULL,
   conv <- if (storage == "integer" && n_frac == 0) as.integer else as.numeric
   out  <- conv(num)
 
-  na_vals <- unique(conv(c(codes, undeclared)))
-  if (length(na_vals) > 0) {
-    labs <- if (length(codes) > 0) stats::setNames(conv(codes), txt) else NULL
-    out  <- haven::labelled_spss(out, labels = labs, na_values = na_vals)
-  }
+  miss <- unique(conv(c(codes, undeclared)))
+  if (length(miss) > 0) attr(out, "qt_missing") <- miss
 
   list(x = out, n_failed = sum(failed), n_fractional = n_frac,
        undeclared = undeclared)
@@ -215,8 +211,8 @@ qt_apply_codings <- function(qre, data, value_labels, missing_codes = NULL,
 #' @inheritParams qt_data_summary
 #'
 #' @return `data` with
-#'   * user-missing values in `haven` columns set to `NA`
-#'     ([haven::zap_missing()]),
+#'   * values listed in `attr(x, "qt_missing")` of integer/numeric columns set
+#'     to `NA`,
 #'   * missing-code levels of factors set to `NA` and dropped from the levels,
 #'   * character values equal to a missing code (e.g., `"-8"`) set to `NA`.
 #'
@@ -226,12 +222,15 @@ qt_zap_missing <- function(data, missing_codes = NULL, config = NULL) {
   if (!is.data.frame(data))
     stop("'data' must be a data frame", call. = FALSE)
   mc   <- .qt_resolve_missing_codes(missing_codes, config)
-  data <- haven::zap_missing(data)
 
   for (nm in names(data)) {
     x <- data[[nm]]
     if (is.factor(x) && !is.null(attr(x, "qt_missing"))) {
       data[[nm]] <- .qt_zap_factor(x)
+    } else if (is.numeric(x) && !is.null(attr(x, "qt_missing"))) {
+      x[x %in% attr(x, "qt_missing")] <- NA
+      attr(x, "qt_missing") <- NULL
+      data[[nm]] <- x
     } else if (is.character(x) && !is.null(mc)) {
       x[x %in% mc$value] <- NA_character_
       data[[nm]] <- x
