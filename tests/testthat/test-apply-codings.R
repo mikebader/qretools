@@ -1,0 +1,52 @@
+# Tests for the helpers behind qt_apply_codings()
+
+mc <- data.frame(
+  type  = c("skip", "item_nonresponse"),
+  value = c("-7", "-8"),
+  label = c("Missing: Skip pattern", "Missing: Item nonresponse"),
+  stringsAsFactors = FALSE
+)
+set <- list(values = c(1, 2), labels = c("Yes", "No"))
+
+test_that("integers become labelled_spss with missing codes registered", {
+  res <- .qt_ac_numeric(c("1", "5", "-8", NA), "integer", mc)
+  expect_s3_class(res$x, "haven_labelled_spss")
+  expect_type(unclass(res$x), "integer")
+  expect_setequal(attr(res$x, "na_values"), c(-7L, -8L))
+  expect_equal(res$n_failed, 0)
+  expect_length(res$undeclared, 0)
+})
+
+test_that("negative values not in the codes are registered and reported", {
+  res <- .qt_ac_numeric(c(1, -3), "integer", mc)
+  expect_equal(res$undeclared, -3)
+  expect_true(-3L %in% attr(res$x, "na_values"))
+})
+
+test_that("non-numeric values are counted; non-whole integers stay numeric", {
+  expect_equal(.qt_ac_numeric(c("a", "2"), "integer", NULL)$n_failed, 1)
+  res <- .qt_ac_numeric(c(1.5, 2), "integer", NULL)
+  expect_equal(res$n_fractional, 1)
+  expect_type(res$x, "double")
+})
+
+test_that("no missing codes and no negatives returns a plain vector", {
+  res <- .qt_ac_numeric(c(1, 2), "integer", NULL)
+  expect_false(inherits(res$x, "haven_labelled_spss"))
+})
+
+test_that("factors keep missing codes as levels with full labels", {
+  res <- .qt_ac_factor(c(1, 2, -8, NA), set, mc)
+  expect_equal(levels(res$x),
+               c("Yes", "No", "Missing: Skip pattern", "Missing: Item nonresponse"))
+  expect_equal(as.character(res$x),
+               c("Yes", "No", "Missing: Item nonresponse", NA))
+  expect_equal(unname(attr(res$x, "qt_codes")), c("1", "2", "-7", "-8"))
+  expect_length(res$unlabeled, 0)
+})
+
+test_that("unlabeled factor values are kept as levels and reported", {
+  res <- .qt_ac_factor(c(1, 9), set, NULL)
+  expect_equal(res$unlabeled, "9")
+  expect_equal(as.character(res$x), c("Yes", "9"))
+})

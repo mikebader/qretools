@@ -2,6 +2,13 @@
 
 ## Data documentation
 
+* New `qt_apply_codings()`: applies declared storage types, value labels and
+  missing codes to collected data. Factors keep missing codes as labelled
+  levels; integer/numeric variables become `haven::labelled_spss()` with the
+  codes registered as user-missing; multiple-response options use `yesno_01`.
+  Problems are collected in `attr(, "qt_codings_report")`. Adds `haven` to
+  Imports and drops unused `purrr`.
+
 * New `qt_data_summary()`: joins a survey (`qt_qre`/`qt_qreconfig`) to collected
   data, resolves the question version used by the survey, reconciles
   instrument and data columns, and summarizes each variable by storage type
