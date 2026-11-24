@@ -21,12 +21,13 @@ stored in \code{attr(, "unclassified")}.
 }
 \description{
 Read the project's variable groups: the display name of each \code{vargroup}
-code and the order in which groups appear in a topical codebook (see \code{group_by = "vargroup"}
-in \code{\link[=qt_codebook]{qt_codebook()}}).
+code and the order in which groups appear in a topical codebook (see
+\code{variable_groups} in \code{\link[=qt_codebook]{qt_codebook()}}).
 }
 \details{
 The file location is \verb{paths: variable_groups:} in \verb{_qretools.yml}; the
-default is \verb{_variable_groups.yml} in the project root. If that file does not
+default is \verb{_variable_groups.yml} (or \verb{_variable_groups.yaml}) in the
+project root. If that file does not
 exist the project has no variable groups. If the location is changed in
 \verb{_qretools.yml} and the file does not exist, an error is raised.
 
