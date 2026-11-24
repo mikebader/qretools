@@ -35,6 +35,25 @@
 #'   rendering (HTML/PDF only). Default: \code{FALSE}.
 #' @param title Character string. Title for the codebook document. Default:
 #'   \code{"Codebook: <survey_id>"}.
+#' @param group_by Character string. `"none"` (default) lists variables in
+#'   instrument order; `"vargroup"` gives a topical codebook, with a section
+#'   for each `vargroup` and variables in instrument order within it. Option
+#'   variables of a multiple-response question inherit the question's group.
+#'   If the project has a variable-groups file (see
+#'   [qt_read_variable_groups()]), sections use its names and order, and
+#'   variables with no group, or a group the file does not list (a warning
+#'   names these), go last under its "unclassified" label ("Not classified" by
+#'   default). Without the file, sections are the raw `vargroup` codes in order
+#'   of first appearance and variables without a group come last under "Other
+#'   variables".
+#' @param style Character string. HTML only. `"gitbook"` (default) renders a
+#'   `bookdown`-like page with a sidebar table of contents (needs the
+#'   \pkg{bookdown} package; falls back to `"document"` if it is not
+#'   installed); `"document"` renders a plain `rmarkdown` HTML document with a
+#'   floating table of contents.
+#' @param css Character vector of CSS file paths or `NULL`. Applied after the
+#'   package's default stylesheet and the project's `css/codebook.css` (if it
+#'   exists; see [qt_copy_css()]), so later rules override earlier ones.
 #' @param ... Additional arguments passed to \code{rmarkdown::render()} for
 #'   HTML/PDF output.
 #'
@@ -62,7 +81,12 @@
 #' Instrument variables with no column in the data are listed in the header
 #' rather than documented.
 #'
-#' @seealso [qt_data_summary()], [qt_read_missing_codes()], [qt_dictionary()]
+#' HTML output carries semantic `qt-` CSS classes (for example `qt-variable`,
+#' `qt-question-text`, `qt-response-table`, `qt-missing-row`). Customize the
+#' look with [qt_copy_css()] or the `css` argument.
+#'
+#' @seealso [qt_data_summary()], [qt_read_missing_codes()],
+#'   [qt_read_variable_groups()], [qt_dictionary()], [qt_copy_css()]
 #'
 #' @examples
 #' \dontrun{
@@ -80,8 +104,12 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
                         survey_id = NULL,
                         format = c("text", "html", "pdf"),
                         output_file = NULL, open = FALSE, title = NULL,
+                        group_by = c("none", "vargroup"),
+                        style = c("gitbook", "document"), css = NULL,
                         config = NULL, ...) {
-  format <- match.arg(format)
+  format   <- match.arg(format)
+  group_by <- match.arg(group_by)
+  style    <- match.arg(style)
 
   if (inherits(qre, "qt_bank")) {
     stop("qt_codebook() documents one survey's data and takes a qt_qre as ",
@@ -105,16 +133,20 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
   if (length(entries) == 0)
     stop("No variables to document", call. = FALSE)
 
+  entries <- .qt_label_entry_groups(entries, group_by, config)
+
   not_in_data <- ds$variable_id[ds$status == "missing_from_data"]
   title <- title %||% paste0("Codebook: ", survey_id)
 
   if (format == "text") {
     .qt_codebook_text(entries, survey = survey_id, title = title,
-                      output_file = output_file, not_in_data = not_in_data)
+                      output_file = output_file, not_in_data = not_in_data,
+                      group_by = group_by)
   } else {
     .qt_codebook_rmd(entries, format = format, survey = survey_id,
                      title = title, output_file = output_file, open = open,
-                     not_in_data = not_in_data, ...)
+                     not_in_data = not_in_data, group_by = group_by,
+                     style = style, css = css, config = config, ...)
   }
 }
 
@@ -141,6 +173,9 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
   lapply(which(ds$status != "missing_from_data"), function(i) {
     id  <- ds$variable_id[i]
     res <- resolved[[id]] %||% list()
+    # option variables inherit grouping and universe from their parent question
+    pid <- na_null(ds$parent_id[i])
+    par <- if (!is.null(pid)) resolved[[pid]] %||% list() else list()
     sm  <- ds$summary[[i]]
 
     vals <- sm[["values"]]
@@ -161,9 +196,10 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
     if (missing_in_table && !is.null(vals) && !is.null(miss)) {
       if (!"label" %in% names(vals)) vals$label <- rep("", nrow(vals))
       vals <- rbind(
-        vals[, c("value", "label", "n"), drop = FALSE],
+        data.frame(vals[, c("value", "label", "n"), drop = FALSE],
+                   kind = rep("response", nrow(vals)), stringsAsFactors = FALSE),
         data.frame(value = miss$value, label = miss$label, n = miss$n,
-                   stringsAsFactors = FALSE)
+                   kind = "missing", stringsAsFactors = FALSE)
       )
       miss <- NULL
     }
@@ -180,13 +216,15 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
         statistic = c("Minimum", "Maximum", "Mean", "Standard deviation"),
         value     = c(fmt(st[["min"]]), fmt(st[["max"]]),
                       fmt(st[["mean"]]), fmt(st[["sd"]])),
+        kind      = "statistic",
         stringsAsFactors = FALSE
       )
       if (missing_in_table && !is.null(miss)) {
         stats_table <- rbind(
           stats_table,
           data.frame(statistic = paste0(miss$label, " (", miss$value, ")"),
-                     value = as.character(miss$n), stringsAsFactors = FALSE)
+                     value = as.character(miss$n), kind = "missing",
+                     stringsAsFactors = FALSE)
         )
         miss <- NULL
       }
@@ -200,8 +238,8 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
       value_labels   = NULL,
       value_label_id = na_null(ds$value_label_id[i]),
       surveys_used   = NULL,
-      universe       = res$universe,
-      vargroup       = res$vargroup,
+      universe       = res$universe %||% par$universe,
+      vargroup       = res$vargroup %||% par$vargroup,
       cite           = res$cite %||% res$source,
       note           = res$note,
       status         = ds$status[i],

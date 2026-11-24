@@ -16,6 +16,9 @@ qt_codebook(
   output_file = NULL,
   open = FALSE,
   title = NULL,
+  group_by = c("none", "vargroup"),
+  style = c("gitbook", "document"),
+  css = NULL,
   config = NULL,
   ...
 )
@@ -73,6 +76,22 @@ rendering (HTML/PDF only). Default: \code{FALSE}.}
 \item{title}{Character string. Title for the codebook document. Default:
 \code{"Codebook: <survey_id>"}.}
 
+\item{group_by}{Character string. \code{"none"} (default) lists variables in
+instrument order; \code{"vargroup"} groups them under a heading for each
+\code{vargroup}, in order of first appearance. Variables without a group come
+last under "Other variables"; option variables of a multiple-response
+question inherit the question's group.}
+
+\item{style}{Character string. HTML only. \code{"gitbook"} (default) renders a
+\code{bookdown}-like page with a sidebar table of contents (needs the
+\pkg{bookdown} package; falls back to \code{"document"} if it is not
+installed); \code{"document"} renders a plain \code{rmarkdown} HTML document with a
+floating table of contents.}
+
+\item{css}{Character vector of CSS file paths or \code{NULL}. Applied after the
+package's default stylesheet and the project's \code{css/codebook.css} (if it
+exists; see \code{\link[=qt_copy_css]{qt_copy_css()}}), so later rules override earlier ones.}
+
 \item{config}{A \code{qt_config} object or \code{NULL}; used only when \code{qre} is a
 \code{qt_qre} that needs processing.}
 
@@ -109,6 +128,10 @@ instrument are marked as needing compilation
 }
 Instrument variables with no column in the data are listed in the header
 rather than documented.
+
+HTML output carries semantic \verb{qt-} CSS classes (for example \code{qt-variable},
+\code{qt-question-text}, \code{qt-response-table}, \code{qt-missing-row}). Customize the
+look with \code{\link[=qt_copy_css]{qt_copy_css()}} or the \code{css} argument.
 }
 \examples{
 \dontrun{
@@ -122,5 +145,6 @@ my_qre |>
 
 }
 \seealso{
-\code{\link[=qt_data_summary]{qt_data_summary()}}, \code{\link[=qt_read_missing_codes]{qt_read_missing_codes()}}, \code{\link[=qt_dictionary]{qt_dictionary()}}
+\code{\link[=qt_data_summary]{qt_data_summary()}}, \code{\link[=qt_read_missing_codes]{qt_read_missing_codes()}}, \code{\link[=qt_dictionary]{qt_dictionary()}},
+\code{\link[=qt_copy_css]{qt_copy_css()}}
 }

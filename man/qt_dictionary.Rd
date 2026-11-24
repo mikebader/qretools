@@ -12,6 +12,9 @@ qt_dictionary(
   value_labels = NULL,
   open = FALSE,
   title = "Dictionary",
+  group_by = c("none", "vargroup"),
+  style = c("gitbook", "document"),
+  css = NULL,
   ...
 )
 }
@@ -44,6 +47,20 @@ rendering (HTML/PDF only). Default: \code{FALSE}.}
 \item{title}{Character string. Title for the dictionary document. Default:
 \code{"Dictionary"}.}
 
+\item{group_by}{Character string. \code{"none"} (default) lists variables in
+order; \code{"vargroup"} groups them under a heading for each \code{vargroup}, in
+order of first appearance, with variables that have no group last.}
+
+\item{style}{Character string. HTML only. \code{"gitbook"} (default) renders a
+\code{bookdown}-like page with a sidebar table of contents (needs the
+\pkg{bookdown} package; falls back to \code{"document"} if it is not
+installed); \code{"document"} renders a plain \code{rmarkdown} HTML document with a
+floating table of contents.}
+
+\item{css}{Character vector of CSS file paths or \code{NULL}. Applied after the
+package's default stylesheet and the project's \code{css/codebook.css} (if it
+exists; see \code{\link[=qt_copy_css]{qt_copy_css()}}), so later rules override earlier ones.}
+
 \item{...}{Additional arguments passed to \code{rmarkdown::render()} for
 HTML/PDF output.}
 }
@@ -58,6 +75,10 @@ single survey wave. Supports plain-text output to the console or a file,
 and HTML/PDF output via R Markdown.
 }
 \details{
+HTML output carries semantic \verb{qt-} CSS classes (for example \code{qt-variable},
+\code{qt-question-text}, \code{qt-response-table}, \code{qt-missing-row}) that the default
+stylesheet and your own CSS can target.
+
 Each variable entry in the dictionary includes:
 \itemize{
 \item Variable ID, title, and storage type
@@ -93,5 +114,6 @@ qt_dictionary(qbank, format = "pdf", output_file = "dictionary.pdf",
 }
 \seealso{
 \code{\link{qt_qbank}}, \code{\link{qt_genbank}},
-\code{\link{qt_ctrlbank}}, \code{\link{qt_read_value_labels}}
+\code{\link{qt_ctrlbank}}, \code{\link{qt_read_value_labels}},
+\code{\link[=qt_copy_css]{qt_copy_css()}}
 }

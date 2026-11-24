@@ -1,0 +1,97 @@
+/* qretools default codebook / dictionary stylesheet.
+ * Copy into your project with qt_copy_css() to edit it; project and `css =`
+ * files are applied after this one, so override variables or rules there. */
+
+:root {
+  --qt-text: #24292f;
+  --qt-muted: #6b7280;
+  --qt-border: #d8dee4;
+  --qt-stripe: #f6f8fa;
+  --qt-accent: #2563eb;
+  --qt-type-bg: #e0ecff;
+  --qt-type-text: #1e40af;
+  --qt-group-bg: #dcfce7;
+  --qt-group-text: #166534;
+  --qt-universe-bg: #fef3c7;
+  --qt-universe-text: #92400e;
+  --qt-missing-bg: #fafafa;
+  --qt-missing-text: #6b7280;
+  --qt-warn-bg: #fff8e1;
+  --qt-warn-border: #f0b429;
+  --qt-unlabeled-bg: #fff1f0;
+  --qt-note-border: #94a3b8;
+  --qt-space: 0.75rem;
+}
+
+/* Header */
+.qt-codebook-header { margin-bottom: 1.5rem; padding-bottom: var(--qt-space);
+  border-bottom: 1px solid var(--qt-border); }
+.qt-codebook-header p { margin: 0.25rem 0; }
+.qt-not-in-data { margin-top: var(--qt-space); padding: 0.5rem 0.75rem;
+  background: var(--qt-warn-bg); border-left: 3px solid var(--qt-warn-border);
+  font-size: 0.9em; }
+
+/* Groups and variables */
+.qt-group { margin-top: 2.5rem; padding-bottom: 0.25rem;
+  border-bottom: 2px solid var(--qt-accent); }
+.qt-variable { margin: 0 0 2rem 0; padding-bottom: 1rem;
+  border-bottom: 1px solid var(--qt-border); }
+.qt-variable h1, .qt-variable h2 { font-size: 1.25em; margin-top: 1.5rem; }
+
+/* Variable name under the title */
+.qt-variable-id { margin: 0.1rem 0 0.4rem; }
+.qt-variable-id code { font-size: 0.95em; color: var(--qt-muted); font-weight: 600; }
+
+/* Meta pills: one color per kind */
+.qt-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.4rem 0; }
+.qt-meta-item { padding: 0.1rem 0.6rem; border-radius: 999px;
+  font-size: 0.85em; }
+.qt-storage-type { background: var(--qt-type-bg); color: var(--qt-type-text); }
+.qt-vargroup { background: var(--qt-group-bg); color: var(--qt-group-text); }
+.qt-universe { background: var(--qt-universe-bg); color: var(--qt-universe-text); }
+.qt-meta-label { font-weight: 600; margin-right: 0.25rem; }
+.qt-meta-item code { background: transparent; color: inherit; padding: 0; }
+
+/* Text blocks */
+.qt-question-text { margin: 0.75rem 0; font-size: 1.02em; }
+.qt-option-of, .qt-options, .qt-surveys-used, .qt-source { color: var(--qt-muted);
+  font-size: 0.9em; margin: 0.25rem 0; }
+.qt-label-heading { margin: var(--qt-space) 0 0.25rem; font-weight: 600; }
+.qt-needs-compilation { padding: 0.5rem 0.75rem; background: var(--qt-warn-bg);
+  border-left: 3px solid var(--qt-warn-border); }
+.qt-flags { padding: 0.5rem 0.75rem; background: var(--qt-warn-bg);
+  border-left: 3px solid var(--qt-warn-border); font-size: 0.9em; }
+blockquote.qt-note { margin: var(--qt-space) 0; padding: 0.4rem 0.9rem;
+  border-left: 3px solid var(--qt-note-border); color: var(--qt-muted);
+  background: transparent; font-size: 0.95em; }
+
+/* Response counts */
+.qt-response-counts { color: var(--qt-muted); font-size: 0.9em; margin: 0.5rem 0; }
+.qt-count + .qt-count::before { content: "\00b7"; margin: 0 0.4rem; }
+
+/* Tables */
+table.qt-response-table, table.qt-statistics-table,
+table.qt-missing-table, table.qt-label-table {
+  border-collapse: collapse; margin: 0.5rem 0 1rem; width: auto; min-width: 22rem;
+  font-size: 0.92em; }
+.qt-variable th, .qt-variable td { padding: 0.3rem 0.8rem; text-align: left;
+  border-bottom: 1px solid var(--qt-border); }
+.qt-variable th { border-bottom: 2px solid var(--qt-border); font-weight: 600; }
+.qt-variable tbody tr:nth-child(even) { background: var(--qt-stripe); }
+.qt-col-n, .qt-statistics-table .qt-col-value { text-align: right;
+  font-variant-numeric: tabular-nums; }
+th.qt-col-n { text-align: right; }
+
+/* Coded missing rows are visually secondary */
+tr.qt-missing-row td { color: var(--qt-missing-text); font-style: italic;
+  background: var(--qt-missing-bg); }
+tr.qt-missing-row td:first-child { border-left: 3px solid var(--qt-border); }
+/* Data values that have no label */
+tr.qt-unlabeled-row td { background: var(--qt-unlabeled-bg); }
+
+@media print {
+  .qt-variable { break-inside: avoid; }
+  .qt-group { break-after: avoid; }
+  .qt-meta-item { border: 1px solid var(--qt-border); background: transparent; }
+  tr.qt-missing-row td, .qt-flags, .qt-needs-compilation { background: transparent; }
+}
