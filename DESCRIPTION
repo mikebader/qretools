@@ -1,23 +1,27 @@
 Package: qretools
 Title: Tools for Creating and Documenting Questionnaires
 Version: 0.0.1.001
-Authors@R: 
+Authors@R:
     person("Michael", "Bader", email = "michaeldmbader@gmail.com", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6292-7790"))
-Description: |
-  Provides tools for the lifecycle of survey research including questionnaire development,
-  documentation, survey wave management, and dissemination. 
+Description: Provides tools for the lifecycle of survey research, including
+    questionnaire development, documentation, survey wave management, and
+    dissemination. Builds questionnaires from question banks and value-label
+    sets, applies types, value labels, and missing-value codes to collected
+    data, and produces data summaries and codebooks.
 License: GPL (>= 3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 Imports:
-    purrr,
-    yaml,
+    cli,
     digest,
-    cli
+    stats,
+    tools,
+    utils,
+    yaml
 Suggests:
-    rmarkdown,
     knitr,
+    rmarkdown,
     testthat (>= 3.0.0)
 Config/testthat/edition: 3
 VignetteBuilder: knitr
