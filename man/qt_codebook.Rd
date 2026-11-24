@@ -77,10 +77,16 @@ rendering (HTML/PDF only). Default: \code{FALSE}.}
 \code{"Codebook: <survey_id>"}.}
 
 \item{group_by}{Character string. \code{"none"} (default) lists variables in
-instrument order; \code{"vargroup"} groups them under a heading for each
-\code{vargroup}, in order of first appearance. Variables without a group come
-last under "Other variables"; option variables of a multiple-response
-question inherit the question's group.}
+instrument order; \code{"vargroup"} gives a topical codebook, with a section
+for each \code{vargroup} and variables in instrument order within it. Option
+variables of a multiple-response question inherit the question's group.
+If the project has a variable-groups file (see
+\code{\link[=qt_read_variable_groups]{qt_read_variable_groups()}}), sections use its names and order, and
+variables with no group, or a group the file does not list (a warning
+names these), go last under its "unclassified" label ("Not classified" by
+default). Without the file, sections are the raw \code{vargroup} codes in order
+of first appearance and variables without a group come last under "Other
+variables".}
 
 \item{style}{Character string. HTML only. \code{"gitbook"} (default) renders a
 \code{bookdown}-like page with a sidebar table of contents (needs the
@@ -145,6 +151,6 @@ my_qre |>
 
 }
 \seealso{
-\code{\link[=qt_data_summary]{qt_data_summary()}}, \code{\link[=qt_read_missing_codes]{qt_read_missing_codes()}}, \code{\link[=qt_dictionary]{qt_dictionary()}},
-\code{\link[=qt_copy_css]{qt_copy_css()}}
+\code{\link[=qt_data_summary]{qt_data_summary()}}, \code{\link[=qt_read_missing_codes]{qt_read_missing_codes()}},
+\code{\link[=qt_read_variable_groups]{qt_read_variable_groups()}}, \code{\link[=qt_dictionary]{qt_dictionary()}}, \code{\link[=qt_copy_css]{qt_copy_css()}}
 }
