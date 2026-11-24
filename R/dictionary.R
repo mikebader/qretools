@@ -194,16 +194,7 @@ qt_dictionary <- function(bank,
   }
   lines <- c(lines, "", "")
 
-  current_group <- NULL
   for (entry in entries) {
-    # Section heading (topical codebook)
-    if (!is.null(entry$group_label) &&
-        !identical(entry$group_label, current_group)) {
-      current_group <- entry$group_label
-      lines <- c(lines, toupper(current_group),
-                 strrep("=", min(nchar(current_group), 70)), "")
-    }
-
     # Variable heading
     lines <- c(lines, paste0(entry$variable_id, "  [", entry$storage_type, "]  ",
                              entry$title))

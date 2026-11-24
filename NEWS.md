@@ -7,13 +7,6 @@
   levels, integer/numeric values, character strings) and are tagged for
   `qt_zap_missing()`; multiple-response options use `yesno_01`. Problems are
   collected in `attr(, "qt_codings_report")`. Drops unused `purrr` from Imports.
-* New `qt_read_variable_groups()` and `paths: variable_groups:` setting.
-  `_variable_groups.yml` (project root by default) lists the `vargroup` codes
-  with display names and section order, plus the label of the catch-all section.
-* `qt_codebook()` gains `variable_groups` (default `FALSE`). With `TRUE` the
-  codebook is topical: sections by `vargroup` in the order of
-  `_variable_groups.yml`, instrument order within a section, child variables
-  following their parent, and a final "Not classified" section.
 * New `qt_zap_missing()`: turns the missing codes left by `qt_apply_codings()`
   into `NA`.
 
