@@ -37,7 +37,15 @@ if (length(params$not_in_data) > 0) {
 ---
 
 ```{r variables, results='asis'}
+current_group <- NULL
 for (entry in params$entries) {
+
+  # --- Section heading (topical codebook) ---
+  if (!is.null(entry$group_label) &&
+      !identical(entry$group_label, current_group)) {
+    current_group <- entry$group_label
+    cat("# ", current_group, "\n\n", sep = "")
+  }
 
   # --- Heading ---
   cat("## `", entry$variable_id, "` \u2014 ", entry$title,

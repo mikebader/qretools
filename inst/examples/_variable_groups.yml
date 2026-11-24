@@ -1,0 +1,12 @@
+# Example: display names and section order for a topical codebook.
+# `id` is the vargroup code used in the question bank; list the groups in the
+# order the codebook sections should appear.
+variable_groups:
+  - id: nhd
+    label: Neighborhoods
+  - id: dem
+    label: Demographic Information
+  - id: svy
+    label: Survey Information
+unclassified:
+  label: Not classified

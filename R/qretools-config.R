@@ -215,6 +215,7 @@
       module_bank = "banks/modules",
       value_labels = "value-labels",
       missing_codes = "_missing_codes.yml",
+      variable_groups = "_variable_groups.yml",
       surveys = "surveys"
     ),
     dirnames = list(

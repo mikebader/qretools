@@ -23,6 +23,15 @@
 #'   gets a row for each factor, multiple-response and numeric variable, with a
 #'   count of 0 where the code does not occur. If `FALSE`, only codes that occur
 #'   in the data are shown.
+#' @param variable_groups Logical (default `FALSE`), or the result of
+#'   [qt_read_variable_groups()]. If `TRUE`, the codebook is topical: variables
+#'   are organized into sections by their `vargroup`, with section names and
+#'   order from the project's `_variable_groups.yml`. Within a section variables
+#'   keep instrument order; multiple-response options and other child variables
+#'   follow their parent. Variables with no group, or with a group the file does
+#'   not list (a warning names these), go in a final "Not classified" section.
+#'   If the project has no variable-groups file, sections use the raw
+#'   `vargroup` codes in order of first appearance.
 #' @param format Character string. Output format: \code{"text"} (default),
 #'   \code{"html"}, or \code{"pdf"}. HTML and PDF require the \pkg{rmarkdown}
 #'   package to be installed.
@@ -44,7 +53,9 @@
 #'
 #' @details
 #' Each variable in the data is documented in instrument order, followed by
-#' data columns that are not in the instrument. A variable entry shows:
+#' data columns that are not in the instrument (or, with
+#' `variable_groups = TRUE`, in topical sections; see above). A variable entry
+#' shows:
 #' \itemize{
 #'   \item variable ID, title, storage type and universe
 #'   \item question text from the version the survey used
@@ -62,7 +73,8 @@
 #' Instrument variables with no column in the data are listed in the header
 #' rather than documented.
 #'
-#' @seealso [qt_data_summary()], [qt_read_missing_codes()], [qt_dictionary()]
+#' @seealso [qt_data_summary()], [qt_read_missing_codes()],
+#'   [qt_read_variable_groups()], [qt_dictionary()]
 #'
 #' @examples
 #' \dontrun{
@@ -72,12 +84,17 @@
 #' my_qre |>
 #'   qt_codebook(dat, value_labels = vl,
 #'               format = "html", output_file = "codebook-bas-2026.html")
+#'
+#' # topical codebook; groups come from _variable_groups.yml
+#' my_qre |>
+#'   qt_codebook(dat, value_labels = vl, variable_groups = TRUE,
+#'               format = "html", output_file = "codebook-bas-2026.html")
 #' }
 #'
 #' @export
 qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
                         missing_in_table = TRUE, missing_zeros = TRUE,
-                        survey_id = NULL,
+                        variable_groups = FALSE, survey_id = NULL,
                         format = c("text", "html", "pdf"),
                         output_file = NULL, open = FALSE, title = NULL,
                         config = NULL, ...) {
@@ -104,6 +121,9 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
                                   missing_zeros = missing_zeros)
   if (length(entries) == 0)
     stop("No variables to document", call. = FALSE)
+
+  vg <- .qt_resolve_variable_groups(variable_groups, config)
+  if (!is.null(vg)) entries <- .qt_group_entries(entries, vg)
 
   not_in_data <- ds$variable_id[ds$status == "missing_from_data"]
   title <- title %||% paste0("Codebook: ", survey_id)
