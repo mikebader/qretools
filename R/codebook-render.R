@@ -96,13 +96,27 @@ qt_copy_css <- function(config = qt_config(), overwrite = FALSE) {
 
 # Internal: split entries into groups by vargroup
 #
-# @return List of list(name, entries). name is NULL when not grouping. Groups
-#   are in order of first appearance; entries without a vargroup come last
-#   under "Other variables".
+# @return List of list(name, entries). name is NULL when not grouping. With a
+#   variable-groups file, groups follow its order and names, and entries with no
+#   (or an unlisted) vargroup come last under its "unclassified" label. Without
+#   one, groups are raw vargroup codes in order of first appearance and entries
+#   without a vargroup come last under "Other variables".
 .qt_group_entries <- function(entries, group_by = "none") {
   if (!identical(group_by, "vargroup")) {
     return(list(list(name = NULL, entries = entries)))
   }
+
+  # Entries labelled from the project's variable-groups file (see
+  # .qt_label_entry_groups()): sections in the file's order, every entry placed
+  if (length(entries) > 0 &&
+      all(vapply(entries, function(e) !is.null(e[["group_rank"]]), logical(1)))) {
+    rank <- vapply(entries, function(e) as.integer(e[["group_rank"]]), integer(1))
+    name <- vapply(entries, function(e) as.character(e[["group_name"]]), character(1))
+    return(lapply(sort(unique(rank)), function(r) {
+      list(name = name[which(rank == r)[1]], entries = entries[which(rank == r)])
+    }))
+  }
+
   keys <- vapply(entries,
                  function(e) as.character(e[["vargroup"]] %||% NA_character_),
                  character(1))

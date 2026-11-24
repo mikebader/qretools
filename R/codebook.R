@@ -36,10 +36,16 @@
 #' @param title Character string. Title for the codebook document. Default:
 #'   \code{"Codebook: <survey_id>"}.
 #' @param group_by Character string. `"none"` (default) lists variables in
-#'   instrument order; `"vargroup"` groups them under a heading for each
-#'   `vargroup`, in order of first appearance. Variables without a group come
-#'   last under "Other variables"; option variables of a multiple-response
-#'   question inherit the question's group.
+#'   instrument order; `"vargroup"` gives a topical codebook, with a section
+#'   for each `vargroup` and variables in instrument order within it. Option
+#'   variables of a multiple-response question inherit the question's group.
+#'   If the project has a variable-groups file (see
+#'   [qt_read_variable_groups()]), sections use its names and order, and
+#'   variables with no group, or a group the file does not list (a warning
+#'   names these), go last under its "unclassified" label ("Not classified" by
+#'   default). Without the file, sections are the raw `vargroup` codes in order
+#'   of first appearance and variables without a group come last under "Other
+#'   variables".
 #' @param style Character string. HTML only. `"gitbook"` (default) renders a
 #'   `bookdown`-like page with a sidebar table of contents (needs the
 #'   \pkg{bookdown} package; falls back to `"document"` if it is not
@@ -79,8 +85,8 @@
 #' `qt-question-text`, `qt-response-table`, `qt-missing-row`). Customize the
 #' look with [qt_copy_css()] or the `css` argument.
 #'
-#' @seealso [qt_data_summary()], [qt_read_missing_codes()], [qt_dictionary()],
-#'   [qt_copy_css()]
+#' @seealso [qt_data_summary()], [qt_read_missing_codes()],
+#'   [qt_read_variable_groups()], [qt_dictionary()], [qt_copy_css()]
 #'
 #' @examples
 #' \dontrun{
@@ -126,6 +132,8 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
                                   missing_zeros = missing_zeros)
   if (length(entries) == 0)
     stop("No variables to document", call. = FALSE)
+
+  entries <- .qt_label_entry_groups(entries, group_by, config)
 
   not_in_data <- ds$variable_id[ds$status == "missing_from_data"]
   title <- title %||% paste0("Codebook: ", survey_id)

@@ -32,8 +32,12 @@
 #' @param title Character string. Title for the dictionary document. Default:
 #'   \code{"Dictionary"}.
 #' @param group_by Character string. `"none"` (default) lists variables in
-#'   order; `"vargroup"` groups them under a heading for each `vargroup`, in
-#'   order of first appearance, with variables that have no group last.
+#'   order; `"vargroup"` groups them under a heading for each `vargroup`. With
+#'   a project variable-groups file (see [qt_read_variable_groups()], read from
+#'   the current project), headings use its names and order and variables with
+#'   no group go last under its "unclassified" label; otherwise headings are
+#'   the raw codes in order of first appearance, with variables that have no
+#'   group last under "Other variables".
 #' @param style Character string. HTML only. `"gitbook"` (default) renders a
 #'   `bookdown`-like page with a sidebar table of contents (needs the
 #'   \pkg{bookdown} package; falls back to `"document"` if it is not
@@ -116,6 +120,8 @@ qt_dictionary <- function(bank,
       stop("The bank contains no variables", call. = FALSE)
     }
   }
+
+  entries <- .qt_label_entry_groups(entries, group_by)
 
   # 2. Build title
   if (title == "Dictionary" && !is.null(survey)) {
