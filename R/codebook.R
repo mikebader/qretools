@@ -35,17 +35,16 @@
 #'   rendering (HTML/PDF only). Default: \code{FALSE}.
 #' @param title Character string. Title for the codebook document. Default:
 #'   \code{"Codebook: <survey_id>"}.
-#' @param group_by Character string. `"none"` (default) lists variables in
-#'   instrument order; `"vargroup"` gives a topical codebook, with a section
-#'   for each `vargroup` and variables in instrument order within it. Option
-#'   variables of a multiple-response question inherit the question's group.
-#'   If the project has a variable-groups file (see
-#'   [qt_read_variable_groups()]), sections use its names and order, and
-#'   variables with no group, or a group the file does not list (a warning
-#'   names these), go last under its "unclassified" label ("Not classified" by
-#'   default). Without the file, sections are the raw `vargroup` codes in order
-#'   of first appearance and variables without a group come last under "Other
-#'   variables".
+#' @param variable_groups Logical (default `FALSE`). If `TRUE`, the codebook is
+#'   topical: variables are organized into sections by their `vargroup`, with
+#'   variables in instrument order inside each section. Option variables of a
+#'   multiple-response question follow their question's group. If the project
+#'   has a variable-groups file (see [qt_read_variable_groups()]), sections use
+#'   its names and order, and variables with no group, or a group the file does
+#'   not list (a warning names these), go last under its "unclassified" label
+#'   ("Not classified" by default). Without the file, sections are the raw
+#'   `vargroup` codes in order of first appearance and variables without a group
+#'   come last under "Other variables".
 #' @param style Character string. HTML only. `"gitbook"` (default) renders a
 #'   `bookdown`-like page with a sidebar table of contents (needs the
 #'   \pkg{bookdown} package; falls back to `"document"` if it is not
@@ -104,11 +103,11 @@ qt_codebook <- function(qre, data, value_labels = NULL, missing_codes = NULL,
                         survey_id = NULL,
                         format = c("text", "html", "pdf"),
                         output_file = NULL, open = FALSE, title = NULL,
-                        group_by = c("none", "vargroup"),
+                        variable_groups = FALSE,
                         style = c("gitbook", "document"), css = NULL,
                         config = NULL, ...) {
   format   <- match.arg(format)
-  group_by <- match.arg(group_by)
+  group_by <- .qt_group_by_arg(variable_groups)
   style    <- match.arg(style)
 
   if (inherits(qre, "qt_bank")) {

@@ -31,18 +31,20 @@
   files passed to the new `css` argument. `qt_copy_css()` copies the default
   into the project for editing.
 * New `qt_read_variable_groups()` and `paths: variable_groups:` setting.
-  `_variable_groups.yml` (project root by default) lists the `vargroup` codes
-  with display names and section order, plus the label of the catch-all
-  section. With it, `group_by = "vargroup"` in `qt_codebook()` and
+  `_variable_groups.yml` (or `.yaml`; project root by default) lists the
+  `vargroup` codes with display names and section order, plus the label of the
+  catch-all section. With it, `variable_groups = TRUE` in `qt_codebook()` and
   `qt_dictionary()` builds a topical codebook: sections named and ordered as in
   the file, with variables in instrument order inside each, and a final "Not
   classified" section for variables with no group or a group the file does not
-  list (a warning names those). Without the file, `group_by = "vargroup"`
-  behaves as before.
+  list (a warning names those). Without the file, `variable_groups = TRUE`
+  groups by the raw `vargroup` codes in order of first appearance.
 * `qt_codebook()` and `qt_dictionary()` gain `style` (`"gitbook"`, a
   `bookdown`-like page and the default, or `"document"`) and
-  `group_by = "vargroup"` to group variables under `vargroup` headings (HTML,
-  PDF and text). The R Markdown template `inst/templates/codebook.Rmd` is
+  `variable_groups` (default `FALSE`; `TRUE` groups variables under `vargroup`
+  headings in HTML, PDF and text). **Breaking** relative to the unreleased
+  `group_by = "vargroup"` of the same development version: the argument is now
+  the logical `variable_groups`. The R Markdown template `inst/templates/codebook.Rmd` is
   replaced by Markdown generated in R.
 
 ## version 0.0.1
