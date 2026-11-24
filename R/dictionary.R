@@ -31,13 +31,13 @@
 #'   rendering (HTML/PDF only). Default: \code{FALSE}.
 #' @param title Character string. Title for the dictionary document. Default:
 #'   \code{"Dictionary"}.
-#' @param group_by Character string. `"none"` (default) lists variables in
-#'   order; `"vargroup"` groups them under a heading for each `vargroup`. With
-#'   a project variable-groups file (see [qt_read_variable_groups()], read from
-#'   the current project), headings use its names and order and variables with
-#'   no group go last under its "unclassified" label; otherwise headings are
-#'   the raw codes in order of first appearance, with variables that have no
-#'   group last under "Other variables".
+#' @param variable_groups Logical (default `FALSE`). If `TRUE`, variables are
+#'   grouped under a heading for each `vargroup`. With a project variable-groups
+#'   file (see [qt_read_variable_groups()], read from the current project),
+#'   headings use its names and order and variables with no group go last under
+#'   its "unclassified" label; otherwise headings are the raw codes in order of
+#'   first appearance, with variables that have no group last under "Other
+#'   variables".
 #' @param style Character string. HTML only. `"gitbook"` (default) renders a
 #'   `bookdown`-like page with a sidebar table of contents (needs the
 #'   \pkg{bookdown} package; falls back to `"document"` if it is not
@@ -102,12 +102,12 @@ qt_dictionary <- function(bank,
                         value_labels = NULL,
                         open         = FALSE,
                         title        = "Dictionary",
-                        group_by     = c("none", "vargroup"),
+                        variable_groups = FALSE,
                         style        = c("gitbook", "document"),
                         css          = NULL,
                         ...) {
   format   <- match.arg(format)
-  group_by <- match.arg(group_by)
+  group_by <- .qt_group_by_arg(variable_groups)
   style    <- match.arg(style)
 
   # 1. Prepare standardized variable entries

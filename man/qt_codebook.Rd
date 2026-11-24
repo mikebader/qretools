@@ -16,7 +16,7 @@ qt_codebook(
   output_file = NULL,
   open = FALSE,
   title = NULL,
-  group_by = c("none", "vargroup"),
+  variable_groups = FALSE,
   style = c("gitbook", "document"),
   css = NULL,
   config = NULL,
@@ -76,17 +76,16 @@ rendering (HTML/PDF only). Default: \code{FALSE}.}
 \item{title}{Character string. Title for the codebook document. Default:
 \code{"Codebook: <survey_id>"}.}
 
-\item{group_by}{Character string. \code{"none"} (default) lists variables in
-instrument order; \code{"vargroup"} gives a topical codebook, with a section
-for each \code{vargroup} and variables in instrument order within it. Option
-variables of a multiple-response question inherit the question's group.
-If the project has a variable-groups file (see
-\code{\link[=qt_read_variable_groups]{qt_read_variable_groups()}}), sections use its names and order, and
-variables with no group, or a group the file does not list (a warning
-names these), go last under its "unclassified" label ("Not classified" by
-default). Without the file, sections are the raw \code{vargroup} codes in order
-of first appearance and variables without a group come last under "Other
-variables".}
+\item{variable_groups}{Logical (default \code{FALSE}). If \code{TRUE}, the codebook is
+topical: variables are organized into sections by their \code{vargroup}, with
+variables in instrument order inside each section. Option variables of a
+multiple-response question follow their question's group. If the project
+has a variable-groups file (see \code{\link[=qt_read_variable_groups]{qt_read_variable_groups()}}), sections use
+its names and order, and variables with no group, or a group the file does
+not list (a warning names these), go last under its "unclassified" label
+("Not classified" by default). Without the file, sections are the raw
+\code{vargroup} codes in order of first appearance and variables without a group
+come last under "Other variables".}
 
 \item{style}{Character string. HTML only. \code{"gitbook"} (default) renders a
 \code{bookdown}-like page with a sidebar table of contents (needs the

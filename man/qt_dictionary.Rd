@@ -12,7 +12,7 @@ qt_dictionary(
   value_labels = NULL,
   open = FALSE,
   title = "Dictionary",
-  group_by = c("none", "vargroup"),
+  variable_groups = FALSE,
   style = c("gitbook", "document"),
   css = NULL,
   ...
@@ -47,13 +47,13 @@ rendering (HTML/PDF only). Default: \code{FALSE}.}
 \item{title}{Character string. Title for the dictionary document. Default:
 \code{"Dictionary"}.}
 
-\item{group_by}{Character string. \code{"none"} (default) lists variables in
-order; \code{"vargroup"} groups them under a heading for each \code{vargroup}. With
-a project variable-groups file (see \code{\link[=qt_read_variable_groups]{qt_read_variable_groups()}}, read from
-the current project), headings use its names and order and variables with
-no group go last under its "unclassified" label; otherwise headings are
-the raw codes in order of first appearance, with variables that have no
-group last under "Other variables".}
+\item{variable_groups}{Logical (default \code{FALSE}). If \code{TRUE}, variables are
+grouped under a heading for each \code{vargroup}. With a project variable-groups
+file (see \code{\link[=qt_read_variable_groups]{qt_read_variable_groups()}}, read from the current project),
+headings use its names and order and variables with no group go last under
+its "unclassified" label; otherwise headings are the raw codes in order of
+first appearance, with variables that have no group last under "Other
+variables".}
 
 \item{style}{Character string. HTML only. \code{"gitbook"} (default) renders a
 \code{bookdown}-like page with a sidebar table of contents (needs the

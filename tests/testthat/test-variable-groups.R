@@ -110,3 +110,19 @@ test_that("group_by = 'none' leaves entries alone", {
   expect_identical(.qt_label_entry_groups(entries, "none", mk_cfg()), entries)
   expect_null(.qt_group_entries(entries, "none")[[1]]$name)
 })
+
+test_that("variable_groups must be a single TRUE or FALSE", {
+  expect_equal(.qt_group_by_arg(TRUE), "vargroup")
+  expect_equal(.qt_group_by_arg(FALSE), "none")
+  expect_error(.qt_group_by_arg("vargroup"), "TRUE or FALSE")
+  expect_error(.qt_group_by_arg(NA), "TRUE or FALSE")
+  expect_error(.qt_group_by_arg(c(TRUE, FALSE)), "TRUE or FALSE")
+})
+
+test_that("the default file may be spelled .yaml", {
+  dir <- tempfile(); dir.create(dir)
+  yaml::write_yaml(good, file.path(dir, "_variable_groups.yaml"))
+  cfg <- list(meta = list(project_root = dir), paths = list())
+  vg  <- qt_read_variable_groups(cfg)
+  expect_equal(vg$id, c("nhd", "fin", "dem"))
+})

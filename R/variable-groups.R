@@ -2,7 +2,7 @@
 #
 # Project-level list of the broad topical groups (the `vargroup` field of each
 # variable) with display names and section order, for topical codebooks
-# (`group_by = "vargroup"` in qt_codebook() and qt_dictionary()). The
+# (`variable_groups = TRUE` in qt_codebook() and qt_dictionary()). The
 # groups are defined once per project in a YAML file whose location is set in
 # `paths: variable_groups:` (default `_variable_groups.yml` in the project
 # root). No file means no group names.
@@ -10,8 +10,8 @@
 #' Read Variable Groups
 #'
 #' Read the project's variable groups: the display name of each `vargroup`
-#' code and the order in which groups appear in a topical codebook (see `group_by = "vargroup"`
-#' in [qt_codebook()]).
+#' code and the order in which groups appear in a topical codebook (see
+#' `variable_groups` in [qt_codebook()]).
 #'
 #' @param config A `qt_config` object (default: `qt_config()`).
 #' @param path Character string or `NULL`. Explicit path to a variable-groups
@@ -25,7 +25,8 @@
 #'
 #' @details
 #' The file location is `paths: variable_groups:` in `_qretools.yml`; the
-#' default is `_variable_groups.yml` in the project root. If that file does not
+#' default is `_variable_groups.yml` (or `_variable_groups.yaml`) in the
+#' project root. If that file does not
 #' exist the project has no variable groups. If the location is changed in
 #' `_qretools.yml` and the file does not exist, an error is raised.
 #'
@@ -59,6 +60,12 @@ qt_read_variable_groups <- function(config = qt_config(), path = NULL) {
     explicit <- TRUE
   }
   if (!grepl("\\.ya?ml$", path)) path <- paste0(path, ".yml")
+
+  # the default file may also be spelled _variable_groups.yaml
+  if (!file.exists(path) && !explicit) {
+    alt <- sub("\\.yml$", ".yaml", path)
+    if (file.exists(alt)) path <- alt
+  }
 
   if (!file.exists(path)) {
     if (explicit)
@@ -137,13 +144,21 @@ qt_read_variable_groups <- function(config = qt_config(), path = NULL) {
   )
 }
 
-# Internal: give entries their display group, for `group_by = "vargroup"` ----
+# Internal: give entries their display group, for `variable_groups = TRUE` ---
 #
 # Reads the project's variable-groups file. If there is none, entries are left
 # alone and .qt_group_entries() groups by raw vargroup code. Otherwise each
 # entry gets `group_name` (the label from the file) and `group_rank` (its
 # position in the file; the unclassified section is last). A vargroup the file
 # does not list is reported and placed in the unclassified section.
+# Internal: the `variable_groups` argument as the internal group_by string
+.qt_group_by_arg <- function(variable_groups) {
+  if (!is.logical(variable_groups) || length(variable_groups) != 1 ||
+      is.na(variable_groups))
+    stop("'variable_groups' must be TRUE or FALSE", call. = FALSE)
+  if (variable_groups) "vargroup" else "none"
+}
+
 .qt_label_entry_groups <- function(entries, group_by = "none", config = NULL) {
   if (!identical(group_by, "vargroup")) return(entries)
 
